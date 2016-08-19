@@ -25,6 +25,8 @@
         <include layout="@layout/content_main" />
 
         <LinearLayout
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
