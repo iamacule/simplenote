@@ -52,9 +52,6 @@ public class AddNoteActivity extends BaseActivity {
                     case R.id.btnSave:
 
                         break;
-                    case R.id.btnStyle:
-
-                        break;
 
                 }
             }
