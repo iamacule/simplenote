@@ -16,7 +16,7 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.9">
@@ -27,10 +27,14 @@
             android:layout_margin="@dimen/activity_vertical_margin"
             android:orientation="vertical">
 
-            <include layout="@layout/input_text" />
+            <include
+                android:id="@+id/lnTitle"
+                layout="@layout/input_text" />
 
-            <include layout="@layout/input_text_area" />
+            <include
+                android:id="@+id/lnContent"
+                layout="@layout/input_text_area" />
 
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 </LinearLayout>

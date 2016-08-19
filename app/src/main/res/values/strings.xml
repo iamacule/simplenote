@@ -11,4 +11,5 @@
     <string name="style">Style</string>
     <string name="clear">Clear</string>
     <string name="save">Save</string>
+    <string name="clear_success">Clear text success !</string>
 </resources>
