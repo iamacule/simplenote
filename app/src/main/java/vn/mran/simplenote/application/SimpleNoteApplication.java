@@ -13,7 +13,6 @@ public class SimpleNoteApplication extends Application {
 
     @Override
     public void onCreate() {
-
         super.onCreate();
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
                 .name(DB_NAME)
