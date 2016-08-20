@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/all"
+            android:text="@string/aZ"
             android:textColor="@color/grey_100"
             android:textSize="@dimen/app_text_size_small" />
     </LinearLayout>
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/filters"
+            android:text="@string/folders"
             android:textColor="@color/white"
             android:textSize="@dimen/app_text_size" />
 
