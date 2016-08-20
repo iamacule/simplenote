@@ -9,18 +9,21 @@ import java.util.List;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.adapter.MoviesAdapter;
+import vn.mran.simplenote.mvp.presenter.AddFolderPresenter;
+import vn.mran.simplenote.mvp.view.AddFolderView;
 import vn.mran.simplenote.util.AnimationUtil;
 import vn.mran.simplenote.view.Filter;
 import vn.mran.simplenote.view.FloatingAdd;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.toast.Boast;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements AddFolderView{
     private FloatingAdd floatingAdd;
     private Header header;
     private Filter filter;
     private RecyclerView recyclerView;
     private List<String> list = new ArrayList<>();
+    private AddFolderPresenter addFolderPresenter;
 
     @Override
     public int getView() {
@@ -46,6 +49,7 @@ public class MainActivity extends BaseActivity {
             list.add("Item " + i);
         }
         recyclerView.setAdapter(new MoviesAdapter(list));
+        addFolderPresenter = new AddFolderPresenter(this);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.btnAddFolder:
-                        Boast.makeText(MainActivity.this, "btnAddFolder").show();
+                        shoeDialogAddFolder();
                         break;
 
                     case R.id.btnAddNote:
@@ -68,6 +72,21 @@ public class MainActivity extends BaseActivity {
         };
         floatingAdd.btnAddNote.setOnClickListener(click);
         floatingAdd.btnAddFolder.setOnClickListener(click);
+    }
+
+    private void shoeDialogAddFolder() {
+        dialogEvent.showDialogAddFolder(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addFolderPresenter.save(dialogEvent.getDialogAddFolder().getTxtName().getText().toString().trim());
+                        dialogEvent.getDialogAddFolder().getTxtName().setText("");
+                    }
+                });
+            }
+        }));
     }
 
     private void setOnScrollListener() {
@@ -96,5 +115,25 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveFinish() {
+        Boast.makeText(this,getString(R.string.add_folder_success)).show();
+    }
+
+    @Override
+    public void onSaveFail(byte messageId) {
+        switch (messageId){
+            case AddFolderPresenter.EMPTY_CONTENT:
+                Boast.makeText(this,getString(R.string.add_folder_empty)).show();
+                break;
+            case AddFolderPresenter.FOLDER_EXITS:
+                Boast.makeText(this,getString(R.string.add_folder_exits)).show();
+                break;
+            case AddFolderPresenter.SAVE_EXCEPTION:
+                Boast.makeText(this,getString(R.string.add_folder_fail)).show();
+                break;
+        }
     }
 }

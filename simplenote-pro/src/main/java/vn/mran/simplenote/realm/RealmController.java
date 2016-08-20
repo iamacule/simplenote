@@ -5,7 +5,9 @@ import android.app.Application;
 import android.app.Fragment;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import vn.mran.simplenote.application.SimpleNoteApplication;
+import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
 
 /**
@@ -34,4 +36,19 @@ public class RealmController {
     public Notes getNotesById(long id) {
         return realm.where(Notes.class).equalTo("id", id).findFirst();
     }
+
+    public Folder getFolderById(long id) {
+        return realm.where(Folder.class).equalTo("id", id).findFirst();
+    }
+
+    public RealmResults<Folder> getAllFolder() {
+        return realm.where(Folder.class).findAll();
+    }
+
+    public RealmResults<Folder> checkFolderNameExits(String folderName) {
+        return realm.where(Folder.class)
+                .contains("name", folderName)
+                .findAll();
+    }
+
 }

@@ -1,4 +1,4 @@
-package vn.mran.simplenote.view.toast;
+package vn.mran.simplenote.view;
 
 import android.support.design.widget.TextInputLayout;
 import android.view.View;

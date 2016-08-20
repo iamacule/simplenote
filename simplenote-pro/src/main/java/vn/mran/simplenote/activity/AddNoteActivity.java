@@ -10,7 +10,7 @@ import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.ToolAddNote;
 import vn.mran.simplenote.view.toast.Boast;
-import vn.mran.simplenote.view.toast.CustomEditText;
+import vn.mran.simplenote.view.CustomEditText;
 
 /**
  * Created by MrAn on 19-Aug-16.
@@ -55,8 +55,8 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                         clearText();
                         break;
                     case R.id.btnSave:
-                        addNotePresenter.save(txtTitle.editText.getText().toString(),
-                                txtContent.editText.getText().toString(), 0l);
+                        addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
+                                txtContent.editText.getText().toString().trim(), 0l);
                         break;
 
                 }

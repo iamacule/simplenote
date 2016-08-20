@@ -16,4 +16,11 @@
     <string name="save_fail">Can not save , please try again</string>
     <string name="clear_success">Clear text success</string>
     <string name="empty_content">Your content is empty</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_folder_hint">Please input folder name</string>
+    <string name="add_folder_empty">Folder name can not empty</string>
+    <string name="add_folder_exits">Folder name already exits</string>
+    <string name="add_folder_success">Add new folder success</string>
+    <string name="add_folder_fail">Can not add new folder</string>
 </resources>

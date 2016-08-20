@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.dialog.DialogEvent;
 
 /**
  * Created by MrAn on 18-Aug-16.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    protected DialogEvent dialogEvent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,6 +20,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         initView();
         initValue();
         initAction();
+        initBaseValue();
+    }
+
+    private void initBaseValue() {
+        dialogEvent = new DialogEvent(this);
     }
 
     public abstract int getView();
