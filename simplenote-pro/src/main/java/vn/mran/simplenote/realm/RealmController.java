@@ -1,8 +1,6 @@
 package vn.mran.simplenote.realm;
 
-import android.app.Activity;
 import android.app.Application;
-import android.app.Fragment;
 
 import io.realm.Realm;
 import io.realm.RealmResults;

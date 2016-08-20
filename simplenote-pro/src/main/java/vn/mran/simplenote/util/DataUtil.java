@@ -12,6 +12,7 @@ public class DataUtil {
     public static final String TAG_ADD_NOTES_ACTIVITY = APP_TAG+"AddNoteActivity";
     public static final String TAG_ADD_FOLDER_ACTIVITY = APP_TAG+"AddFolderActivity";
     public static final String TAG_DIALOG_ADD_FOLDER = APP_TAG+"DialogAddFolder";
+    public static final String TAG_REALM_CONTROLLER = APP_TAG+"RealmController";
     public static final String TAG = "DataUtil";
     public static boolean checkStringEmpty(String data) {
         if (data.isEmpty())

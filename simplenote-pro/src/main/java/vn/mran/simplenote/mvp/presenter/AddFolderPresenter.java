@@ -45,8 +45,8 @@ public class AddFolderPresenter {
                     realm.commitTransaction();
                     Folder result = RealmController.with().getFolderById(id);
                     if (null != result) {
-                        Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as title : " + folder.getId());
-                        Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as content : " + folder.getName());
+                        Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder id : " + folder.getId());
+                        Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder name : " + folder.getName());
                         addFolderView.onSaveFinish();
                     } else {
                         addFolderView.onSaveFail(SAVE_EXCEPTION);

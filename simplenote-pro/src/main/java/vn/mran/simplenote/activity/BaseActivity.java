@@ -17,10 +17,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getView());
+        initBaseValue();
         initView();
         initValue();
         initAction();
-        initBaseValue();
     }
 
     private void initBaseValue() {
