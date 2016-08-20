@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity implements AddFolderView{
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.btnAddFolder:
-                        shoeDialogAddFolder();
+                        showDialogAddFolder();
                         break;
 
                     case R.id.btnAddNote:
@@ -74,7 +74,7 @@ public class MainActivity extends BaseActivity implements AddFolderView{
         floatingAdd.btnAddFolder.setOnClickListener(click);
     }
 
-    private void shoeDialogAddFolder() {
+    private void showDialogAddFolder() {
         dialogEvent.showDialogAddFolder(new Thread(new Runnable() {
             @Override
             public void run() {
