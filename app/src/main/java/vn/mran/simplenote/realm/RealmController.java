@@ -5,6 +5,8 @@ import android.app.Application;
 import android.app.Fragment;
 
 import io.realm.Realm;
+import vn.mran.simplenote.application.SimpleNoteApplication;
+import vn.mran.simplenote.model.Notes;
 
 /**
  * Created by MrAn on 19-Aug-16.
@@ -17,28 +19,19 @@ public class RealmController {
         realm = Realm.getDefaultInstance();
     }
 
-    public static RealmController with(Fragment fragment) {
+    public static RealmController with() {
 
         if (instance == null) {
-            instance = new RealmController(fragment.getActivity().getApplication());
+            instance = new RealmController(SimpleNoteApplication.get());
         }
-        return instance;
-    }
-
-    public static RealmController with(Activity activity) {
-
-        if (instance == null) {
-            instance = new RealmController(activity.getApplication());
-        }
-        return instance;
-    }
-
-    public static RealmController getInstance() {
-
         return instance;
     }
 
     public Realm getRealm() {
         return realm;
+    }
+
+    public Notes getNotesById(long id) {
+        return realm.where(Notes.class).equalTo("id", id).findFirst();
     }
 }

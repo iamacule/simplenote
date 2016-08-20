@@ -15,7 +15,7 @@ public class Notes extends RealmObject {
 
     private String title;
     private String content;
-    private int folderId;
+    private long folderId;
 
     public long getId() {
         return id;
@@ -41,11 +41,11 @@ public class Notes extends RealmObject {
         this.content = content;
     }
 
-    public int getFolderId() {
+    public long getFolderId() {
         return folderId;
     }
 
-    public void setFolderId(int folderId) {
+    public void setFolderId(long folderId) {
         this.folderId = folderId;
     }
 }
