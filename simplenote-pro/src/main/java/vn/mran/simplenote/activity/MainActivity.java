@@ -4,25 +4,25 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.realm.RealmResults;
 import vn.mran.simplenote.R;
-import vn.mran.simplenote.adapter.MoviesAdapter;
+import vn.mran.simplenote.adapter.NotesAdapter;
+import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.presenter.AddFolderPresenter;
 import vn.mran.simplenote.mvp.view.AddFolderView;
+import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AnimationUtil;
+import vn.mran.simplenote.view.ContentMain;
 import vn.mran.simplenote.view.Filter;
 import vn.mran.simplenote.view.FloatingAdd;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.toast.Boast;
 
-public class MainActivity extends BaseActivity implements AddFolderView{
+public class MainActivity extends BaseActivity implements AddFolderView {
     private FloatingAdd floatingAdd;
     private Header header;
     private Filter filter;
-    private RecyclerView recyclerView;
-    private List<String> list = new ArrayList<>();
+    private ContentMain contentMain;
     private AddFolderPresenter addFolderPresenter;
 
     @Override
@@ -32,23 +32,24 @@ public class MainActivity extends BaseActivity implements AddFolderView{
 
     @Override
     public void initView() {
-        recyclerView = (RecyclerView) findViewById(R.id.listData);
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
         header = new Header(getWindow().getDecorView().getRootView());
         filter = new Filter(getWindow().getDecorView().getRootView());
+        contentMain = new ContentMain(getWindow().getDecorView().getRootView());
         floatingAdd = new FloatingAdd(getWindow().getDecorView().getRootView());
-        filter.parent.setVisibility(View.GONE);
         header.btnBack.setVisibility(View.GONE);
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        contentMain.recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
     public void initValue() {
-        for (int i = 0; i < 100; i++) {
-            list.add("Item " + i);
+        RealmResults<Notes> realmResults = RealmController.with().getAllNotes();
+        if(realmResults.size()>0){
+            contentMain.txtNoData.setVisibility(View.GONE);
         }
-        recyclerView.setAdapter(new MoviesAdapter(list));
+        contentMain.recyclerView.setAdapter(new NotesAdapter(RealmController.with().getAllNotes()));
         addFolderPresenter = new AddFolderPresenter(this);
     }
 
@@ -90,7 +91,7 @@ public class MainActivity extends BaseActivity implements AddFolderView{
     }
 
     private void setOnScrollListener() {
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        contentMain.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -119,20 +120,20 @@ public class MainActivity extends BaseActivity implements AddFolderView{
 
     @Override
     public void onSaveFinish() {
-        Boast.makeText(this,getString(R.string.add_folder_success)).show();
+        Boast.makeText(this, getString(R.string.add_folder_success)).show();
     }
 
     @Override
     public void onSaveFail(byte messageId) {
-        switch (messageId){
+        switch (messageId) {
             case AddFolderPresenter.EMPTY_CONTENT:
-                Boast.makeText(this,getString(R.string.add_folder_empty)).show();
+                Boast.makeText(this, getString(R.string.add_folder_empty)).show();
                 break;
             case AddFolderPresenter.FOLDER_EXITS:
-                Boast.makeText(this,getString(R.string.add_folder_exits)).show();
+                Boast.makeText(this, getString(R.string.add_folder_exits)).show();
                 break;
             case AddFolderPresenter.SAVE_EXCEPTION:
-                Boast.makeText(this,getString(R.string.add_folder_fail)).show();
+                Boast.makeText(this, getString(R.string.add_folder_fail)).show();
                 break;
         }
     }

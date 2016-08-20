@@ -2,7 +2,10 @@ package vn.mran.simplenote.realm;
 
 import android.app.Application;
 
+import java.lang.reflect.Field;
+
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import vn.mran.simplenote.application.SimpleNoteApplication;
 import vn.mran.simplenote.model.Folder;
@@ -43,10 +46,23 @@ public class RealmController {
         return realm.where(Folder.class).findAll();
     }
 
+    public RealmResults<Notes> getAllNotes() {
+        return realm.where(Notes.class).findAll();
+    }
+
+    public RealmResults<Folder> getNotesInFolder(long folderId) {
+        RealmQuery<Folder> query = realm.where(Folder.class).beginGroup();
+        Field[] fields = Folder.class.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            String fieldName = fields[i].getName();
+            query.equalTo(fieldName, Integer.parseInt("" + folderId));
+        }
+        return query.endGroup().findAll();
+    }
+
     public RealmResults<Folder> checkFolderNameExits(String folderName) {
         return realm.where(Folder.class)
                 .contains("name", folderName)
                 .findAll();
     }
-
 }

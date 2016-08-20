@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
+import io.realm.RealmResults;
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.model.Notes;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder> {
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
-    private List<String> list;
+    private RealmResults<Notes> realmResult;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
@@ -23,9 +23,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         }
     }
 
-
-    public MoviesAdapter(List<String> list) {
-        this.list = list;
+    public NotesAdapter(RealmResults<Notes> realmResult) {
+        this.realmResult = realmResult;
     }
 
     @Override
@@ -38,12 +37,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        String data = list.get(position);
-        holder.item.setText(data);
+        final Notes notes = realmResult.get(position);
+        holder.item.setText(notes.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return realmResult.size();
     }
 }
