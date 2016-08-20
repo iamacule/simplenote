@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.view.CustomEditText;
+import vn.mran.simplenote.view.effect.TouchEffect;
 
 /**
  * Created by Mr An on 20/08/2016.
@@ -33,6 +34,8 @@ public class DialogAddFolder {
             txtName = new CustomEditText(view, R.id.lnMain);
 
             txtName.editText.setHint(activity.getString(R.string.add_folder_hint));
+            TouchEffect.addAlpha(btnCancel);
+            TouchEffect.addAlpha(btnConfirm);
             setNegativeButtonDefaultClick();
         }
 
