@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
@@ -90,29 +91,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    imageUri = intent.getData();
-                    try {
-                        InputStream stream = getContentResolver().openInputStream(imageUri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
-                        int availableSize = txtContent.editText.getWidth() - 10;
-                        if (bitmap.getWidth() > availableSize)
-                            bitmap = ResizeBitmap.resize(bitmap, availableSize);
-                        stream.close();
-                        Drawable d = new BitmapDrawable(getResources(), bitmap);
-                        SpannableString ss = new SpannableString("abc\n");
-                        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-                        ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
-                        ss.setSpan(span, 0, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-//                        StringBuilder stringBuilder = new StringBuilder();
-//                        stringBuilder.append(txtContent.editText.getText().toString());
-//                        stringBuilder.append("\n");
-//                        stringBuilder.append(ss);
-//                        stringBuilder.append("\n");
-                        txtContent.editText.setText(ss);
-                        txtContent.editText.setFocusable(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    addNotePresenter.addImage(addNotePresenter.createBitmap(intent.getData(),txtContent.editText));
                     break;
             }
         }
@@ -152,5 +131,15 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                 Boast.makeText(this, getString(R.string.save_fail)).show();
                 break;
         }
+    }
+
+    @Override
+    public void addImage(SpannableStringBuilder data) {
+        txtContent.editText.setText(data);
+    }
+
+    @Override
+    public void addSetTxtContentSelection(int selection) {
+        txtContent.editText.setSelection(selection);
     }
 }
