@@ -28,13 +28,23 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public abstract int getView();
+
     public abstract void initView();
+
     public abstract void initValue();
+
     public abstract void initAction();
 
     protected void goToActivity(Class activity) {
         startActivity(new Intent(this, activity));
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    protected void goToIntentAction(int requestCode, String actionType) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType(actionType);
+        Intent chooser = Intent.createChooser(intent, "Choose a Picture");
+        startActivityForResult(chooser, requestCode);
     }
 
     @Override
