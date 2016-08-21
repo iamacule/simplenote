@@ -20,6 +20,10 @@ android {
 }
 
 dependencies {
+    /**
+     * https://www.b4x.com/android/forum/threads/how-to-insert-image-to-edittext.52780/
+     * Image to EditText
+     */
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.1.1'
