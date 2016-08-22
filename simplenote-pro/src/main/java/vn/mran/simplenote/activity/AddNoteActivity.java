@@ -49,6 +49,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     public void initValue() {
         addNotePresenter = new AddNotePresenter(this);
         toolAddNote.txtDate.setText(Utils.getDate(System.currentTimeMillis(), "yyyy-MM-dd"));
+        toolAddNote.txtFolder.setText(currentFolder.getName());
     }
 
     @Override

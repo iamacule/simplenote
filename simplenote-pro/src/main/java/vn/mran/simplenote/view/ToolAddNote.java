@@ -15,12 +15,14 @@ public class ToolAddNote {
     public LinearLayout btnSave;
     public LinearLayout btnAddPhoto;
     public TextView txtDate;
+    public TextView txtFolder;
 
     public ToolAddNote(View view) {
         btnClear = (LinearLayout) view.findViewById(R.id.btnClear);
         btnSave = (LinearLayout) view.findViewById(R.id.btnSave);
         btnAddPhoto = (LinearLayout) view.findViewById(R.id.btnAddPhoto);
         txtDate = (TextView) view.findViewById(R.id.txtDate);
+        txtFolder = (TextView) view.findViewById(R.id.txtFolder);
         TouchEffect.addAlpha(btnClear);
         TouchEffect.addAlpha(btnSave);
         TouchEffect.addAlpha(btnAddPhoto);
