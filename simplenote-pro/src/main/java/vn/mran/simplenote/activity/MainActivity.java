@@ -2,16 +2,21 @@ package vn.mran.simplenote.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.adapter.NotesAdapter;
+import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.presenter.AddFolderPresenter;
 import vn.mran.simplenote.mvp.view.AddFolderView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AnimationUtil;
+import vn.mran.simplenote.util.Constant;
+import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.view.ContentMain;
 import vn.mran.simplenote.view.Filter;
 import vn.mran.simplenote.view.FloatingAdd;
@@ -46,11 +51,13 @@ public class MainActivity extends BaseActivity implements AddFolderView {
     @Override
     public void initValue() {
         RealmResults<Notes> realmResults = RealmController.with().getAllNotes();
-        if(realmResults.size()>0){
+        if (realmResults.size() > 0) {
             contentMain.txtNoData.setVisibility(View.GONE);
         }
         contentMain.recyclerView.setAdapter(new NotesAdapter(RealmController.with().getAllNotes()));
         addFolderPresenter = new AddFolderPresenter(this);
+        currentFolder = RealmController.with().getFolderByName(Constant.FOLDER_ALL);
+        Log.d(DataUtil.TAG_MAIN_ACTIVITY,"Current folder : "+currentFolder.getId());
     }
 
     @Override

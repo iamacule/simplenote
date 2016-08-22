@@ -60,8 +60,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                         clearText();
                         break;
                     case R.id.btnSave:
-                        addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
-                                txtContent.editText.getText().toString().trim(), 0l);
+                        save(true);
                         break;
                     case R.id.btnAddPhoto:
                         goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
@@ -75,6 +74,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         toolAddNote.btnAddPhoto.setOnClickListener(click);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == RESULT_OK) {
@@ -86,7 +86,10 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         }
     }
 
-    ;
+    private void save(boolean back){
+        addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
+                txtContent.editText.getText().toString().trim(), currentFolder.getId(),back);
+    }
 
     private void clearText() {
         boolean clear = false;
@@ -103,9 +106,10 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     }
 
     @Override
-    public void onSaveFinish() {
+    public void onSaveFinish(boolean back) {
         Boast.makeText(this, getString(R.string.save_success)).show();
-        onBackPressed();
+        if(back)
+            onBackPressed();
     }
 
     @Override
@@ -130,5 +134,11 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     @Override
     public void addSetTxtContentSelection(int selection) {
         txtContent.editText.setSelection(selection);
+    }
+
+    @Override
+    public void onBackPressed() {
+        save(false);
+        super.onBackPressed();
     }
 }

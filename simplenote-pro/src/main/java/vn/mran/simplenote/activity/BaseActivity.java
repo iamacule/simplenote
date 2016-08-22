@@ -6,12 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.dialog.DialogEvent;
+import vn.mran.simplenote.model.Folder;
 
 /**
  * Created by MrAn on 18-Aug-16.
  */
 public abstract class BaseActivity extends AppCompatActivity {
     protected DialogEvent dialogEvent;
+    private Intent intent;
+    protected static Folder currentFolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract void initAction();
 
     protected void goToActivity(Class activity) {
+        intent = new Intent(this, activity);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    protected void goToAddNote(Class activity, String key, long value) {
+        intent = new Intent(this, activity);
+        intent.putExtra(key, value);
         startActivity(new Intent(this, activity));
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }

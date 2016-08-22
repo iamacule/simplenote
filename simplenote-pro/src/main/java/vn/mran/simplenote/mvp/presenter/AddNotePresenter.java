@@ -38,7 +38,7 @@ public class AddNotePresenter implements InitPresenter {
         init();
     }
 
-    public void save(String title, String content, long folderId) {
+    public void save(String title, String content, long folderId,boolean back) {
         if (!DataUtil.checkStringEmpty(title)) {
             if (DataUtil.checkStringEmpty(content))
                 title = DataUtil.createTitle(content);
@@ -64,7 +64,8 @@ public class AddNotePresenter implements InitPresenter {
                 if (null != result) {
                     Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Save success as title : " + notes.getTitle());
                     Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Save success as content : " + notes.getContent());
-                    addNotesView.onSaveFinish();
+                    Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Save success as folderId : " + notes.getFolderId());
+                    addNotesView.onSaveFinish(back);
                 } else {
                     addNotesView.onSaveFail(SAVE_EXCEPTION);
                 }

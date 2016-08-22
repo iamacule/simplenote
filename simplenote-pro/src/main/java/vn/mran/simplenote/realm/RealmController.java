@@ -1,6 +1,7 @@
 package vn.mran.simplenote.realm;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 
@@ -10,6 +11,8 @@ import io.realm.RealmResults;
 import vn.mran.simplenote.application.SimpleNoteApplication;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.util.Constant;
+import vn.mran.simplenote.util.DataUtil;
 
 /**
  * Created by MrAn on 19-Aug-16.
@@ -20,6 +23,29 @@ public class RealmController {
 
     public RealmController(Application application) {
         realm = Realm.getDefaultInstance();
+        checkCreateFolderBegin();
+    }
+
+    private void checkCreateFolderBegin() {
+        RealmResults<Folder> listResult = checkFolderNameExits(Constant.FOLDER_ALL);
+        if (listResult.isEmpty()) {
+            long id = System.currentTimeMillis();
+            Folder folder = new Folder();
+            folder.setId(id);
+            folder.setName(Constant.FOLDER_ALL);
+            realm.beginTransaction();
+            realm.copyToRealm(folder);
+            realm.commitTransaction();
+            Folder result = getFolderById(id);
+            if (null != result) {
+                Log.d(DataUtil.TAG_REALM_CONTROLLER, "Save success as folder id : " + folder.getId());
+                Log.d(DataUtil.TAG_REALM_CONTROLLER, "Save success as folder name : " + folder.getName());
+            } else {
+                Log.d(DataUtil.TAG_REALM_CONTROLLER, "Can not create folder begin");
+            }
+        } else {
+            Log.d(DataUtil.TAG_REALM_CONTROLLER, "Folder all are created");
+        }
     }
 
     public static RealmController with() {
@@ -40,6 +66,10 @@ public class RealmController {
 
     public Folder getFolderById(long id) {
         return realm.where(Folder.class).equalTo("id", id).findFirst();
+    }
+
+    public Folder getFolderByName(String name) {
+        return realm.where(Folder.class).equalTo("name", name).findFirst();
     }
 
     public RealmResults<Folder> getAllFolder() {
