@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/aZ"
+            android:text="@string/newest"
             android:textColor="@color/grey_100"
             android:textSize="@dimen/app_text_size_small" />
     </LinearLayout>

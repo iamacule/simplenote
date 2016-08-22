@@ -4,6 +4,8 @@
     <string name="sort">Sort</string>
     <string name="aZ">A->Z</string>
     <string name="zA">Z->A</string>
+    <string name="newest">Newest</string>
+    <string name="oldest">Oldest</string>
     <string name="all">All</string>
     <string name="filters">Filter</string>
     <string name="folders">Folder</string>
