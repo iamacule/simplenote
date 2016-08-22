@@ -14,9 +14,11 @@ import vn.mran.simplenote.util.DataUtil;
 public class DialogEvent {
     private ProgressDialog progressDialog;
     private DialogAddFolder.Build dialogAddFolder;
+    private DialogAsk.Build dialogAsk;
 
     public DialogEvent(Activity context) {
         dialogAddFolder = new DialogAddFolder.Build(context);
+        dialogAsk = new DialogAsk.Build(context);
         progressDialog = new ProgressDialog(context, R.style.TransparentDialog);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCanceledOnTouchOutside(false);
@@ -42,6 +44,50 @@ public class DialogEvent {
         dialogAddFolder.show();
     }
 
+    public DialogAsk.Build getDialogAsk() {
+        return dialogAsk;
+    }
+
+    public void showDialogAsk(String message, String positiveButtonMessage,
+                              String negativeButtonMessage, final Thread functionPositive,
+                              final Thread functionNegative , final int isShowMessage) {
+        dialogAsk.setMessage(message);
+        dialogAsk.getTvMessage().setVisibility(isShowMessage);
+        if (positiveButtonMessage != null) {
+            dialogAsk.getPositiveButton().setText(positiveButtonMessage);
+        } else {
+            dialogAsk.setDefaultPositiveButton();
+        }
+        if (negativeButtonMessage != null) {
+            dialogAsk.getNegativeButton().setText(negativeButtonMessage);
+        } else {
+            dialogAsk.setDefaultNegativeButton();
+        }
+        if (functionNegative != null) {
+            dialogAsk.getNegativeButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogAsk.dismiss();
+                    functionNegative.start();
+                }
+            });
+        } else {
+            dialogAsk.setNegativeButtonDefaultClick();
+        }
+        if (functionPositive != null) {
+            dialogAsk.getPositiveButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogAsk.dismiss();
+                    functionPositive.start();
+                }
+            });
+        } else {
+            dialogAsk.setPositiveButtonDefaultClick();
+        }
+        dialogAsk.show();
+    }
+
     public void showProgressDialog(String message) {
         try {
             progressDialog.setMessage(message);
@@ -65,5 +111,6 @@ public class DialogEvent {
     public void dismissAll() {
         dismissProgressDialog();
         dialogAddFolder.dismiss();
+        dialogAsk.dismiss();
     }
 }

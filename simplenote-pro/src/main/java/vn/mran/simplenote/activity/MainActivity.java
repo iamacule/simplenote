@@ -50,14 +50,18 @@ public class MainActivity extends BaseActivity implements AddFolderView {
 
     @Override
     public void initValue() {
+        addFolderPresenter = new AddFolderPresenter(this);
+        currentFolder = RealmController.with().getFolderByName(Constant.FOLDER_ALL);
+        Log.d(DataUtil.TAG_MAIN_ACTIVITY,"Current folder : "+currentFolder.getId());
+        setAdapter();
+    }
+
+    private void setAdapter() {
         RealmResults<Notes> realmResults = RealmController.with().getAllNotes();
         if (realmResults.size() > 0) {
             contentMain.txtNoData.setVisibility(View.GONE);
         }
-        contentMain.recyclerView.setAdapter(new NotesAdapter(RealmController.with().getAllNotes()));
-        addFolderPresenter = new AddFolderPresenter(this);
-        currentFolder = RealmController.with().getFolderByName(Constant.FOLDER_ALL);
-        Log.d(DataUtil.TAG_MAIN_ACTIVITY,"Current folder : "+currentFolder.getId());
+        contentMain.recyclerView.setAdapter(new NotesAdapter(realmResults));
     }
 
     @Override

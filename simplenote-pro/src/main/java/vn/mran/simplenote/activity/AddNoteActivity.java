@@ -25,6 +25,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
     private final int ACTION_REQUEST_GALLERY = 0;
+    private boolean isSaved = false;
 
     @Override
     public int getView() {
@@ -60,6 +61,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                         clearText();
                         break;
                     case R.id.btnSave:
+                        isSaved = true;
                         save(true);
                         break;
                     case R.id.btnAddPhoto:
@@ -86,9 +88,9 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         }
     }
 
-    private void save(boolean back){
+    private void save(boolean back) {
         addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
-                txtContent.editText.getText().toString().trim(), currentFolder.getId(),back);
+                txtContent.editText.getText().toString().trim(), currentFolder.getId(), back);
     }
 
     private void clearText() {
@@ -108,8 +110,8 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     @Override
     public void onSaveFinish(boolean back) {
         Boast.makeText(this, getString(R.string.save_success)).show();
-        if(back)
-            onBackPressed();
+        if (back)
+            super.onBackPressed();
     }
 
     @Override
@@ -138,7 +140,36 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
 
     @Override
     public void onBackPressed() {
-        save(false);
-        super.onBackPressed();
+        if (DataUtil.checkStringEmpty(txtContent.editText.getText().toString())) {
+            if(!isSaved){
+                dialogEvent.showDialogAsk(getString(R.string.save_your_note), null, null,
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        save(false);
+                                        AddNoteActivity.super.onBackPressed();
+                                    }
+                                });
+                            }
+                        }), new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AddNoteActivity.super.onBackPressed();
+                                    }
+                                });
+                            }
+                        }), View.VISIBLE);
+            }else {
+                super.onBackPressed();
+            }
+        }else {
+            super.onBackPressed();
+        }
     }
 }

@@ -27,4 +27,5 @@
     <string name="add_folder_exits">Folder name already exits</string>
     <string name="add_folder_success">Add new folder success</string>
     <string name="add_folder_fail">Can not add new folder</string>
+    <string name="save_your_note">Save your notes?</string>
 </resources>
