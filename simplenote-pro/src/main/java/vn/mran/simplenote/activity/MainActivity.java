@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements AddFolderView {
                         if (filter.parent.getVisibility() == View.GONE) {
                             filter.parent.startAnimation(AnimationUtil.slideInTop(MainActivity.this));
                             filter.parent.setVisibility(View.VISIBLE);
-                            floatingAdd.toggleBtnAdd();
+                            floatingAdd.toggleBtnAdd(false);
                             floatingAdd.hideAll(false);
                         }
                     }
@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivity implements AddFolderView {
                         // Scrolling down
                         if (filter.parent.getVisibility() == View.VISIBLE) {
                             filter.parent.setVisibility(View.GONE);
-                            floatingAdd.toggleBtnAdd();
+                            floatingAdd.toggleBtnAdd(true);
                         }
                     }
                 }

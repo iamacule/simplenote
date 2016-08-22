@@ -69,8 +69,8 @@ public class FloatingAdd {
         btnAdd.setVisibility(View.GONE);
     }
 
-    public void toggleBtnAdd() {
-        if (btnAdd.getVisibility() == View.VISIBLE) {
+    public void toggleBtnAdd(boolean show) {
+        if (!show) {
             hideAdd();
         } else {
             btnAdd.setImageResource(R.drawable.ic_add_white_24dp);
