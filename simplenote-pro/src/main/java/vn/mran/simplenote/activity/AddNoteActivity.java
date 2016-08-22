@@ -1,26 +1,15 @@
 package vn.mran.simplenote.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
-
-import java.io.InputStream;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.util.DataUtil;
-import vn.mran.simplenote.util.ResizeBitmap;
-import vn.mran.simplenote.util.ScreenUtil;
+import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.ToolAddNote;
 import vn.mran.simplenote.view.toast.Boast;
@@ -36,7 +25,6 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
     private final int ACTION_REQUEST_GALLERY = 0;
-    private Uri imageUri = null;
 
     @Override
     public int getView() {
@@ -59,6 +47,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     @Override
     public void initValue() {
         addNotePresenter = new AddNotePresenter(this);
+        toolAddNote.txtDate.setText(Utils.getDate(System.currentTimeMillis(), "yyyy-MM-dd"));
     }
 
     @Override
@@ -91,7 +80,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    addNotePresenter.addImage(addNotePresenter.createBitmap(intent.getData(),txtContent.editText));
+                    addNotePresenter.addImage(addNotePresenter.createBitmap(intent.getData(), txtContent.editText));
                     break;
             }
         }
