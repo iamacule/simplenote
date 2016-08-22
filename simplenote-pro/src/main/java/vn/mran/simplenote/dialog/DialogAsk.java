@@ -24,7 +24,7 @@ public class DialogAsk {
             this.activity = activity;
             builder = new AlertDialog.Builder(activity);
             LayoutInflater inflater = activity.getLayoutInflater();
-            View view = inflater.inflate(R.layout.alert_dialog, null);
+            View view = inflater.inflate(R.layout.ask_dialog, null);
             builder.setView(view);
             dialog = builder.create();
             dialog.setCancelable(false);

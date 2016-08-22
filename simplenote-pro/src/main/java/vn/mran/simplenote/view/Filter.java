@@ -2,6 +2,7 @@ package vn.mran.simplenote.view;
 
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.view.effect.TouchEffect;
@@ -13,11 +14,13 @@ public class Filter {
     public LinearLayout parent;
     public LinearLayout btnSort;
     public LinearLayout btnFilter;
+    public TextView txtSortStatus;
 
     public Filter(View view) {
         parent = (LinearLayout) view.findViewById(R.id.parent);
         btnSort = (LinearLayout) view.findViewById(R.id.btnSort);
         btnFilter = (LinearLayout) view.findViewById(R.id.btnFilter);
+        txtSortStatus = (TextView) view.findViewById(R.id.txtSortStatus);
         TouchEffect.addAlpha(btnSort);
         TouchEffect.addAlpha(btnFilter);
     }

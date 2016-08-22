@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.realm.RealmResults;
+import io.realm.Sort;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Notes;
 
@@ -44,5 +45,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         return realmResult.size();
+    }
+
+    public void sort(String field , Sort sort){
+        this.realmResult = this.realmResult.sort(field,sort);
+        notifyDataSetChanged();
     }
 }

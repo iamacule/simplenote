@@ -24,6 +24,7 @@
             android:textSize="@dimen/app_text_size" />
 
         <TextView
+            android:id="@+id/txtSortStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/newest"
@@ -56,6 +57,7 @@
             android:textSize="@dimen/app_text_size" />
 
         <TextView
+            android:id="@+id/txtFolderName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/all"

@@ -7,13 +7,15 @@ import android.view.View;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.adapter.NotesAdapter;
-import vn.mran.simplenote.model.Folder;
+import vn.mran.simplenote.dialog.DialogSort;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.presenter.AddFolderPresenter;
 import vn.mran.simplenote.mvp.view.AddFolderView;
 import vn.mran.simplenote.realm.RealmController;
+import vn.mran.simplenote.status.SortStatus;
 import vn.mran.simplenote.util.AnimationUtil;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
@@ -29,6 +31,9 @@ public class MainActivity extends BaseActivity implements AddFolderView {
     private Filter filter;
     private ContentMain contentMain;
     private AddFolderPresenter addFolderPresenter;
+    private NotesAdapter notesAdapter;
+    private SortStatus sortStatus;
+    private RealmResults<Notes> realmResults;
 
     @Override
     public int getView() {
@@ -52,16 +57,19 @@ public class MainActivity extends BaseActivity implements AddFolderView {
     public void initValue() {
         addFolderPresenter = new AddFolderPresenter(this);
         currentFolder = RealmController.with().getFolderByName(Constant.FOLDER_ALL);
-        Log.d(DataUtil.TAG_MAIN_ACTIVITY,"Current folder : "+currentFolder.getId());
+        Log.d(DataUtil.TAG_MAIN_ACTIVITY, "Current folder : " + currentFolder.getId());
+        sortStatus = new SortStatus();
         setAdapter();
     }
 
     private void setAdapter() {
-        RealmResults<Notes> realmResults = RealmController.with().getAllNotes();
+        realmResults = RealmController.with().getAllNotes();
+        notesAdapter = new NotesAdapter(realmResults);
+        notesAdapter.sort("id",Sort.DESCENDING);
         if (realmResults.size() > 0) {
             contentMain.txtNoData.setVisibility(View.GONE);
         }
-        contentMain.recyclerView.setAdapter(new NotesAdapter(realmResults));
+        contentMain.recyclerView.setAdapter(notesAdapter);
     }
 
     @Override
@@ -79,11 +87,46 @@ public class MainActivity extends BaseActivity implements AddFolderView {
                         floatingAdd.hideAll(false);
                         goToActivity(AddNoteActivity.class);
                         break;
+
+                    case R.id.btnSort:
+                        showDialogSort();
+                        break;
                 }
             }
         };
         floatingAdd.btnAddNote.setOnClickListener(click);
         floatingAdd.btnAddFolder.setOnClickListener(click);
+        filter.btnSort.setOnClickListener(click);
+    }
+
+    private void showDialogSort() {
+        final DialogSort.Build dialog = new DialogSort.Build(this, sortStatus);
+        dialog.setNegativeButtonDefaultClick();
+        dialog.getPositiveButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortStatus.status = dialog.getSortStatus();
+                updateSort();
+                dialog.dismiss();
+            }
+
+            private void updateSort() {
+                if (sortStatus.NEWEST == sortStatus.status) {
+                    notesAdapter.sort("id", Sort.DESCENDING);
+                    filter.txtSortStatus.setText(getString(R.string.newest));
+                } else if (sortStatus.OLDEST == sortStatus.status) {
+                    notesAdapter.sort("id", Sort.ASCENDING);
+                    filter.txtSortStatus.setText(getString(R.string.oldest));
+                } else if (sortStatus.AZ == sortStatus.status) {
+                    notesAdapter.sort("title", Sort.ASCENDING);
+                    filter.txtSortStatus.setText(getString(R.string.az));
+                } else {
+                    notesAdapter.sort("title", Sort.DESCENDING);
+                    filter.txtSortStatus.setText(getString(R.string.za));
+                }
+            }
+        });
+        dialog.show();
     }
 
     private void showDialogAddFolder() {
