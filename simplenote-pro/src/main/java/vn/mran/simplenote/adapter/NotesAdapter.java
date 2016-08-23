@@ -4,8 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.daimajia.swipe.SwipeLayout;
 
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -20,11 +23,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
         public LinearLayout row;
+        SwipeLayout swipeLayout;
+        Button buttonDelete;
 
         public MyViewHolder(View view) {
             super(view);
             item = (TextView) view.findViewById(R.id.txtItem);
             row = (LinearLayout) view.findViewById(R.id.row);
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
+            buttonDelete = (Button) itemView.findViewById(R.id.btnDelete);
         }
     }
 
@@ -41,10 +48,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Notes notes = realmResult.get(position);
-        TouchEffect.addAlpha(holder.row);
         holder.item.setText(notes.getTitle());
+        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, realmResult.size());
+            }
+        });
     }
 
     @Override
@@ -52,12 +66,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         return realmResult.size();
     }
 
-    public void sort(String field , Sort sort){
-        this.realmResult = this.realmResult.sort(field,sort);
+    public void sort(String field, Sort sort) {
+        this.realmResult = this.realmResult.sort(field, sort);
         notifyDataSetChanged();
     }
 
-    public void changeFolder(RealmResults<Notes> realmResult){
+    public void changeFolder(RealmResults<Notes> realmResult) {
         this.realmResult = realmResult;
         notifyDataSetChanged();
     }

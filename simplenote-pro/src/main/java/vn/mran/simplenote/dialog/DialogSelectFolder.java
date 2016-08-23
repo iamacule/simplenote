@@ -13,6 +13,7 @@ import vn.mran.simplenote.R;
 import vn.mran.simplenote.adapter.FolderAdapter;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.realm.RealmController;
+import vn.mran.simplenote.util.DividerItemDecoration;
 
 /**
  * Created by MrAn on 23-Aug-16.
@@ -35,6 +36,7 @@ public class DialogSelectFolder {
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
             recFolder.setLayoutManager(layoutManager);
+            recFolder.addItemDecoration(new DividerItemDecoration(activity.getResources().getDrawable(R.drawable.divider)));
             init(activity);
         }
 

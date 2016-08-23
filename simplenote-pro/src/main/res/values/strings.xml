@@ -32,4 +32,6 @@
     <string name="save_your_note">Save your notes?</string>
     <string name="select_folder">Select folder</string>
     <string name="select_sort_type">Select sort types</string>
+    <string name="delete_notes">Delete notes?</string>
+    <string name="yes">YES</string>
 </resources>

@@ -22,6 +22,7 @@ import vn.mran.simplenote.status.SortStatus;
 import vn.mran.simplenote.util.AnimationUtil;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.DividerItemDecoration;
 import vn.mran.simplenote.view.ContentMain;
 import vn.mran.simplenote.view.Filter;
 import vn.mran.simplenote.view.FloatingAdd;
@@ -63,6 +64,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         contentMain.recyclerView.setLayoutManager(layoutManager);
+        contentMain.recyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.divider)));
     }
 
     @Override
