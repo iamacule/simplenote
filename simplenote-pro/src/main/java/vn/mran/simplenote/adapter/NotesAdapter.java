@@ -10,10 +10,12 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.view.effect.TouchEffect;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
@@ -55,6 +57,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Realm realm = RealmController.with().getRealm();
+                realm.beginTransaction();
+                realmResult.deleteFromRealm(position);
+                realm.commitTransaction();
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, realmResult.size());
             }
