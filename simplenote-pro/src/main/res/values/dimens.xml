@@ -16,5 +16,5 @@
     <dimen name="dialog_button_margin_top">6dp</dimen>
     <dimen name="header_land_padding">6dp</dimen>
     <dimen name="date_add_note_margin">10dp</dimen>
-    <dimen name="row_item_padding">10dp</dimen>
+    <dimen name="row_item_padding">7dp</dimen>
 </resources>
