@@ -37,6 +37,8 @@
                 android:textSize="17sp" />
 
             <Button
+                android:layout_marginTop="@dimen/button_swipe_margin"
+                android:layout_marginBottom="@dimen/button_swipe_margin"
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

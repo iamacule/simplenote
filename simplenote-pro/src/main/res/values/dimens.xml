@@ -17,4 +17,5 @@
     <dimen name="header_land_padding">6dp</dimen>
     <dimen name="date_add_note_margin">10dp</dimen>
     <dimen name="row_item_padding">7dp</dimen>
+    <dimen name="button_swipe_margin">5dp</dimen>
 </resources>

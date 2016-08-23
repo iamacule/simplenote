@@ -1,26 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/row"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="horizontal"
-    android:paddingBottom="@dimen/row_item_padding"
-    android:paddingTop="@dimen/row_item_padding">
+    android:orientation="horizontal">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/view_line_margin"
-        android:layout_marginLeft="@dimen/view_line_margin"
-        android:background="@drawable/ic_folder_open_black_24dp" />
-    <TextView
-        android:id="@+id/txtItem"
+    <com.daimajia.swipe.SwipeLayout xmlns:swipe="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="Test"
-        android:textColor="#000000"
-        android:textSize="16dp"/>
+        swipe:leftEdgeSwipeOffset="0dp"
+        swipe:rightEdgeSwipeOffset="0dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:tag="Bottom3"
+            android:weightSum="10">
+
+            <Button
+                android:layout_marginTop="@dimen/button_swipe_margin"
+                android:layout_marginBottom="@dimen/button_swipe_margin"
+                android:id="@+id/btnRename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:background="@drawable/dialog_background"
+                android:text="@string/rename"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:layout_marginTop="@dimen/button_swipe_margin"
+                android:layout_marginBottom="@dimen/button_swipe_margin"
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:background="@drawable/dialog_background"
+                android:text="@string/delete"
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_selector"
+            android:elevation="5dp"
+            android:padding="@dimen/row_item_padding"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/view_line_margin"
+                android:layout_marginRight="@dimen/view_line_margin"
+                android:background="@drawable/ic_folder_open_black_24dp" />
+
+            <TextView
+                android:id="@+id/txtItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="Test"
+                android:textColor="#000000"
+                android:textSize="16dp" />
+        </LinearLayout>
+    </com.daimajia.swipe.SwipeLayout>
 </LinearLayout>

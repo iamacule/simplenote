@@ -34,4 +34,6 @@
     <string name="select_sort_type">Select sort types</string>
     <string name="delete_notes">Delete notes?</string>
     <string name="yes">YES</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
 </resources>
