@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout
+    android:id="@+id/row"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="10dp">
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/row_item_padding"
+    android:paddingTop="@dimen/row_item_padding">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/view_line_margin"
+        android:layout_marginLeft="@dimen/view_line_margin"
+        android:background="@drawable/ic_event_note_black_24dp" />
     <TextView
-        android:id="@+id/item"
+        android:id="@+id/txtItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:text="Test"
         android:textColor="#000000"
-        android:textSize="16dp"
-        android:textStyle="bold" />
-
-</RelativeLayout>
+        android:textSize="16dp"/>
+</LinearLayout>

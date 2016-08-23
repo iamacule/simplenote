@@ -4,12 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import io.realm.RealmResults;
 import io.realm.Sort;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.view.effect.TouchEffect;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
@@ -17,10 +19,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
+        public LinearLayout row;
 
         public MyViewHolder(View view) {
             super(view);
-            item = (TextView) view.findViewById(R.id.item);
+            item = (TextView) view.findViewById(R.id.txtItem);
+            row = (LinearLayout) view.findViewById(R.id.row);
         }
     }
 
@@ -39,6 +43,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final Notes notes = realmResult.get(position);
+        TouchEffect.addAlpha(holder.row);
         holder.item.setText(notes.getTitle());
     }
 

@@ -12,6 +12,7 @@ import io.realm.RealmResults;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.mvp.view.DialogSelectFolderView;
+import vn.mran.simplenote.view.effect.TouchEffect;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHolder> {
 
@@ -45,6 +46,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final Folder folder = realmResult.get(position);
+        TouchEffect.addAlpha(holder.row);
         holder.txtItem.setText(folder.getName());
         setOnClick(holder,folder);
     }

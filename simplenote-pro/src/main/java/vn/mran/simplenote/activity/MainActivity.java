@@ -16,6 +16,7 @@ import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.presenter.AddFolderPresenter;
 import vn.mran.simplenote.mvp.view.AddFolderView;
 import vn.mran.simplenote.mvp.view.DialogSelectFolderView;
+import vn.mran.simplenote.mvp.view.DialogSortView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.status.SortStatus;
 import vn.mran.simplenote.util.AnimationUtil;
@@ -27,7 +28,8 @@ import vn.mran.simplenote.view.FloatingAdd;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.toast.Boast;
 
-public class MainActivity extends BaseActivity implements AddFolderView, DialogSelectFolderView {
+public class MainActivity extends BaseActivity implements AddFolderView,
+        DialogSelectFolderView,DialogSortView {
     private FloatingAdd floatingAdd;
     private Header header;
     private Filter filter;
@@ -37,6 +39,7 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
     private SortStatus sortStatus;
     private RealmResults<Notes> realmResults;
     private DialogSelectFolder.Build dialogSelectFolder;
+    private DialogSort.Build dialogSort;
 
     @Override
     protected void onResume() {
@@ -124,17 +127,8 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
     }
 
     private void showDialogSort() {
-        final DialogSort.Build dialog = new DialogSort.Build(this, sortStatus);
-        dialog.setNegativeButtonDefaultClick();
-        dialog.getPositiveButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sortStatus.status = dialog.getSortStatus();
-                updateSort();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        dialogSort = new DialogSort.Build(this, sortStatus);
+        dialogSort.show();
     }
 
     private void showDialogAddFolder() {
@@ -231,5 +225,11 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
         currentFolder = folder;
         updateList(folder);
         dialogSelectFolder.dismiss();
+    }
+
+    @Override
+    public void onItemSelect() {
+        sortStatus.status = dialogSort.getSortStatus();
+        updateSort();
     }
 }

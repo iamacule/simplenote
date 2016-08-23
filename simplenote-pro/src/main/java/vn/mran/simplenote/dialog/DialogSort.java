@@ -2,6 +2,7 @@ package vn.mran.simplenote.dialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.mvp.view.DialogSortView;
 import vn.mran.simplenote.status.SortStatus;
 import vn.mran.simplenote.util.DataUtil;
 
@@ -20,33 +22,27 @@ public class DialogSort {
     public static class Build implements View.OnClickListener {
         private AlertDialog.Builder builder;
         private AlertDialog dialog;
-        private TextView btnCancel;
-        private TextView btnOK;
         private RadioGroup rgSort;
         private RadioButton rdNewest;
         private RadioButton rdOldest;
         private RadioButton rdAZ;
         private RadioButton rdZA;
-        private Activity activity;
         private SortStatus sortStatus;
+        private DialogSortView dialogSortView;
 
-        public Build(Activity activity, SortStatus sortStatus) {
-            this.activity = activity;
+        public Build(Activity context, SortStatus sortStatus) {
+            this.dialogSortView = (DialogSortView) context;
             this.sortStatus = sortStatus;
-            builder = new AlertDialog.Builder(activity);
-            LayoutInflater inflater = activity.getLayoutInflater();
+            builder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = context.getLayoutInflater();
             View view = inflater.inflate(R.layout.sort_dialog, null);
             builder.setView(view);
             dialog = builder.create();
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
             rgSort = (RadioGroup) view.findViewById(R.id.rgSort);
             rdNewest = (RadioButton) view.findViewById(R.id.rdNewest);
             rdOldest = (RadioButton) view.findViewById(R.id.rdOldest);
             rdAZ = (RadioButton) view.findViewById(R.id.rdAZ);
             rdZA = (RadioButton) view.findViewById(R.id.rdZA);
-            btnOK = (TextView) view.findViewById(R.id.btnConfirm);
-            btnCancel = (TextView) view.findViewById(R.id.btnCancel);
             setChecked();
             setOnRadioClick();
         }
@@ -72,34 +68,6 @@ public class DialogSort {
             rdOldest.setOnClickListener(this);
             rdAZ.setOnClickListener(this);
             rdZA.setOnClickListener(this);
-        }
-
-        public Build setNegativeButtonDefaultClick() {
-            this.btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-            return this;
-        }
-
-        public Build setPositiveButtonDefaultClick() {
-            this.btnOK.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-            return this;
-        }
-
-        public TextView getPositiveButton() {
-            return this.btnOK;
-        }
-
-        public TextView getNegativeButton() {
-            return this.btnCancel;
         }
 
         public void show() {
@@ -130,7 +98,8 @@ public class DialogSort {
                     sortStatus.status = sortStatus.ZA;
                     break;
             }
-            Log.d(DataUtil.TAG_DIALOG_SORT, "Sort status : " + sortStatus.status);
+            dialogSortView.onItemSelect();
+            dismiss();
         }
     }
 }
