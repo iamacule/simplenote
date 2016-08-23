@@ -1,7 +1,9 @@
 package vn.mran.simplenote.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import vn.mran.simplenote.view.effect.TouchEffect;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
     private RealmResults<Notes> realmResult;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
@@ -37,7 +40,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         }
     }
 
-    public NotesAdapter(RealmResults<Notes> realmResult) {
+    public NotesAdapter(Context context,RealmResults<Notes> realmResult) {
+        this.context = context;
         this.realmResult = realmResult;
     }
 
@@ -52,6 +56,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Notes notes = realmResult.get(position);
+        TouchEffect.addAlpha(holder.row);
         holder.item.setText(notes.getTitle());
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +68,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
                 realm.commitTransaction();
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, realmResult.size());
+            }
+        });
+        holder.row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
             }
         });
     }

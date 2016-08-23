@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
 
     private void setAdapter() {
         realmResults = RealmController.with().getNotesInFolder(currentFolder.getId());
-        notesAdapter = new NotesAdapter(realmResults);
+        notesAdapter = new NotesAdapter(this,realmResults);
         checkEmptyData();
         contentMain.recyclerView.setAdapter(notesAdapter);
     }
