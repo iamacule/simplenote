@@ -81,6 +81,10 @@ public class RealmController {
     }
 
     public RealmResults<Notes> getNotesInFolder(Long folderId){
+        Folder folder = getFolderById(folderId);
+        if(folder.getName().equals("All")){
+            return getAllNotes();
+        }
         return realm.where(Notes.class).equalTo("folderId",folderId).findAll();
     }
 

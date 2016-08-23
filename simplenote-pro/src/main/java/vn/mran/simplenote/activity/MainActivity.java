@@ -39,6 +39,12 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
     private DialogSelectFolder.Build dialogSelectFolder;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        updateList(currentFolder);
+    }
+
+    @Override
     public int getView() {
         return R.layout.activity_main;
     }
@@ -66,13 +72,18 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
     }
 
     private void setAdapter() {
-        realmResults = RealmController.with().getAllNotes();
+        realmResults = RealmController.with().getNotesInFolder(currentFolder.getId());
         notesAdapter = new NotesAdapter(realmResults);
-        notesAdapter.sort("id", Sort.DESCENDING);
+        checkEmptyData();
+        contentMain.recyclerView.setAdapter(notesAdapter);
+    }
+
+    private void checkEmptyData() {
         if (realmResults.size() > 0) {
             contentMain.txtNoData.setVisibility(View.GONE);
+        } else {
+            contentMain.txtNoData.setVisibility(View.VISIBLE);
         }
-        contentMain.recyclerView.setAdapter(notesAdapter);
     }
 
     @Override
@@ -121,22 +132,6 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
                 sortStatus.status = dialog.getSortStatus();
                 updateSort();
                 dialog.dismiss();
-            }
-
-            private void updateSort() {
-                if (sortStatus.NEWEST == sortStatus.status) {
-                    notesAdapter.sort("id", Sort.DESCENDING);
-                    filter.txtSortStatus.setText(getString(R.string.newest));
-                } else if (sortStatus.OLDEST == sortStatus.status) {
-                    notesAdapter.sort("id", Sort.ASCENDING);
-                    filter.txtSortStatus.setText(getString(R.string.oldest));
-                } else if (sortStatus.AZ == sortStatus.status) {
-                    notesAdapter.sort("title", Sort.ASCENDING);
-                    filter.txtSortStatus.setText(getString(R.string.az));
-                } else {
-                    notesAdapter.sort("title", Sort.DESCENDING);
-                    filter.txtSortStatus.setText(getString(R.string.za));
-                }
             }
         });
         dialog.show();
@@ -205,14 +200,36 @@ public class MainActivity extends BaseActivity implements AddFolderView, DialogS
         }
     }
 
-    @Override
-    public void onSelectItem(Folder folder) {
-        currentFolder = folder;
+    void updateList(Folder folder) {
         filter.txtFolderName.setText(folder.getName());
         realmResults = RealmController.with().getNotesInFolder(folder.getId());
         filter.parent.setVisibility(View.VISIBLE);
         floatingAdd.toggleBtnAdd(true);
         notesAdapter.changeFolder(realmResults);
+        updateSort();
+        checkEmptyData();
+    }
+
+    private void updateSort() {
+        if (sortStatus.NEWEST == sortStatus.status) {
+            notesAdapter.sort("id", Sort.DESCENDING);
+            filter.txtSortStatus.setText(getString(R.string.newest));
+        } else if (sortStatus.OLDEST == sortStatus.status) {
+            notesAdapter.sort("id", Sort.ASCENDING);
+            filter.txtSortStatus.setText(getString(R.string.oldest));
+        } else if (sortStatus.AZ == sortStatus.status) {
+            notesAdapter.sort("title", Sort.ASCENDING);
+            filter.txtSortStatus.setText(getString(R.string.az));
+        } else {
+            notesAdapter.sort("title", Sort.DESCENDING);
+            filter.txtSortStatus.setText(getString(R.string.za));
+        }
+    }
+
+    @Override
+    public void onSelectItem(Folder folder) {
+        currentFolder = folder;
+        updateList(folder);
         dialogSelectFolder.dismiss();
     }
 }
