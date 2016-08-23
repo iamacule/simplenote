@@ -5,15 +5,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.adapter.NotesAdapter;
+import vn.mran.simplenote.dialog.DialogSelectFolder;
 import vn.mran.simplenote.dialog.DialogSort;
+import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.presenter.AddFolderPresenter;
 import vn.mran.simplenote.mvp.view.AddFolderView;
+import vn.mran.simplenote.mvp.view.DialogSelectFolderView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.status.SortStatus;
 import vn.mran.simplenote.util.AnimationUtil;
@@ -25,7 +27,7 @@ import vn.mran.simplenote.view.FloatingAdd;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.toast.Boast;
 
-public class MainActivity extends BaseActivity implements AddFolderView {
+public class MainActivity extends BaseActivity implements AddFolderView, DialogSelectFolderView {
     private FloatingAdd floatingAdd;
     private Header header;
     private Filter filter;
@@ -34,6 +36,7 @@ public class MainActivity extends BaseActivity implements AddFolderView {
     private NotesAdapter notesAdapter;
     private SortStatus sortStatus;
     private RealmResults<Notes> realmResults;
+    private DialogSelectFolder.Build dialogSelectFolder;
 
     @Override
     public int getView() {
@@ -65,7 +68,7 @@ public class MainActivity extends BaseActivity implements AddFolderView {
     private void setAdapter() {
         realmResults = RealmController.with().getAllNotes();
         notesAdapter = new NotesAdapter(realmResults);
-        notesAdapter.sort("id",Sort.DESCENDING);
+        notesAdapter.sort("id", Sort.DESCENDING);
         if (realmResults.size() > 0) {
             contentMain.txtNoData.setVisibility(View.GONE);
         }
@@ -91,12 +94,22 @@ public class MainActivity extends BaseActivity implements AddFolderView {
                     case R.id.btnSort:
                         showDialogSort();
                         break;
+
+                    case R.id.btnFolder:
+                        showDialogSelectFolder();
+                        break;
                 }
             }
         };
         floatingAdd.btnAddNote.setOnClickListener(click);
         floatingAdd.btnAddFolder.setOnClickListener(click);
         filter.btnSort.setOnClickListener(click);
+        filter.btnFolder.setOnClickListener(click);
+    }
+
+    private void showDialogSelectFolder() {
+        dialogSelectFolder = new DialogSelectFolder.Build(this);
+        dialogSelectFolder.show();
     }
 
     private void showDialogSort() {
@@ -190,5 +203,16 @@ public class MainActivity extends BaseActivity implements AddFolderView {
                 Boast.makeText(this, getString(R.string.add_folder_fail)).show();
                 break;
         }
+    }
+
+    @Override
+    public void onSelectItem(Folder folder) {
+        currentFolder = folder;
+        filter.txtFolderName.setText(folder.getName());
+        realmResults = RealmController.with().getNotesInFolder(folder.getId());
+        filter.parent.setVisibility(View.VISIBLE);
+        floatingAdd.toggleBtnAdd(true);
+        notesAdapter.changeFolder(realmResults);
+        dialogSelectFolder.dismiss();
     }
 }

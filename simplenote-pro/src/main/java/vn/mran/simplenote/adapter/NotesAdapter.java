@@ -51,4 +51,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         this.realmResult = this.realmResult.sort(field,sort);
         notifyDataSetChanged();
     }
+
+    public void changeFolder(RealmResults<Notes> realmResult){
+        this.realmResult = realmResult;
+        notifyDataSetChanged();
+    }
 }

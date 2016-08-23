@@ -80,14 +80,8 @@ public class RealmController {
         return realm.where(Notes.class).findAll();
     }
 
-    public RealmResults<Folder> getNotesInFolder(long folderId) {
-        RealmQuery<Folder> query = realm.where(Folder.class).beginGroup();
-        Field[] fields = Folder.class.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            String fieldName = fields[i].getName();
-            query.equalTo(fieldName, Integer.parseInt("" + folderId));
-        }
-        return query.endGroup().findAll();
+    public RealmResults<Notes> getNotesInFolder(Long folderId){
+        return realm.where(Notes.class).equalTo("folderId",folderId).findAll();
     }
 
     public RealmResults<Folder> checkFolderNameExits(String folderName) {
