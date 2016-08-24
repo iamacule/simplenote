@@ -47,7 +47,7 @@ public class AddFolderPresenter {
                     if (null != result) {
                         Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder id : " + folder.getId());
                         Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder name : " + folder.getName());
-                        addFolderView.onSaveFinish();
+                        addFolderView.onSaveFinish(folder);
                     } else {
                         addFolderView.onSaveFail(SAVE_EXCEPTION);
                     }

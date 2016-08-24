@@ -177,8 +177,10 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     }
 
     @Override
-    public void onSaveFinish() {
+    public void onSaveFinish(Folder folder) {
         Boast.makeText(this, getString(R.string.add_folder_success)).show();
+        currentFolder = folder;
+        updateList(folder);
     }
 
     @Override

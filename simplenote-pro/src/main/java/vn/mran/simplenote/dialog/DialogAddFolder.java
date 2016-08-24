@@ -62,7 +62,7 @@ public class DialogAddFolder {
             return this.btnConfirm;
         }
 
-        public TextView getBtnCencel() {
+        public TextView getBtnCancel() {
             return this.btnCancel;
         }
 
@@ -79,6 +79,8 @@ public class DialogAddFolder {
         public void dismiss() {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
+                TouchEffect.removeAlpha(btnCancel);
+                TouchEffect.removeAlpha(btnConfirm);
             }
         }
     }

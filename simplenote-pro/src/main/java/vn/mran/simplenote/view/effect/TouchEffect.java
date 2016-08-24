@@ -37,4 +37,8 @@ public class TouchEffect {
             }
         });
     }
+
+    public static void removeAlpha(View view){
+        view.setAlpha(1);
+    }
 }
