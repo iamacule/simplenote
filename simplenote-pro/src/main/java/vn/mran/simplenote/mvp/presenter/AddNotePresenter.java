@@ -11,6 +11,7 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.widget.EditText;
 
+import java.io.File;
 import java.io.InputStream;
 
 import io.realm.Realm;
@@ -38,7 +39,7 @@ public class AddNotePresenter implements InitPresenter {
         init();
     }
 
-    public void save(String title, String content, long folderId,boolean back) {
+    public void save(String title, String content, long folderId, boolean back) {
         if (!DataUtil.checkStringEmpty(title)) {
             if (DataUtil.checkStringEmpty(content))
                 title = DataUtil.createTitle(content);

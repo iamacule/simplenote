@@ -15,6 +15,7 @@
     <string name="clear">Clear</string>
     <string name="photos">Photos</string>
     <string name="save">Save</string>
+    <string name="edit">Edit</string>
     <string name="save_success">Save new notes success</string>
     <string name="save_fail_empty">Content must have data</string>
     <string name="save_fail">Can not save , please try again</string>

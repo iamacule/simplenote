@@ -14,6 +14,7 @@ public class ToolAddNote {
     public LinearLayout btnClear;
     public LinearLayout btnSave;
     public LinearLayout btnAddPhoto;
+    public LinearLayout btnEdit;
     public TextView txtDate;
     public TextView txtFolder;
 
@@ -21,10 +22,12 @@ public class ToolAddNote {
         btnClear = (LinearLayout) view.findViewById(R.id.btnClear);
         btnSave = (LinearLayout) view.findViewById(R.id.btnSave);
         btnAddPhoto = (LinearLayout) view.findViewById(R.id.btnAddPhoto);
+        btnEdit = (LinearLayout) view.findViewById(R.id.btnEdit);
         txtDate = (TextView) view.findViewById(R.id.txtDate);
         txtFolder = (TextView) view.findViewById(R.id.txtFolder);
         TouchEffect.addAlpha(btnClear);
         TouchEffect.addAlpha(btnSave);
         TouchEffect.addAlpha(btnAddPhoto);
+        TouchEffect.addAlpha(btnEdit);
     }
 }

@@ -1,5 +1,6 @@
 package vn.mran.simplenote.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,9 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.activity.BaseActivity;
+import vn.mran.simplenote.activity.MainActivity;
+import vn.mran.simplenote.activity.NotesDetailActivity;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.view.effect.TouchEffect;
@@ -24,7 +28,7 @@ import vn.mran.simplenote.view.effect.TouchEffect;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
     private RealmResults<Notes> realmResult;
-    private Context context;
+    private MainActivity activity;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
@@ -42,8 +46,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         }
     }
 
-    public NotesAdapter(Context context,RealmResults<Notes> realmResult) {
-        this.context = context;
+    public NotesAdapter(Activity activity, RealmResults<Notes> realmResult) {
+        this.activity = (MainActivity) activity;
         this.realmResult = realmResult;
     }
 
@@ -63,7 +67,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
-                holder.row.setBackgroundColor(context.getResources().getColor(R.color.white));
+                holder.row.setBackgroundColor(activity.getResources().getColor(R.color.white));
                 holder.row.setBackgroundResource(R.drawable.item_selector);
             }
         });
@@ -81,6 +85,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         holder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                BaseActivity.currentNotes = notes;
+                activity.goToActivity(NotesDetailActivity.class);
             }
         });
     }
