@@ -28,15 +28,15 @@ public class DialogSelectFolder {
         private RecyclerView recFolder;
         private FolderAdapter folderAdapter;
         private RealmResults<Folder> realmResults;
-        private Activity activity;
 
         public Build(Activity activity) {
-            this.activity = activity;
             builder = new AlertDialog.Builder(activity);
             LayoutInflater inflater = activity.getLayoutInflater();
             View view = inflater.inflate(R.layout.select_folder_dialog, null);
             builder.setView(view);
             dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
             recFolder = (RecyclerView) view.findViewById(R.id.recFolder);
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);

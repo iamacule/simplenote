@@ -2,6 +2,7 @@ package vn.mran.simplenote.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,12 @@ import com.daimajia.swipe.SwipeLayout;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.dialog.DialogEvent;
+import vn.mran.simplenote.dialog.DialogMoveFolder;
 import vn.mran.simplenote.model.Folder;
+import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.view.DialogSelectFolderView;
+import vn.mran.simplenote.mvp.view.MoveFolderView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AnimationUtil;
 import vn.mran.simplenote.util.DataUtil;
@@ -25,12 +30,37 @@ import vn.mran.simplenote.util.EventUtil;
 import vn.mran.simplenote.view.effect.TouchEffect;
 import vn.mran.simplenote.view.toast.Boast;
 
-public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHolder> {
+public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHolder> implements MoveFolderView {
 
     private RealmResults<Folder> realmResult;
     private DialogSelectFolderView dialogSelectFolderView;
     private Activity activity;
     private EventUtil.KeyBoard keyBoard;
+    private DialogEvent dialogEvent;
+    private Realm realm;
+    private DialogMoveFolder.Build dialogMoveFolder;
+    private Folder delFolder;
+    private MyViewHolder myViewHolders;
+    private int pos;
+
+    @Override
+    public void onFolderMove(Folder folder) {
+        Log.d(DataUtil.TAG_DIALOG_SELECT_FOLDER, "" + folder.getName());
+        RealmResults<Notes> listNotesInFolder = RealmController.with().getNotesInFolder(delFolder.getId());
+        realm.beginTransaction();
+        for (Notes notes : listNotesInFolder) {
+            notes.setFolderId(folder.getId());
+            realm.copyToRealm(notes);
+        }
+        realm.commitTransaction();
+        del(myViewHolders,pos);
+        dialogSelectFolderView.onSelectItem(folder);
+    }
+
+    @Override
+    public void onCancel() {
+        dialogMoveFolder.dismiss();
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView txtItem;
@@ -62,6 +92,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
         this.realmResult = realmResult;
         dialogSelectFolderView = (DialogSelectFolderView) activity;
         keyBoard = new EventUtil.KeyBoard(activity);
+        dialogEvent = new DialogEvent(activity);
+        realm = RealmController.with().getRealm();
     }
 
     @Override
@@ -104,6 +136,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
                         confirmRename(myViewHolder, folder, position);
                         break;
                     case R.id.btnDelete:
+                        delFolder = folder;
+                        FolderAdapter.this.myViewHolders = myViewHolder;
+                        pos = position;
                         delete(myViewHolder, position);
                         break;
                     case R.id.btnCancel:
@@ -121,7 +156,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
 
     private void confirmRename(MyViewHolder myViewHolder, Folder folder, int pos) {
         if (DataUtil.checkStringEmpty(myViewHolder.etItem.getText().toString())) {
-            Realm realm = RealmController.with().getRealm();
             realm.beginTransaction();
             folder.setName(myViewHolder.etItem.getText().toString().trim());
             realm.copyToRealm(folder);
@@ -142,14 +176,58 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
         keyBoard.hide(myViewHolder.etItem);
     }
 
-    private void delete(MyViewHolder myViewHolder, int position) {
+    private void delete(final MyViewHolder myViewHolder, final int position) {
+        final RealmResults<Notes> realmResults = RealmController.with().getNotesInFolder(delFolder.getId());
+        if (realmResults.size() > 0) {
+            dialogEvent.showDialogAsk(activity.getString(R.string.del_folder_note), activity.getString(R.string.move),
+                    activity.getString(R.string.delete_all), new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showDialogMoveNotes(delFolder);
+                                }
+                            });
+                        }
+                    }), new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    deleteAllNotesInFolder(realmResults);
+                                    del(myViewHolder, position);
+                                }
+                            });
+                        }
+                    }), View.VISIBLE);
+        } else {
+            del(myViewHolder, position);
+        }
+    }
+
+    private void showDialogMoveNotes(Folder folder) {
+        dialogMoveFolder = new DialogMoveFolder.Build(activity, folder, this);
+        dialogMoveFolder.show();
+    }
+
+    private void deleteAllNotesInFolder(RealmResults<Notes> realmResults) {
+        realm.beginTransaction();
+        for (int i = 0; i < realmResults.size(); i++) {
+            realmResults.deleteFromRealm(i);
+        }
+        realm.commitTransaction();
+    }
+
+    private void del(MyViewHolder myViewHolder, int position) {
         myViewHolder.swipeLayout.close();
-        Realm realm = RealmController.with().getRealm();
         realm.beginTransaction();
         realmResult.deleteFromRealm(position);
         realm.commitTransaction();
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, realmResult.size());
+        Boast.makeText(activity, activity.getString(R.string.del_folder_success));
     }
 
     private void rename(MyViewHolder myViewHolder) {

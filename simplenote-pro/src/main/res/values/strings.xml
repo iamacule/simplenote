@@ -36,4 +36,10 @@
     <string name="yes">YES</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
+    <string name="delete_all">Delete all</string>
+    <string name="move">Move</string>
+    <string name="move_to">Move to?</string>
+    <string name="move_success">Move notes and delete folder success</string>
+    <string name="del_folder_note">After inspection, discovered more than one notes exists in this folder . What do you want to do with them ?</string>
+    <string name="del_folder_success">Delete folder success</string>
 </resources>
