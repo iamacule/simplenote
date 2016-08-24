@@ -11,6 +11,7 @@
     <string name="folders">Folder</string>
     <string name="no_data">No data available</string>
     <string name="title">Title</string>
+    <string name="date">Date</string>
     <string name="content">Content</string>
     <string name="add_note">Add new notes</string>
     <string name="style">Style</string>
