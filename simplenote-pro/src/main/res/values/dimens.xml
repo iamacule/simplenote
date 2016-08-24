@@ -7,7 +7,6 @@
     <dimen name="app_text_size">16sp</dimen>
     <dimen name="app_text_size_small">13sp</dimen>
     <dimen name="app_text_size_small_11">11sp</dimen>
-    <dimen name="filter_item_margin">5dp</dimen>
     <dimen name="view_line_margin">10dp</dimen>
     <dimen name="toast_padding">10dp</dimen>
     <dimen name="tool_item_margin">10dp</dimen>
@@ -15,7 +14,6 @@
     <dimen name="dialog_margin">10dp</dimen>
     <dimen name="dialog_button_margin_top">6dp</dimen>
     <dimen name="header_land_padding">6dp</dimen>
-    <dimen name="date_add_note_margin">10dp</dimen>
     <dimen name="row_item_padding">7dp</dimen>
     <dimen name="button_swipe_margin">5dp</dimen>
 </resources>

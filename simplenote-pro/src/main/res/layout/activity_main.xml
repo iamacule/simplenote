@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/lnHeader"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentTop="true"

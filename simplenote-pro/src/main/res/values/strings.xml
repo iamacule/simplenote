@@ -1,20 +1,17 @@
 <resources>
     <string name="app_name">SimpleNote</string>
-    <string name="action_settings">Settings</string>
     <string name="sort">Sort</string>
     <string name="az">A->Z</string>
     <string name="za">Z->A</string>
     <string name="newest">Newest</string>
     <string name="oldest">Oldest</string>
     <string name="all">All</string>
-    <string name="filters">Filter</string>
     <string name="folders">Folder</string>
     <string name="no_data">No data available</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
     <string name="content">Content</string>
     <string name="add_note">Add new notes</string>
-    <string name="style">Style</string>
     <string name="clear">Clear</string>
     <string name="photos">Photos</string>
     <string name="save">Save</string>
@@ -22,7 +19,6 @@
     <string name="save_fail_empty">Content must have data</string>
     <string name="save_fail">Can not save , please try again</string>
     <string name="clear_success">Clear text success</string>
-    <string name="empty_content">Your content is empty</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="add_folder_hint">Please input folder name</string>
@@ -40,7 +36,6 @@
     <string name="delete_all">Delete all</string>
     <string name="move">Move</string>
     <string name="move_to">Move to?</string>
-    <string name="move_success">Move notes and delete folder success</string>
     <string name="del_folder_note">After inspection, discovered more than one notes exists in this folder . What do you want to do with them ?</string>
     <string name="del_folder_success">Delete folder success</string>
 </resources>
