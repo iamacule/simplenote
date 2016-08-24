@@ -51,10 +51,10 @@
             android:id="@+id/row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/item_selector"
             android:elevation="5dp"
             android:padding="@dimen/row_item_padding"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/item_selector">
 
             <ImageView
                 android:layout_width="wrap_content"

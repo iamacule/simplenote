@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 
 import io.realm.Realm;
@@ -37,6 +38,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
             row = (LinearLayout) view.findViewById(R.id.row);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             buttonDelete = (Button) itemView.findViewById(R.id.btnDelete);
+
         }
     }
 
@@ -56,9 +58,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Notes notes = realmResult.get(position);
-        TouchEffect.addAlpha(holder.row);
         holder.item.setText(notes.getTitle());
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                holder.row.setBackgroundColor(context.getResources().getColor(R.color.white));
+                holder.row.setBackgroundResource(R.drawable.item_selector);
+            }
+        });
         holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

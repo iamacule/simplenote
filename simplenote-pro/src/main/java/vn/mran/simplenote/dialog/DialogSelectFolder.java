@@ -3,6 +3,7 @@ package vn.mran.simplenote.dialog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import vn.mran.simplenote.adapter.FolderAdapter;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.DividerItemDecoration;
+import vn.mran.simplenote.util.EventUtil;
 
 /**
  * Created by MrAn on 23-Aug-16.
@@ -41,6 +43,13 @@ public class DialogSelectFolder {
             recFolder.setLayoutManager(layoutManager);
             recFolder.addItemDecoration(new DividerItemDecoration(activity.getResources().getDrawable(R.drawable.divider)));
             init(activity);
+            final EventUtil.KeyBoard board = new EventUtil.KeyBoard(activity);
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    board.hide(recFolder);
+                }
+            });
         }
 
         private void init(Activity activity) {
