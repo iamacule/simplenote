@@ -26,7 +26,6 @@ public class AddNotePresenter implements InitPresenter {
     private Context context;
     private AddNotesView addNotesView;
     private Realm realm;
-    private EditText editText;
 
     public AddNotePresenter(Context context) {
         this.context = context;
@@ -74,12 +73,7 @@ public class AddNotePresenter implements InitPresenter {
         }
     }
 
-    public Bitmap createBitmap(Uri imageUri, EditText editText) {
-        this.editText = editText;
-        return AddImageUtil.createBitmap(context, imageUri, editText.getWidth() / 2);
-    }
-
-    public void addImage(Bitmap bitmap) {
+    public void addImage(Bitmap bitmap,EditText editText) {
         List<Object> list = AddImageUtil.createImageEditText(context, bitmap, editText);
         addNotesView.addImage((SpannableStringBuilder)list.get(0));
         addNotesView.addSetTxtContentSelection((int)list.get(1));

@@ -8,6 +8,7 @@ import android.view.View;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
+import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;
@@ -83,7 +84,9 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    addNotePresenter.addImage(addNotePresenter.createBitmap(intent.getData(), txtContent.editText));
+                    addNotePresenter.addImage
+                            (AddImageUtil.createBitmap(this, intent.getData(),
+                                    txtContent.editText.getWidth() / 2), txtContent.editText);
                     break;
             }
         }
@@ -142,7 +145,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
     @Override
     public void onBackPressed() {
         if (DataUtil.checkStringEmpty(txtContent.editText.getText().toString())) {
-            if(!isSaved){
+            if (!isSaved) {
                 dialogEvent.showDialogAsk(getString(R.string.save_your_note), null, null,
                         new Thread(new Runnable() {
                             @Override
@@ -166,10 +169,10 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                                 });
                             }
                         }), View.VISIBLE);
-            }else {
+            } else {
                 super.onBackPressed();
             }
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
