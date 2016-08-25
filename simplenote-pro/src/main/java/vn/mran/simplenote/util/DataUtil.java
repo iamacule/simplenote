@@ -16,6 +16,7 @@ public class DataUtil {
     public static final String TAG_REALM_CONTROLLER = APP_TAG+"RealmController";
     public static final String TAG_DIALOG_SORT = APP_TAG+"DialogSort";
     public static final String TAG_DIALOG_SELECT_FOLDER = APP_TAG+"DialogSelectFolder";
+    public static final String TAD_NOTES_ADAPTER = APP_TAG+"NotesAdapter";
     public static final String TAG = "DataUtil";
     public static boolean checkStringEmpty(String data) {
         if (data.isEmpty())

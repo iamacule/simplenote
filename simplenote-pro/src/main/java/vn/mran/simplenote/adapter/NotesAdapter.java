@@ -3,6 +3,7 @@ package vn.mran.simplenote.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,12 +24,15 @@ import vn.mran.simplenote.activity.MainActivity;
 import vn.mran.simplenote.activity.NotesDetailActivity;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.realm.RealmController;
+import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.StringUtil;
 import vn.mran.simplenote.view.effect.TouchEffect;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
     private RealmResults<Notes> realmResult;
     private MainActivity activity;
+    private String imageString;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
@@ -42,13 +46,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
             row = (LinearLayout) view.findViewById(R.id.row);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             buttonDelete = (Button) itemView.findViewById(R.id.btnDelete);
-
         }
     }
 
     public NotesAdapter(Activity activity, RealmResults<Notes> realmResult) {
         this.activity = (MainActivity) activity;
         this.realmResult = realmResult;
+        imageString = activity.getString(R.string.image_string);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Notes notes = realmResult.get(position);
-        holder.item.setText(notes.getTitle());
+        holder.item.setText(filterTitle(notes.getTitle()));
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
@@ -104,5 +108,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     public void changeFolder(RealmResults<Notes> realmResult) {
         this.realmResult = realmResult;
         notifyDataSetChanged();
+    }
+
+    private String filterTitle(String title) {
+        int posImageNode = StringUtil.getPostTitleToCut(title);
+        if (-1 != posImageNode) {
+            if(0==posImageNode){
+                return imageString;
+            }else {
+                return title.substring(0,posImageNode) + " "+imageString;
+            }
+        }
+        return title;
     }
 }
