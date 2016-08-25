@@ -19,6 +19,7 @@ import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.realm.RealmController;
+import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.ResizeBitmap;
 
@@ -32,6 +33,7 @@ public class AddNotePresenter implements InitPresenter {
     private AddNotesView addNotesView;
     private Realm realm;
     private EditText editText;
+    private StringBuilder imageData;
 
     public AddNotePresenter(Context context) {
         this.context = context;
@@ -82,10 +84,13 @@ public class AddNotePresenter implements InitPresenter {
     public Bitmap createBitmap(Uri imageUri, EditText editText) {
         try {
             this.editText = editText;
+            imageData.append(AddImageUtil.NODE_IMAGE_START);
+            imageData.append(imageUri.toString());
+            imageData.append(AddImageUtil.NODE_IMAGE_END);
             InputStream stream = context.getContentResolver().openInputStream(imageUri);
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
-            if (bitmap.getWidth() > editText.getWidth() - 20)
-                bitmap = ResizeBitmap.resize(bitmap, editText.getWidth() - 20);
+            if (bitmap.getWidth() > editText.getWidth() / 2)
+                bitmap = ResizeBitmap.resize(bitmap, editText.getWidth() / 2);
             stream.close();
             return bitmap;
         } catch (Exception e) {
@@ -97,10 +102,10 @@ public class AddNotePresenter implements InitPresenter {
         BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         int selectionCursor = editText.getSelectionStart();
-        editText.getText().insert(selectionCursor, ".");
+        editText.getText().insert(selectionCursor, imageData.toString());
         selectionCursor = editText.getSelectionStart();
         SpannableStringBuilder builder = new SpannableStringBuilder(editText.getText());
-        builder.setSpan(new ImageSpan(drawable), selectionCursor - ".".length(), selectionCursor,
+        builder.setSpan(new ImageSpan(drawable), selectionCursor - imageData.toString().length(), selectionCursor,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         addNotesView.addImage(builder);
         addNotesView.addSetTxtContentSelection(selectionCursor);
@@ -109,5 +114,6 @@ public class AddNotePresenter implements InitPresenter {
     @Override
     public void init() {
         realm = RealmController.with().getRealm();
+        imageData = new StringBuilder();
     }
 }
