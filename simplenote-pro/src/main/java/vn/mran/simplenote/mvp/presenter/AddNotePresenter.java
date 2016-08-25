@@ -2,17 +2,12 @@ package vn.mran.simplenote.mvp.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.widget.EditText;
 
-import java.io.File;
-import java.io.InputStream;
+import java.util.List;
 
 import io.realm.Realm;
 import vn.mran.simplenote.model.Notes;
@@ -21,7 +16,6 @@ import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
-import vn.mran.simplenote.util.ResizeBitmap;
 
 /**
  * Created by Mr An on 20/08/2016.
@@ -33,7 +27,6 @@ public class AddNotePresenter implements InitPresenter {
     private AddNotesView addNotesView;
     private Realm realm;
     private EditText editText;
-    private StringBuilder imageData;
 
     public AddNotePresenter(Context context) {
         this.context = context;
@@ -82,38 +75,18 @@ public class AddNotePresenter implements InitPresenter {
     }
 
     public Bitmap createBitmap(Uri imageUri, EditText editText) {
-        try {
-            this.editText = editText;
-            imageData.append(AddImageUtil.NODE_IMAGE_START);
-            imageData.append(imageUri.toString());
-            imageData.append(AddImageUtil.NODE_IMAGE_END);
-            InputStream stream = context.getContentResolver().openInputStream(imageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(stream);
-            if (bitmap.getWidth() > editText.getWidth() / 2)
-                bitmap = ResizeBitmap.resize(bitmap, editText.getWidth() / 2);
-            stream.close();
-            return bitmap;
-        } catch (Exception e) {
-            return null;
-        }
+        this.editText = editText;
+        return AddImageUtil.createBitmap(context, imageUri, editText.getWidth() / 2);
     }
 
     public void addImage(Bitmap bitmap) {
-        BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        int selectionCursor = editText.getSelectionStart();
-        editText.getText().insert(selectionCursor, imageData.toString());
-        selectionCursor = editText.getSelectionStart();
-        SpannableStringBuilder builder = new SpannableStringBuilder(editText.getText());
-        builder.setSpan(new ImageSpan(drawable), selectionCursor - imageData.toString().length(), selectionCursor,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        addNotesView.addImage(builder);
-        addNotesView.addSetTxtContentSelection(selectionCursor);
+        List<Object> list = AddImageUtil.createImageEditText(context, bitmap, editText);
+        addNotesView.addImage((SpannableStringBuilder)list.get(0));
+        addNotesView.addSetTxtContentSelection((int)list.get(1));
     }
 
     @Override
     public void init() {
         realm = RealmController.with().getRealm();
-        imageData = new StringBuilder();
     }
 }
