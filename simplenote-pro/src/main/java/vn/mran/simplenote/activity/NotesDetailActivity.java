@@ -6,11 +6,14 @@ import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.mvp.presenter.NotesDetailPresenter;
+import vn.mran.simplenote.mvp.view.NotesDetailView;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.ScreenUtil;
@@ -23,14 +26,15 @@ import vn.mran.simplenote.view.ToolAddNote;
 /**
  * Created by MrAn on 24-Aug-16.
  */
-public class NotesDetailActivity extends BaseActivity {
+public class NotesDetailActivity extends BaseActivity implements NotesDetailView {
     private Header header;
     private ToolAddNote toolAddNote;
+    private ProgressBar progressBar;
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
     private final int ACTION_REQUEST_GALLERY = 0;
     private boolean isSaved = false;
-    private List<Point> pointList;
+    private NotesDetailPresenter notesDetailPresenter;
 
     @Override
     public int getView() {
@@ -48,6 +52,7 @@ public class NotesDetailActivity extends BaseActivity {
 
         txtTitle = new CustomEditText(v, R.id.lnTitle);
         txtContent = new CustomEditText(v, R.id.lnContent);
+        progressBar = (ProgressBar) findViewById(R.id.pbBar);
         hideEdit();
 
         txtTitle.editText.setText(StringUtil.filterTitle(currentNotes.getTitle()));
@@ -69,59 +74,10 @@ public class NotesDetailActivity extends BaseActivity {
 
     @Override
     public void initValue() {
+        notesDetailPresenter = new NotesDetailPresenter(this);
         toolAddNote.txtDate.setText(Utils.getDate(currentNotes.getId(), "yyyy-MM-dd:HH:mm"));
         toolAddNote.txtFolder.setText(currentFolder.getName());
-        pointList = new ArrayList<>();
-        pointList = StringUtil.getListImageInContent(currentNotes.getContent());
-        List<String> listDataImage = new ArrayList<>();
-        List<String> listDataNormal = new ArrayList<>();
-        for (int i = 0; i < pointList.size(); i++) {
-            listDataImage.add(currentNotes.getContent().substring(pointList.get(i).x, pointList.get(i).y));
-            if (pointList.size() > 1) {
-                if (i == 0 && pointList.get(i).x == 0) {
-                    listDataNormal.add("BEGIN");
-                } else if (i == 0 && pointList.get(i).x != 0) {
-                    listDataNormal.add(currentNotes.getContent().substring(0, pointList.get(i).x));
-                } else {
-                    try {
-                        if (pointList.get(i).x - pointList.get(i - 1).y > 1) {
-                            listDataNormal.add(currentNotes.getContent().substring(pointList.get(i - 1).y,
-                                    pointList.get(i).x));
-                        } else {
-                            listDataNormal.add(currentNotes.getContent().substring(pointList.get(i).y, pointList.get(i + 1).x));
-                        }
-                    } catch (Exception e) {
-                        listDataNormal.add(currentNotes.getContent().substring(pointList.get(i).y, currentNotes.getContent().length()));
-                        break;
-                    }
-                }
-            } else {
-                if (pointList.get(i).x == 0) {
-                    listDataNormal.add("BEGIN");
-                } else {
-                    listDataNormal.add(currentNotes.getContent().substring(0, pointList.get(i).x));
-                }
-            }
-        }
-        String contentShow = currentNotes.getContent();
-        for (String s : listDataImage) {
-            contentShow = contentShow.replace(s, "");
-        }
-        txtContent.editText.setText(contentShow);
-        List<Uri> listUri = new ArrayList<>();
-        for (String s : listDataImage) {
-            listUri.add(AddImageUtil.getUriFormData(s));
-            Log.d(DataUtil.TAG_NOTES_DETAIL, "Uri : " + AddImageUtil.getUriFormData(s));
-        }
-        addImageToEditText(listDataNormal, listDataImage, listUri, ScreenUtil.getScreenWidth(getWindowManager()) / 3, contentShow);
-    }
-
-    private void addImageToEditText(List<String> lisDataNormal, List<String> listDataImage,
-                                    List<Uri> listUri, float width, String fullString) {
-        for (int i = 0; i < lisDataNormal.size(); i++) {
-            AddImageUtil.createImageEditText(this, lisDataNormal,
-                    listDataImage, listUri,txtContent.editText,width,currentNotes.getContent());
-        }
+        notesDetailPresenter.loadData(currentNotes.getContent());
     }
 
     @Override
@@ -137,5 +93,18 @@ public class NotesDetailActivity extends BaseActivity {
             }
         };
         toolAddNote.btnEdit.setOnClickListener(click);
+    }
+
+    @Override
+    public void onWaiting() {
+        progressBar.setVisibility(View.VISIBLE);
+        txtContent.editText.setClickable(false);
+    }
+
+    @Override
+    public void onLoadContent(SpannableStringBuilder builder) {
+        txtContent.editText.setClickable(true);
+        progressBar.setVisibility(View.GONE);
+        txtContent.editText.setText(builder);
     }
 }

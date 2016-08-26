@@ -116,7 +116,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     addNotePresenter.addImage
-                            (AddImageUtil.createBitmapFromURI(this, intent.getData(),
+                            (addNotePresenter.createBitmapFromURI(this, intent.getData(),
                                     txtContent.editText.getWidth() / 2), txtContent.editText);
                     break;
             }

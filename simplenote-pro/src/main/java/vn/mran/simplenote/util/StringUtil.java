@@ -1,6 +1,7 @@
 package vn.mran.simplenote.util;
 
 import android.graphics.Point;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
  */
 public class StringUtil {
     private static final String IMAGE_STRING = "{Image}";
+    public static final String BEGIN_STRING = "d@!dv89)&(*wdef";
 
     public static int getPostTitleToCut(String data) {
         return data.indexOf(AddImageUtil.NODE_IMAGE_START);
@@ -25,21 +27,6 @@ public class StringUtil {
         return data.lastIndexOf(AddImageUtil.NODE_IMAGE_END)+AddImageUtil.NODE_IMAGE_END.length();
     }
 
-    public static List<Point> getListImageInContent(String content) {
-        List<Point> pointList = new ArrayList<>();
-
-        for (int i = -1; (i = content.indexOf(AddImageUtil.NODE_IMAGE_START, i + 1)) != -1; ) {
-            Point point = new Point();
-            point.x = i;
-            for (int j = i - 1; (j = content.indexOf(AddImageUtil.NODE_IMAGE_END, j + 1)) != -1; ) {
-                point.y = j + AddImageUtil.NODE_IMAGE_END.length();
-                break;
-            }
-            pointList.add(point);
-        }
-        return pointList;
-    }
-
     public static String filterTitle(String data) {
         int posImageNode = StringUtil.getPostTitleToCut(data);
         if (-1 != posImageNode) {
@@ -50,5 +37,9 @@ public class StringUtil {
             }
         }
         return data;
+    }
+
+    public static Uri getUriFormData(String data) {
+        return Uri.parse(data.substring(AddImageUtil.NODE_IMAGE_START.length(), data.length() - AddImageUtil.NODE_IMAGE_END.length()));
     }
 }
