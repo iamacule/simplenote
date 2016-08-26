@@ -13,6 +13,7 @@ import java.util.List;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.StringUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.CustomEditText;
@@ -83,8 +84,8 @@ public class NotesDetailActivity extends BaseActivity {
                     listDataNormal.add(currentNotes.getContent().substring(0, pointList.get(i).x));
                 } else {
                     try {
-                        if(pointList.get(i).x-pointList.get(i-1).y>1){
-                            listDataNormal.add(currentNotes.getContent().substring(pointList.get(i-1).y,
+                        if (pointList.get(i).x - pointList.get(i - 1).y > 1) {
+                            listDataNormal.add(currentNotes.getContent().substring(pointList.get(i - 1).y,
                                     pointList.get(i).x));
                         } else {
                             listDataNormal.add(currentNotes.getContent().substring(pointList.get(i).y, pointList.get(i + 1).x));
@@ -108,20 +109,18 @@ public class NotesDetailActivity extends BaseActivity {
         }
         txtContent.editText.setText(contentShow);
         List<Uri> listUri = new ArrayList<>();
-        for (String s : listDataImage){
+        for (String s : listDataImage) {
             listUri.add(AddImageUtil.getUriFormData(s));
-            Log.d(DataUtil.TAG_NOTES_DETAIL,"Uri : "+AddImageUtil.getUriFormData(s));
+            Log.d(DataUtil.TAG_NOTES_DETAIL, "Uri : " + AddImageUtil.getUriFormData(s));
         }
-        addImageToEditText(listDataNormal,listDataImage,listUri,100);
+        addImageToEditText(listDataNormal, listDataImage, listUri, ScreenUtil.getScreenWidth(getWindowManager()) / 3, contentShow);
     }
 
-    private void addImageToEditText(List<String> lisDataNormal,List<String> listDataImage, List<Uri> listUri, float width) {
+    private void addImageToEditText(List<String> lisDataNormal, List<String> listDataImage,
+                                    List<Uri> listUri, float width, String fullString) {
         for (int i = 0; i < lisDataNormal.size(); i++) {
-            Bitmap bitmap = AddImageUtil.createBitmapFromURI(this, listUri.get(i), width);
-            List<Object> list = AddImageUtil.createImageEditText(this,lisDataNormal.get(i),
-                    listDataImage.get(i),bitmap,currentNotes.getContent());
-            txtContent.editText.setText((SpannableStringBuilder) list.get(0));
-            txtContent.editText.setSelection((int) list.get(1));
+            AddImageUtil.createImageEditText(this, lisDataNormal,
+                    listDataImage, listUri,txtContent.editText,width,currentNotes.getContent());
         }
     }
 

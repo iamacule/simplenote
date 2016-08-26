@@ -36,7 +36,6 @@ public class AddImageUtil {
             if (bitmap.getWidth() > width)
                 bitmap = ResizeBitmap.resize(bitmap, width);
             stream.close();
-            Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, "" + bitmap.getWidth());
             return bitmap;
         } catch (Exception e) {
             Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
@@ -59,23 +58,33 @@ public class AddImageUtil {
         return list;
     }
 
-    public static List<Object> createImageEditText(Context context, String data, String dataImage, Bitmap bitmap, String fullString) {
-        BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+    public static void createImageEditText(Context context, List<String> listDataNormal
+            , List<String> listDataImage, List<Uri> listUri, EditText editText,float width,String fullString) {
+        editText.setText("");
+        SpannableStringBuilder builder = new SpannableStringBuilder();
         int selectionCursor;
-        if (!data.equals("BEGIN")) {
-            data = data+dataImage;
-        } else {
-            data = dataImage;
+        for (int i = 0 ; i <listDataNormal.size();i++){
+            StringBuilder totalData = new StringBuilder();
+            Bitmap bitmap = createBitmapFromURI(context,listUri.get(i),width);
+            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            if(listDataNormal.get(i).equals("BEGIN")){
+                totalData.append(listDataImage.get(i));
+            }else {
+                totalData.append(listDataNormal.get(i));
+                totalData.append(listDataImage.get(i));
+            }
+            selectionCursor = totalData.length();
+            Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, "select : " + selectionCursor);
+            builder = new SpannableStringBuilder(totalData.toString());
+            builder.setSpan(new ImageSpan(drawable), selectionCursor - listDataImage.get(i).length(), selectionCursor,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            editText.append(builder);
         }
-        selectionCursor = data.length();
-        SpannableStringBuilder builder = new SpannableStringBuilder(fullString);
-        builder.setSpan(new ImageSpan(drawable), selectionCursor - dataImage.length(), selectionCursor,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        List<Object> list = new ArrayList<>();
-        list.add(builder);
-        list.add(selectionCursor);
-        return list;
+        int check = StringUtil.getLastIndex(fullString);
+        if(check!=fullString.length()){
+            editText.append(fullString.substring(check,fullString.length()));
+        }
     }
 
     public static void createImageTextView(Context context, Bitmap bitmap, TextView textView) {

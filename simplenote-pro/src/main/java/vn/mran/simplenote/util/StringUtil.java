@@ -21,6 +21,10 @@ public class StringUtil {
         return data.indexOf(AddImageUtil.NODE_IMAGE_END) + AddImageUtil.NODE_IMAGE_END.length();
     }
 
+    public static int getLastIndex(String data){
+        return data.lastIndexOf(AddImageUtil.NODE_IMAGE_END)+AddImageUtil.NODE_IMAGE_END.length();
+    }
+
     public static List<Point> getListImageInContent(String content) {
         List<Point> pointList = new ArrayList<>();
 
