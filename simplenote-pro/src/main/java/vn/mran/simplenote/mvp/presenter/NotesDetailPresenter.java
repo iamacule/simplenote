@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.mran.simplenote.mvp.view.NotesDetailView;
+import vn.mran.simplenote.performance.CacheBitmap;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.ResizeBitmap;
@@ -173,16 +174,25 @@ public class NotesDetailPresenter {
     }
 
     public Bitmap createBitmapFromURI(Context context, Uri imageUri, float width) {
-        try {
-            InputStream stream = context.getContentResolver().openInputStream(imageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(stream);
-            if (bitmap.getWidth() > width)
-                bitmap = ResizeBitmap.resize(bitmap, width);
-            stream.close();
+        Bitmap bitmap;
+        bitmap = CacheBitmap.getInstance().getBitmapFromMemCache(imageUri.toString());
+        if(bitmap!=null){
+            Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER,"Get from cache success");
             return bitmap;
-        } catch (Exception e) {
-            Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
-            return null;
+        }else {
+            try {
+                InputStream stream = context.getContentResolver().openInputStream(imageUri);
+                bitmap = BitmapFactory.decodeStream(stream);
+                if (bitmap.getWidth() > width)
+                    bitmap = ResizeBitmap.resize(bitmap, width);
+                stream.close();
+                CacheBitmap.getInstance().addBitmapToMemoryCache(imageUri.toString(),bitmap);
+                Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER,"Add to cache success");
+                return bitmap;
+            } catch (Exception e) {
+                Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
+                return null;
+            }
         }
     }
 }

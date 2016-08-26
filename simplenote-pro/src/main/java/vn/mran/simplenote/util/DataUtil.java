@@ -19,6 +19,7 @@ public class DataUtil {
     public static final String TAG_DIALOG_SELECT_FOLDER = APP_TAG + "DialogSelectFolder";
     public static final String TAD_NOTES_ADAPTER = APP_TAG + "NotesAdapter";
     public static final String TAG_ADD_IMAGE_UTIL = APP_TAG + "AddImageUtil";
+    public static final String TAG_NOTES_DETAIL_PRESENTER = APP_TAG + "NotesDetailPresenter";
     public static final String TAG = "DataUtil";
 
     public static boolean checkStringEmpty(String data) {
