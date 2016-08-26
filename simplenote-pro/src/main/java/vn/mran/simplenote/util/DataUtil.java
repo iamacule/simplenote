@@ -11,12 +11,14 @@ public class DataUtil {
     public static final String TAG_MAIN_ACTIVITY = APP_TAG + "MainActivity";
     public static final String TAG_ADD_NOTES_PRESENTER = APP_TAG + "AddNotesPresenter";
     public static final String TAG_ADD_NOTES_ACTIVITY = APP_TAG + "AddNoteActivity";
+    public static final String TAG_NOTES_DETAIL = APP_TAG + "NotesDetailActivity";
     public static final String TAG_ADD_FOLDER_ACTIVITY = APP_TAG + "AddFolderActivity";
     public static final String TAG_DIALOG_ADD_FOLDER = APP_TAG + "DialogAddFolder";
     public static final String TAG_REALM_CONTROLLER = APP_TAG + "RealmController";
     public static final String TAG_DIALOG_SORT = APP_TAG + "DialogSort";
     public static final String TAG_DIALOG_SELECT_FOLDER = APP_TAG + "DialogSelectFolder";
     public static final String TAD_NOTES_ADAPTER = APP_TAG + "NotesAdapter";
+    public static final String TAG_ADD_IMAGE_UTIL = APP_TAG + "AddImageUtil";
     public static final String TAG = "DataUtil";
 
     public static boolean checkStringEmpty(String data) {

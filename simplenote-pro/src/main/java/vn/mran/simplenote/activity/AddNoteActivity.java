@@ -1,6 +1,10 @@
 package vn.mran.simplenote.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +14,7 @@ import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.ToolAddNote;
@@ -67,15 +72,41 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                         save(true);
                         break;
                     case R.id.btnAddPhoto:
-                        goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
+                        checkAppPermission();
+                        if (PermissionUtil.permissionReadExternalStorage) {
+                            goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
+                        } else {
+                            showDialogAskPermission();
+                        }
                         break;
 
                 }
+            }
+
+            private void checkAppPermission() {
+                PermissionUtil.permissionReadExternalStorage = ContextCompat.checkSelfPermission(AddNoteActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ? true : false;
             }
         };
         toolAddNote.btnClear.setOnClickListener(click);
         toolAddNote.btnSave.setOnClickListener(click);
         toolAddNote.btnAddPhoto.setOnClickListener(click);
+    }
+
+    private void showDialogAskPermission() {
+        dialogEvent.showDialogAsk(getString(R.string.permission_storage), null, null,
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                PermissionUtil.checkPermission(AddNoteActivity.this,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
+                            }
+                        });
+                    }
+                }), null,
+                View.VISIBLE);
     }
 
     @Override
@@ -85,9 +116,27 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     addNotePresenter.addImage
-                            (AddImageUtil.createBitmap(this, intent.getData(),
+                            (AddImageUtil.createBitmapFromURI(this, intent.getData(),
                                     txtContent.editText.getWidth() / 2), txtContent.editText);
                     break;
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PermissionUtil.READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    PermissionUtil.permissionReadExternalStorage = true;
+                } else {
+                    PermissionUtil.permissionReadExternalStorage = false;
+                }
+                return;
             }
         }
     }

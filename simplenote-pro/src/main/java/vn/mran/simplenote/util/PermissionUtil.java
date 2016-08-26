@@ -10,8 +10,8 @@ import android.support.v4.app.ActivityCompat;
  * Created by MrAn on 29-Apr-16.
  */
 public class PermissionUtil {
-    public static final int WRITE_EXTERNAL_STORAGE = 0;
-    public static boolean permissionWriteStorage = false;
+    public static final int READ_EXTERNAL_STORAGE = 0;
+    public static boolean permissionReadExternalStorage = false;
 
     public static void checkPermission(Activity activity, String permission, int idCallBack) {
         Preferences preferences = new Preferences(activity);

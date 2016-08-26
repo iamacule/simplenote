@@ -14,7 +14,7 @@ public final class Preferences {
     private Editor editor;
 
     public static final String SIMPLE_NOTE = "SIMPLE_NOTE";
-    public static final String PERMISSION_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final String PERMISSION_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
 
     public Preferences(Context context) {
         pref = context.getSharedPreferences(SIMPLE_NOTE, context.MODE_PRIVATE);
