@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:design:24.1.1'
     compile 'io.realm:android-adapters:1.3.0'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.shehabic.droppy:Droppy:0.5.1@aar'
 }

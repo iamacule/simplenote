@@ -14,6 +14,7 @@ import java.util.List;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.NotesDetailPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
+import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.ScreenUtil;
@@ -26,7 +27,7 @@ import vn.mran.simplenote.view.ToolAddNote;
 /**
  * Created by MrAn on 24-Aug-16.
  */
-public class NotesDetailActivity extends BaseActivity implements NotesDetailView {
+public class NotesDetailActivity extends BaseActivity implements NotesDetailView, ToolAddNotesView {
     private Header header;
     private ToolAddNote toolAddNote;
     private ProgressBar progressBar;
@@ -48,7 +49,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
         header.title.setText(getString(R.string.add_note));
         header.setDefaultBtnBack();
 
-        toolAddNote = new ToolAddNote(v);
+        toolAddNote = new ToolAddNote(v, this);
 
         txtTitle = new CustomEditText(v, R.id.lnTitle);
         txtContent = new CustomEditText(v, R.id.lnContent);
@@ -61,14 +62,14 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     void showEdit() {
         toolAddNote.btnSave.setVisibility(View.VISIBLE);
         toolAddNote.btnClear.setVisibility(View.VISIBLE);
-        toolAddNote.btnAddPhoto.setVisibility(View.VISIBLE);
+        toolAddNote.btnMore.setVisibility(View.VISIBLE);
         toolAddNote.btnEdit.setVisibility(View.GONE);
     }
 
     void hideEdit() {
         toolAddNote.btnSave.setVisibility(View.GONE);
         toolAddNote.btnClear.setVisibility(View.GONE);
-        toolAddNote.btnAddPhoto.setVisibility(View.GONE);
+        toolAddNote.btnMore.setVisibility(View.GONE);
         toolAddNote.btnEdit.setVisibility(View.VISIBLE);
     }
 
@@ -106,5 +107,20 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
         txtContent.editText.setClickable(true);
         progressBar.setVisibility(View.GONE);
         txtContent.editText.setText(builder);
+    }
+
+    @Override
+    public void onPhoto() {
+
+    }
+
+    @Override
+    public void onVoice() {
+
+    }
+
+    @Override
+    public void onCamera() {
+
     }
 }

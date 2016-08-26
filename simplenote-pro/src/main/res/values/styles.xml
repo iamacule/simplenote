@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="droppyPopupStyle">@style/DroppyPopup</item>
+        <item name="droppyMenuItemTitleStyle">@style/DroppyPopupMenuItemTitle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -24,4 +26,11 @@
         <item name="android:windowFrame">@null</item>
     </style>
 
+    <style name="DroppyPopup" parent="Droppy.DroppyPopup">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="DroppyPopupMenuItemTitle" parent="Droppy.DroppyMenuItemTitle">
+        <item name="android:textColor">@color/white</item>>
+        <item name="android:textSize">@dimen/app_text_size_small_11</item>
+    </style>
 </resources>

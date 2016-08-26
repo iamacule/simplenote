@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.shehabic.droppy_samples.MainActivity">
+    <group android:enabled="true">
+        <item
+            android:id="@+id/btnPhoto"
+            android:icon="@drawable/ic_insert_photo_white_24dp"
+            android:title="@string/photos" />
+
+        <item
+            android:id="@+id/btnVoice"
+            android:icon="@drawable/ic_settings_voice_white_24dp"
+            android:title="@string/voice" />
+
+        <item
+            android:id="@+id/btnCamera"
+            android:icon="@drawable/ic_photo_camera_white_24dp"
+            android:title="@string/camera" />
+    </group>
+</menu>

@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.55"
+            android:layout_weight="0.45"
             android:gravity="center|left"
             android:orientation="horizontal">
 
@@ -76,11 +76,11 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.45"
+            android:layout_weight="0.55"
             android:gravity="center|right">
 
             <LinearLayout
-                android:id="@+id/btnAddPhoto"
+                android:id="@+id/btnMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/tool_item_margin"
@@ -90,12 +90,12 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_insert_photo_white_24dp" />
+                    android:background="@drawable/ic_more_horiz_white_24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/photos"
+                    android:text="@string/more"
                     android:textColor="@color/white"
                     android:textSize="@dimen/app_text_size_small_11" />
             </LinearLayout>

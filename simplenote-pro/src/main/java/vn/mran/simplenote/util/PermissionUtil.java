@@ -1,10 +1,13 @@
 package vn.mran.simplenote.util;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 /**
  * Created by MrAn on 29-Apr-16.
@@ -35,5 +38,9 @@ public class PermissionUtil {
                 activity.startActivity(intent);
             }
         }
+    }
+
+    public static void checkAppPermission(Activity activity) {
+        PermissionUtil.permissionReadExternalStorage = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ? true : false;
     }
 }

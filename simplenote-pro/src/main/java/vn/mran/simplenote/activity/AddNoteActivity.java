@@ -3,18 +3,25 @@ package vn.mran.simplenote.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
 
+import java.util.List;
+
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
+import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.PermissionUtil;
+import vn.mran.simplenote.util.ResizeBitmap;
+import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.ToolAddNote;
@@ -24,7 +31,7 @@ import vn.mran.simplenote.view.CustomEditText;
 /**
  * Created by MrAn on 19-Aug-16.
  */
-public class AddNoteActivity extends BaseActivity implements AddNotesView {
+public class AddNoteActivity extends BaseActivity implements AddNotesView,ToolAddNotesView {
     private AddNotePresenter addNotePresenter;
     private Header header;
     private ToolAddNote toolAddNote;
@@ -45,7 +52,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         header.title.setText(getString(R.string.add_note));
         header.setDefaultBtnBack();
 
-        toolAddNote = new ToolAddNote(v);
+        toolAddNote = new ToolAddNote(v,this);
 
         txtTitle = new CustomEditText(v, R.id.lnTitle);
         txtContent = new CustomEditText(v, R.id.lnContent);
@@ -71,25 +78,11 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
                         isSaved = true;
                         save(true);
                         break;
-                    case R.id.btnAddPhoto:
-                        checkAppPermission();
-                        if (PermissionUtil.permissionReadExternalStorage) {
-                            goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
-                        } else {
-                            showDialogAskPermission();
-                        }
-                        break;
-
                 }
-            }
-
-            private void checkAppPermission() {
-                PermissionUtil.permissionReadExternalStorage = ContextCompat.checkSelfPermission(AddNoteActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ? true : false;
             }
         };
         toolAddNote.btnClear.setOnClickListener(click);
         toolAddNote.btnSave.setOnClickListener(click);
-        toolAddNote.btnAddPhoto.setOnClickListener(click);
     }
 
     private void showDialogAskPermission() {
@@ -115,9 +108,16 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
+                    TAKE_PICTURE_REQUEST_CODE:
                     addNotePresenter.addImage
                             (addNotePresenter.createBitmapFromURI(this, intent.getData(),
-                                    txtContent.editText.getWidth() / 2), txtContent.editText);
+                                    ScreenUtil.getScreenWidth(getWindowManager())/3), txtContent.editText);
+                    break;
+                case SPEECH_REQUEST_CODE:
+                    List<String> results = intent.getStringArrayListExtra(
+                            RecognizerIntent.EXTRA_RESULTS);
+                    String spokenText = results.get(0);
+                    txtContent.editText.append(spokenText);
                     break;
             }
         }
@@ -129,13 +129,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
 
         switch (requestCode) {
             case PermissionUtil.READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    PermissionUtil.permissionReadExternalStorage = true;
-                } else {
-                    PermissionUtil.permissionReadExternalStorage = false;
-                }
+                PermissionUtil.checkAppPermission(this);
                 return;
             }
         }
@@ -224,5 +218,25 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onPhoto() {
+        PermissionUtil.checkAppPermission(this);
+        if (PermissionUtil.permissionReadExternalStorage) {
+            goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
+        } else {
+            showDialogAskPermission();
+        }
+    }
+
+    @Override
+    public void onVoice() {
+        requestVoice();
+    }
+
+    @Override
+    public void onCamera() {
+        requestTakePhoTo();
     }
 }
