@@ -50,13 +50,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    protected void goToAddNote(Class activity, String key, long value) {
-        intent = new Intent(this, activity);
-        intent.putExtra(key, value);
-        startActivity(new Intent(this, activity));
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
     protected void goToIntentAction(int requestCode, String actionType) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType(actionType);
