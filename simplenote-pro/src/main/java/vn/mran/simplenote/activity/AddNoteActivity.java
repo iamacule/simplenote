@@ -35,7 +35,6 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     private CustomEditText txtContent;
     private LinearLayout lnEdit;
     private boolean isSaved = false;
-    private int noteColorId;
 
     @Override
     public int getView() {
@@ -90,23 +89,6 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         };
         toolAddNote.btnClear.setOnClickListener(click);
         toolAddNote.btnSave.setOnClickListener(click);
-    }
-
-    private void showDialogAskPermission(String message, final String permission, final int requestCode) {
-        dialogEvent.showDialogAsk(message, null, null,
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                PermissionUtil.checkPermission(AddNoteActivity.this,
-                                        permission, requestCode);
-                            }
-                        });
-                    }
-                }), null,
-                View.VISIBLE);
     }
 
     @Override

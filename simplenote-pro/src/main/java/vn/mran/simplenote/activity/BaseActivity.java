@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import vn.mran.simplenote.dialog.DialogEvent;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.util.FileUtil;
+import vn.mran.simplenote.util.PermissionUtil;
 
 /**
  * Created by MrAn on 18-Aug-16.
@@ -31,6 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected final int SPEECH_REQUEST_CODE = 1;
     protected final int TAKE_PICTURE_REQUEST_CODE = 2;
     protected Uri mCurrentPhotoUri;
+    protected int noteColorId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,5 +108,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+    }
+
+    protected void showDialogAskPermission(String message, final String permission, final int requestCode) {
+        dialogEvent.showDialogAsk(message, null, null,
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                PermissionUtil.checkPermission(BaseActivity.this,
+                                        permission, requestCode);
+                            }
+                        });
+                    }
+                }), null,
+                View.VISIBLE);
     }
 }

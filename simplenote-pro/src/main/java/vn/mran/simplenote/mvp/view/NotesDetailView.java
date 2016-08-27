@@ -8,4 +8,8 @@ import android.text.SpannableStringBuilder;
 public interface NotesDetailView {
     void onWaiting();
     void onLoadContent(SpannableStringBuilder builder);
+    void onUpdateFinish(boolean bacPress);
+    void onUpdateFail(byte messageId);
+    void addImage(SpannableStringBuilder data);
+    void addSetTxtContentSelection(int selection);
 }

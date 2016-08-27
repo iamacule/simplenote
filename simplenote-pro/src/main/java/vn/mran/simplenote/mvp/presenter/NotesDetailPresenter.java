@@ -12,13 +12,18 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.util.Log;
+import android.widget.EditText;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
 import vn.mran.simplenote.performance.CacheBitmap;
+import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.ResizeBitmap;
@@ -28,16 +33,21 @@ import vn.mran.simplenote.util.StringUtil;
 /**
  * Created by MrAn on 26-Aug-16.
  */
-public class NotesDetailPresenter {
+public class NotesDetailPresenter implements InitPresenter {
     private NotesDetailView notesDetailView;
     private Activity activity;
     private LoadContentAsync loadContentAsync;
     private float imageWidth;
+    public static final byte UPDATE_EXCEPTION = 0;
+    public static final byte EMPTY_CONTENT = 1;
+    private StringBuilder imageData;
+    private Realm realm;
 
     public NotesDetailPresenter(Activity activity) {
         this.activity = activity;
         this.notesDetailView = (NotesDetailView) activity;
         imageWidth = ScreenUtil.getScreenWidth(activity.getWindowManager()) / 3;
+        init();
     }
 
     public void loadData(String content) {
@@ -173,26 +183,108 @@ public class NotesDetailPresenter {
         return builderParent;
     }
 
-    public Bitmap createBitmapFromURI(Context context, Uri imageUri, float width) {
+    public Bitmap createBitmapFromURINew(Context context, Uri imageUri, float width) {
         Bitmap bitmap;
         bitmap = CacheBitmap.getInstance().getBitmapFromMemCache(imageUri.toString());
-        if(bitmap!=null){
-            Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER,"Get from cache success");
+        if (bitmap != null) {
+            Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER, "Get from cache success");
             return bitmap;
-        }else {
+        } else {
             try {
                 InputStream stream = context.getContentResolver().openInputStream(imageUri);
                 bitmap = BitmapFactory.decodeStream(stream);
                 if (bitmap.getWidth() > width)
                     bitmap = ResizeBitmap.resize(bitmap, width);
                 stream.close();
-                CacheBitmap.getInstance().addBitmapToMemoryCache(imageUri.toString(),bitmap);
-                Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER,"Add to cache success");
+                CacheBitmap.getInstance().addBitmapToMemoryCache(imageUri.toString(), bitmap);
+                Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER, "Add to cache success");
                 return bitmap;
             } catch (Exception e) {
                 Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
                 return null;
             }
         }
+    }
+
+    public void update(Notes notes,String title, String content, long folderId,int colorId, boolean back) {
+        if (!DataUtil.checkStringEmpty(title)) {
+            if (DataUtil.checkStringEmpty(content))
+                title = DataUtil.createTitle(content);
+            else {
+                notesDetailView.onUpdateFail(EMPTY_CONTENT);
+                return;
+            }
+        }
+        if (DataUtil.checkStringEmpty(content)) {
+            try {
+
+                realm.beginTransaction();
+                notes.setTitle(title);
+                notes.setContent(content);
+                notes.setFolderId(folderId);
+                notes.setColorId(colorId);
+                realm.copyToRealm(notes);
+                realm.commitTransaction();
+
+                Notes result = RealmController.with().getNotesById(notes.getId());
+                if (null != result) {
+                    Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update success as title : " + notes.getTitle());
+                    Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update success as content : " + notes.getContent());
+                    Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update success as folderId : " + notes.getFolderId());
+                    notesDetailView.onUpdateFinish(back);
+                } else {
+                    notesDetailView.onUpdateFail(UPDATE_EXCEPTION);
+                }
+            } catch (Exception e) {
+                Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update error : " + e.getMessage());
+                notesDetailView.onUpdateFail(UPDATE_EXCEPTION);
+            }
+        } else {
+            notesDetailView.onUpdateFail(EMPTY_CONTENT);
+        }
+    }
+
+    public void addImage(Bitmap bitmap, EditText editText) {
+        List<Object> list = createImageEditText(activity, bitmap, editText);
+        notesDetailView.addImage((SpannableStringBuilder) list.get(0));
+        notesDetailView.addSetTxtContentSelection((int) list.get(1));
+    }
+
+    public Bitmap createBitmapFromURI(Context context, Uri imageUri, float width) {
+        try {
+            imageData = new StringBuilder();
+            imageData.append(AddImageUtil.NODE_IMAGE_START);
+            imageData.append(imageUri.toString());
+            imageData.append(AddImageUtil.NODE_IMAGE_END);
+            InputStream stream = context.getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(stream);
+            if (bitmap.getWidth() > width)
+                bitmap = ResizeBitmap.resize(bitmap, width);
+            stream.close();
+            return bitmap;
+        } catch (Exception e) {
+            Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Object> createImageEditText(Context context, Bitmap bitmap, EditText editText) {
+        BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        int selectionCursor = editText.getSelectionStart();
+        editText.getText().insert(selectionCursor, imageData.toString());
+        selectionCursor = editText.getSelectionStart();
+        SpannableStringBuilder builder = new SpannableStringBuilder(editText.getText());
+        builder.setSpan(new ImageSpan(drawable), selectionCursor - imageData.toString().length(), selectionCursor,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        List<Object> list = new ArrayList<>();
+        list.add(builder);
+        list.add(selectionCursor);
+        return list;
+    }
+
+    @Override
+    public void init() {
+        realm = RealmController.with().getRealm();
     }
 }

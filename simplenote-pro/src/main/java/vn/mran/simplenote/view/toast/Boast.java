@@ -29,13 +29,10 @@ public class Boast
 
     public void show(boolean cancelCurrent)
     {
-        // cancel current
         if (cancelCurrent && (globalBoast != null))
         {
             globalBoast.cancel();
         }
-
-        // save an instance of this current notification
         globalBoast = this;
 
         internalToast.show();
