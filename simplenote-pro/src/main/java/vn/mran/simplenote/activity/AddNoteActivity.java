@@ -2,9 +2,6 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
@@ -12,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import java.io.File;
 import java.util.List;
 
 import vn.mran.simplenote.R;
@@ -21,7 +17,6 @@ import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.PermissionUtil;
-import vn.mran.simplenote.util.ResizeBitmap;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;

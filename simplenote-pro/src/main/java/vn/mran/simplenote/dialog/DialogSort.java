@@ -2,18 +2,14 @@ package vn.mran.simplenote.dialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.view.DialogSortView;
 import vn.mran.simplenote.status.SortStatus;
-import vn.mran.simplenote.util.DataUtil;
 
 /**
  * Created by MrAn on 22-Aug-16.

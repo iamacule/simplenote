@@ -3,10 +3,7 @@ package vn.mran.simplenote.realm;
 import android.app.Application;
 import android.util.Log;
 
-import java.lang.reflect.Field;
-
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import vn.mran.simplenote.application.SimpleNoteApplication;
 import vn.mran.simplenote.model.Folder;

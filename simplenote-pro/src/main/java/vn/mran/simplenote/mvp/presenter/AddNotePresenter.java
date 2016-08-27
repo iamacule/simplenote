@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;

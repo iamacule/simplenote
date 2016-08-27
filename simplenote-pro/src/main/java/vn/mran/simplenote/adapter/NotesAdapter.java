@@ -1,11 +1,8 @@
 package vn.mran.simplenote.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,9 +21,7 @@ import vn.mran.simplenote.activity.MainActivity;
 import vn.mran.simplenote.activity.NotesDetailActivity;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.realm.RealmController;
-import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.StringUtil;
-import vn.mran.simplenote.view.effect.TouchEffect;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 

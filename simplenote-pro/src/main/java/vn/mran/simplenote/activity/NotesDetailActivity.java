@@ -1,24 +1,14 @@
 package vn.mran.simplenote.activity;
 
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.net.Uri;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.NotesDetailPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
-import vn.mran.simplenote.util.AddImageUtil;
-import vn.mran.simplenote.util.DataUtil;
-import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.StringUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.CustomEditText;

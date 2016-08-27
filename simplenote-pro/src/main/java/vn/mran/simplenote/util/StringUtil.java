@@ -1,12 +1,6 @@
 package vn.mran.simplenote.util;
 
-import android.graphics.Point;
 import android.net.Uri;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by MrAn on 25-Aug-16.

@@ -1,6 +1,5 @@
 package vn.mran.simplenote.view;
 
-import android.app.Activity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
