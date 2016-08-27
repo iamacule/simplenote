@@ -7,4 +7,5 @@ public interface ToolAddNotesView {
     void onPhoto();
     void onVoice();
     void onCamera();
+    void onStyle();
 }

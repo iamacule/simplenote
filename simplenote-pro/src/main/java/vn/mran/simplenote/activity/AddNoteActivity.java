@@ -2,14 +2,12 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -17,10 +15,8 @@ import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
-import vn.mran.simplenote.util.AddImageUtil;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.PermissionUtil;
-import vn.mran.simplenote.util.ResizeBitmap;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;
@@ -31,18 +27,29 @@ import vn.mran.simplenote.view.CustomEditText;
 /**
  * Created by MrAn on 19-Aug-16.
  */
-public class AddNoteActivity extends BaseActivity implements AddNotesView,ToolAddNotesView {
+public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolAddNotesView {
     private AddNotePresenter addNotePresenter;
     private Header header;
     private ToolAddNote toolAddNote;
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
+    private LinearLayout lnEdit;
     private final int ACTION_REQUEST_GALLERY = 0;
     private boolean isSaved = false;
+    private int noteColorId;
 
     @Override
     public int getView() {
         return R.layout.activity_add_note;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        noteColorId = currentColorId;
+        lnEdit.setBackgroundResource(noteColorId);
+        txtContent.txtMain.setBackgroundResource(noteColorId);
+        txtTitle.txtMain.setBackgroundResource(noteColorId);
     }
 
     @Override
@@ -52,10 +59,11 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView,ToolAd
         header.title.setText(getString(R.string.add_note));
         header.setDefaultBtnBack();
 
-        toolAddNote = new ToolAddNote(v,this);
+        toolAddNote = new ToolAddNote(v, this);
 
         txtTitle = new CustomEditText(v, R.id.lnTitle);
         txtContent = new CustomEditText(v, R.id.lnContent);
+        lnEdit = (LinearLayout) findViewById(R.id.lnEdit);
     }
 
     @Override
@@ -108,10 +116,10 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView,ToolAd
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    TAKE_PICTURE_REQUEST_CODE:
+                case TAKE_PICTURE_REQUEST_CODE:
                     addNotePresenter.addImage
                             (addNotePresenter.createBitmapFromURI(this, intent.getData(),
-                                    ScreenUtil.getScreenWidth(getWindowManager())/3), txtContent.editText);
+                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case SPEECH_REQUEST_CODE:
                     List<String> results = intent.getStringArrayListExtra(
@@ -137,7 +145,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView,ToolAd
 
     private void save(boolean back) {
         addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
-                txtContent.editText.getText().toString().trim(), currentFolder.getId(), back);
+                txtContent.editText.getText().toString().trim(), currentFolder.getId(), noteColorId, back);
     }
 
     private void clearText() {
@@ -238,5 +246,10 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView,ToolAd
     @Override
     public void onCamera() {
         requestTakePhoTo();
+    }
+
+    @Override
+    public void onStyle() {
+        goToActivity(StyleColorActivity.class);
     }
 }

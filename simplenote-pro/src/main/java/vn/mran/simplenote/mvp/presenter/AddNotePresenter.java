@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
@@ -41,7 +42,7 @@ public class AddNotePresenter implements InitPresenter {
         init();
     }
 
-    public void save(String title, String content, long folderId, boolean back) {
+    public void save(String title, String content, long folderId,int colorId, boolean back) {
         if (!DataUtil.checkStringEmpty(title)) {
             if (DataUtil.checkStringEmpty(content))
                 title = DataUtil.createTitle(content);
@@ -58,6 +59,7 @@ public class AddNotePresenter implements InitPresenter {
                 notes.setTitle(title);
                 notes.setContent(content);
                 notes.setFolderId(folderId);
+                notes.setColorId(colorId);
 
                 realm.beginTransaction();
                 realm.copyToRealm(notes);

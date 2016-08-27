@@ -17,5 +17,9 @@
             android:id="@+id/btnCamera"
             android:icon="@drawable/ic_photo_camera_white_24dp"
             android:title="@string/camera" />
+        <item
+            android:id="@+id/btnStyleColor"
+            android:icon="@drawable/ic_style_white_24dp"
+            android:title="@string/style" />
     </group>
 </menu>

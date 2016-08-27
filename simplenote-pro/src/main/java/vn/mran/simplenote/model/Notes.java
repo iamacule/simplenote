@@ -14,6 +14,7 @@ public class Notes extends RealmObject {
     private long id;
 
     private String title;
+    private int colorId;
     private String content;
     private long folderId;
 
@@ -47,5 +48,13 @@ public class Notes extends RealmObject {
 
     public void setFolderId(long folderId) {
         this.folderId = folderId;
+    }
+
+    public int getColorId() {
+        return colorId;
+    }
+
+    public void setColorId(int colorId) {
+        this.colorId = colorId;
     }
 }

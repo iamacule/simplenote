@@ -7,4 +7,14 @@
     <color name="grey_100">#F5F5F5</color>
     <color name="black">#000000</color>
     <color name="green_a700">#00C853</color>
+    <color name="red_50">#FFEBEE</color>
+    <color name="pink_50">#FCE4EC</color>
+    <color name="purple_50">#F3E5F5</color>
+    <color name="blue_50">#E3F2FD</color>
+    <color name="green_50">#E8F5E9</color>
+    <color name="yellow_50">#FFFDE7</color>
+    <color name="orange_50">#FFF3E0</color>
+    <color name="brown_50">#EFEBE9</color>
+    <color name="grey_50">#FAFAFA</color>
+    <color name="blue_grey_50">#ECEFF1</color>
 </resources>

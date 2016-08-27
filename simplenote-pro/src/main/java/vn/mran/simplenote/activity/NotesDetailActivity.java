@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     private ProgressBar progressBar;
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
+    private LinearLayout lnEdit;
     private final int ACTION_REQUEST_GALLERY = 0;
     private boolean isSaved = false;
     private NotesDetailPresenter notesDetailPresenter;
@@ -54,9 +56,13 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
         txtTitle = new CustomEditText(v, R.id.lnTitle);
         txtContent = new CustomEditText(v, R.id.lnContent);
         progressBar = (ProgressBar) findViewById(R.id.pbBar);
+        lnEdit = (LinearLayout) findViewById(R.id.lnEdit);
         hideEdit();
 
         txtTitle.editText.setText(StringUtil.filterTitle(currentNotes.getTitle()));
+        txtContent.txtMain.setBackgroundResource(currentNotes.getColorId());
+        txtTitle.txtMain.setBackgroundResource(currentNotes.getColorId());
+        lnEdit.setBackgroundResource(currentNotes.getColorId());
     }
 
     void showEdit() {
@@ -121,6 +127,11 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
 
     @Override
     public void onCamera() {
+
+    }
+
+    @Override
+    public void onStyle() {
 
     }
 }

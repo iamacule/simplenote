@@ -16,6 +16,7 @@
     <string name="photos">Photos</string>
     <string name="voice">Voice</string>
     <string name="camera">Camera</string>
+    <string name="style">Style</string>
     <string name="more">More</string>
     <string name="save">Save</string>
     <string name="edit">Edit</string>
@@ -27,6 +28,7 @@
     <string name="cancel">Cancel</string>
     <string name="add_folder_hint">Please input folder name</string>
     <string name="add_folder_empty">Folder name can not empty</string>
+    <string name="preview">Preview</string>
     <string name="add_folder_exits">Folder name already exits</string>
     <string name="add_folder_length_long">Length of folder name can not over 12 character</string>
     <string name="add_folder_success">Add new folder success</string>

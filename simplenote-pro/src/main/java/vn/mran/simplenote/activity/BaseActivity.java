@@ -19,6 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private Intent intent;
     protected static Folder currentFolder;
     public static Notes currentNotes;
+    protected static int currentColorId;
     protected final int SPEECH_REQUEST_CODE = 1;
     protected final int TAKE_PICTURE_REQUEST_CODE = 2;
 

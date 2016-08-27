@@ -61,6 +61,9 @@ public class ToolAddNote {
                                     case R.id.btnCamera:
                                         toolAddNotesView.onCamera();
                                         break;
+                                    case R.id.btnStyleColor:
+                                        toolAddNotesView.onStyle();
+                                        break;
                                 }
                             }
                         })
