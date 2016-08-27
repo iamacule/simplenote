@@ -14,7 +14,11 @@ import android.support.v4.content.ContextCompat;
  */
 public class PermissionUtil {
     public static final int READ_EXTERNAL_STORAGE = 0;
+    public static final int CAMERA = 1;
+    public static final int WRITE_EXTERNAL_STORAGE = 2;
     public static boolean permissionReadExternalStorage = false;
+    public static boolean permissionCamera = false;
+    public static boolean permissionWriteExternalStorage = false;
 
     public static void checkPermission(Activity activity, String permission, int idCallBack) {
         Preferences preferences = new Preferences(activity);
@@ -42,5 +46,7 @@ public class PermissionUtil {
 
     public static void checkAppPermission(Activity activity) {
         PermissionUtil.permissionReadExternalStorage = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ? true : false;
+        PermissionUtil.permissionWriteExternalStorage = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ? true : false;
+        PermissionUtil.permissionCamera = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ? true : false;
     }
 }

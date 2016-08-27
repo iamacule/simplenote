@@ -2,6 +2,9 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
@@ -9,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.io.File;
 import java.util.List;
 
 import vn.mran.simplenote.R;
@@ -17,6 +21,7 @@ import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.PermissionUtil;
+import vn.mran.simplenote.util.ResizeBitmap;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.Utils;
 import vn.mran.simplenote.view.Header;
@@ -34,7 +39,6 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
     private LinearLayout lnEdit;
-    private final int ACTION_REQUEST_GALLERY = 0;
     private boolean isSaved = false;
     private int noteColorId;
 
@@ -93,8 +97,8 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         toolAddNote.btnSave.setOnClickListener(click);
     }
 
-    private void showDialogAskPermission() {
-        dialogEvent.showDialogAsk(getString(R.string.permission_storage), null, null,
+    private void showDialogAskPermission(String message, final String permission, final int requestCode) {
+        dialogEvent.showDialogAsk(message, null, null,
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -102,7 +106,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
                             @Override
                             public void run() {
                                 PermissionUtil.checkPermission(AddNoteActivity.this,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
+                                        permission, requestCode);
                             }
                         });
                     }
@@ -112,13 +116,16 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                case TAKE_PICTURE_REQUEST_CODE:
                     addNotePresenter.addImage
                             (addNotePresenter.createBitmapFromURI(this, intent.getData(),
+                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                    break;
+                case TAKE_PICTURE_REQUEST_CODE:
+                    addNotePresenter.addImage
+                            (addNotePresenter.createBitmapFromURI(this, mCurrentPhotoUri,
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case SPEECH_REQUEST_CODE:
@@ -134,11 +141,12 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         switch (requestCode) {
+            case PermissionUtil.CAMERA:
+            case PermissionUtil.WRITE_EXTERNAL_STORAGE:
             case PermissionUtil.READ_EXTERNAL_STORAGE: {
                 PermissionUtil.checkAppPermission(this);
-                return;
+                break;
             }
         }
     }
@@ -234,7 +242,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         if (PermissionUtil.permissionReadExternalStorage) {
             goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
         } else {
-            showDialogAskPermission();
+            showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
         }
     }
 
@@ -245,7 +253,15 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
 
     @Override
     public void onCamera() {
-        requestTakePhoTo();
+        PermissionUtil.checkAppPermission(this);
+        if (!PermissionUtil.permissionCamera) {
+            showDialogAskPermission(getString(R.string.permission_camera), Manifest.permission.CAMERA, PermissionUtil.CAMERA);
+        } else if (!PermissionUtil.permissionWriteExternalStorage) {
+            showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.WRITE_EXTERNAL_STORAGE, PermissionUtil.WRITE_EXTERNAL_STORAGE);
+        } else {
+            requestTakePhoTo();
+        }
+
     }
 
     @Override

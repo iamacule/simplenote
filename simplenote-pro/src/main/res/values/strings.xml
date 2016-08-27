@@ -47,4 +47,5 @@
     <string name="del_folder_success">Delete folder success</string>
     <string name="image_string"> {Image} </string>
     <string name="permission_storage">SimpleNotes needs to access your external storage to perform this action </string>
+    <string name="permission_camera">SimpleNotes needs to access your camera to perform this action </string>
 </resources>
