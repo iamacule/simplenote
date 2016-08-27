@@ -206,7 +206,7 @@ public class NotesDetailPresenter implements InitPresenter {
         }
     }
 
-    public void update(Notes notes,String title, String content, long folderId,int colorId, boolean back) {
+    public void update(Notes notes,String title, String content, long folderId,int colorId) {
         if (!DataUtil.checkStringEmpty(title)) {
             if (DataUtil.checkStringEmpty(content))
                 title = DataUtil.createTitle(content);
@@ -231,7 +231,7 @@ public class NotesDetailPresenter implements InitPresenter {
                     Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update success as title : " + notes.getTitle());
                     Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update success as content : " + notes.getContent());
                     Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Update success as folderId : " + notes.getFolderId());
-                    notesDetailView.onUpdateFinish(back);
+                    notesDetailView.onUpdateFinish();
                 } else {
                     notesDetailView.onUpdateFail(UPDATE_EXCEPTION);
                 }

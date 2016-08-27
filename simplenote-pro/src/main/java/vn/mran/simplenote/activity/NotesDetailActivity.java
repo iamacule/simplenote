@@ -17,6 +17,7 @@ import vn.mran.simplenote.mvp.presenter.NotesDetailPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.EventUtil;
 import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.StringUtil;
@@ -39,6 +40,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     private final int ACTION_REQUEST_GALLERY = 0;
     private boolean isSaved = false;
     private NotesDetailPresenter notesDetailPresenter;
+    private EventUtil.KeyBoard keyBoard;
 
     @Override
     public int getView() {
@@ -101,6 +103,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     public void initValue() {
         notesDetailPresenter = new NotesDetailPresenter(this);
         toolAddNote.txtDate.setText(Utils.getDate(currentNotes.getId(), "yyyy-MM-dd:HH:mm"));
+        keyBoard = new EventUtil.KeyBoard(this);
         toolAddNote.txtFolder.setText(currentFolder.getName());
         notesDetailPresenter.loadData(currentNotes.getContent());
     }
@@ -119,7 +122,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
                         break;
                     case R.id.btnSave:
                         isSaved = true;
-                        update(true);
+                        update();
                         break;
                 }
             }
@@ -180,10 +183,9 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     }
 
     @Override
-    public void onUpdateFinish(boolean bacPress) {
+    public void onUpdateFinish() {
         Boast.makeText(this, getString(R.string.update_success)).show();
-        if (bacPress)
-            super.onBackPressed();
+        keyBoard.hide(txtContent.editText);
     }
 
     @Override
@@ -221,7 +223,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        update(false);
+                                        update();
                                         NotesDetailActivity.super.onBackPressed();
                                     }
                                 });
@@ -278,9 +280,9 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
         goToActivity(StyleColorActivity.class);
     }
 
-    private void update(boolean back) {
+    private void update() {
         notesDetailPresenter.update(currentNotes, txtTitle.editText.getText().toString().trim(),
-                txtContent.editText.getText().toString().trim(), currentFolder.getId(), noteColorId, back);
+                txtContent.editText.getText().toString().trim(), currentFolder.getId(), noteColorId);
     }
 
     private void clearText() {
