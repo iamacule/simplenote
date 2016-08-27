@@ -9,6 +9,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.adapter.NotesAdapter;
+import vn.mran.simplenote.dialog.DialogAddFolder;
 import vn.mran.simplenote.dialog.DialogSelectFolder;
 import vn.mran.simplenote.dialog.DialogSort;
 import vn.mran.simplenote.model.Folder;
@@ -30,7 +31,7 @@ import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.toast.Boast;
 
 public class MainActivity extends BaseActivity implements AddFolderView,
-        DialogSelectFolderView,DialogSortView {
+        DialogSelectFolderView, DialogSortView {
     private FloatingAdd floatingAdd;
     private Header header;
     private Filter filter;
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     private RealmResults<Notes> realmResults;
     private DialogSelectFolder.Build dialogSelectFolder;
     private DialogSort.Build dialogSort;
+    private DialogAddFolder.Build dialogAddFolder;
 
     @Override
     protected void onResume() {
@@ -78,7 +80,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
 
     private void setAdapter() {
         realmResults = RealmController.with().getNotesInFolder(currentFolder.getId());
-        notesAdapter = new NotesAdapter(this,realmResults);
+        notesAdapter = new NotesAdapter(this, realmResults);
         checkEmptyData();
         contentMain.recyclerView.setAdapter(notesAdapter);
     }
@@ -134,18 +136,21 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     }
 
     private void showDialogAddFolder() {
-        dialogEvent.showDialogAddFolder(new Thread(new Runnable() {
+        dialogAddFolder = new DialogAddFolder.Build(this);
+        dialogAddFolder.getBtnConfirm().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        addFolderPresenter.save(dialogEvent.getDialogAddFolder().getTxtName().getText().toString().trim());
-                        dialogEvent.getDialogAddFolder().getTxtName().setText("");
-                    }
-                });
+            public void onClick(View view) {
+                addFolderPresenter.save(dialogAddFolder.getTxtName().getText().toString().trim());
             }
-        }));
+        });
+        dialogAddFolder.getBtnCancel().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogAddFolder.getTxtName().setText("");
+                dialogAddFolder.dismiss();
+            }
+        });
+        dialogAddFolder.show();
     }
 
     private void setOnScrollListener() {
@@ -179,6 +184,8 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     @Override
     public void onSaveFinish(Folder folder) {
         Boast.makeText(this, getString(R.string.add_folder_success)).show();
+        dialogAddFolder.getTxtName().setText("");
+        dialogAddFolder.dismiss();
         currentFolder = folder;
         updateList(folder);
     }
@@ -191,6 +198,9 @@ public class MainActivity extends BaseActivity implements AddFolderView,
                 break;
             case AddFolderPresenter.FOLDER_EXITS:
                 Boast.makeText(this, getString(R.string.add_folder_exits)).show();
+                break;
+            case AddFolderPresenter.LENGTH_LONG:
+                Boast.makeText(this, getString(R.string.add_folder_length_long)).show();
                 break;
             case AddFolderPresenter.SAVE_EXCEPTION:
                 Boast.makeText(this, getString(R.string.add_folder_fail)).show();

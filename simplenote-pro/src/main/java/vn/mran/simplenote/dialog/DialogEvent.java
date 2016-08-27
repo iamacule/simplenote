@@ -13,35 +13,14 @@ import vn.mran.simplenote.util.DataUtil;
  */
 public class DialogEvent {
     private ProgressDialog progressDialog;
-    private DialogAddFolder.Build dialogAddFolder;
     private DialogAsk.Build dialogAsk;
 
     public DialogEvent(Activity context) {
-        dialogAddFolder = new DialogAddFolder.Build(context);
         dialogAsk = new DialogAsk.Build(context);
         progressDialog = new ProgressDialog(context, R.style.TransparentDialog);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
-    }
-
-    public DialogAddFolder.Build getDialogAddFolder() {
-        return dialogAddFolder;
-    }
-
-    public void showDialogAddFolder(final Thread functionBtnConfirm) {
-        if (functionBtnConfirm != null) {
-            dialogAddFolder.getBtnConfirm().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogAddFolder.dismiss();
-                    functionBtnConfirm.start();
-                }
-            });
-        } else {
-            dialogAddFolder.setBtnConfirmDefaultClick();
-        }
-        dialogAddFolder.show();
     }
 
     public DialogAsk.Build getDialogAsk() {
@@ -110,7 +89,6 @@ public class DialogEvent {
 
     public void dismissAll() {
         dismissProgressDialog();
-        dialogAddFolder.dismiss();
         dialogAsk.dismiss();
     }
 }

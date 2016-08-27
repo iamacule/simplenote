@@ -35,27 +35,6 @@ public class DialogAddFolder {
             txtName.editText.setHint(activity.getString(R.string.add_folder_hint));
             TouchEffect.addAlpha(btnCancel);
             TouchEffect.addAlpha(btnConfirm);
-            setNegativeButtonDefaultClick();
-        }
-
-        private Build setNegativeButtonDefaultClick() {
-            this.btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-            return this;
-        }
-
-        public Build setBtnConfirmDefaultClick() {
-            this.btnConfirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-            return this;
         }
 
         public TextView getBtnConfirm() {

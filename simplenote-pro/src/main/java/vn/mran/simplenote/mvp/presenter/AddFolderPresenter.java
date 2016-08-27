@@ -17,6 +17,7 @@ public class AddFolderPresenter {
     public static final byte SAVE_EXCEPTION = 0;
     public static final byte EMPTY_CONTENT = 1;
     public static final byte FOLDER_EXITS = 2;
+    public static final byte LENGTH_LONG = 3;
     private AddFolderView addFolderView;
     private Realm realm;
 
@@ -32,6 +33,8 @@ public class AddFolderPresenter {
     public void save(String folderName) {
         if (!DataUtil.checkStringEmpty(folderName)) {
             addFolderView.onSaveFail(EMPTY_CONTENT);
+        } else if (folderName.length() > 12) {
+            addFolderView.onSaveFail(LENGTH_LONG);
         } else {
             try {
                 RealmResults<Folder> listResult = RealmController.with().checkFolderNameExits(folderName);
@@ -51,7 +54,7 @@ public class AddFolderPresenter {
                     } else {
                         addFolderView.onSaveFail(SAVE_EXCEPTION);
                     }
-                }else {
+                } else {
                     addFolderView.onSaveFail(FOLDER_EXITS);
                 }
             } catch (Exception e) {
