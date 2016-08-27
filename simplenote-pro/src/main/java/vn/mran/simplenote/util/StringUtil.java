@@ -6,7 +6,7 @@ import android.net.Uri;
  * Created by MrAn on 25-Aug-16.
  */
 public class StringUtil {
-    private static final String IMAGE_STRING = "{Image}";
+    public static final String IMAGE_STRING = "{Image}";
     public static final String BEGIN_STRING = "d@!dv89)&(*wdef";
 
     public static int getPostTitleToCut(String data) {

@@ -12,10 +12,14 @@ import android.widget.ProgressBar;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.presenter.NotesDetailPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
+import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.EventUtil;
 import vn.mran.simplenote.util.PermissionUtil;
@@ -38,7 +42,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     private CustomEditText txtContent;
     private LinearLayout lnEdit;
     private final int ACTION_REQUEST_GALLERY = 0;
-    private boolean isSaved = false;
+    private boolean isUpdated = false;
     private NotesDetailPresenter notesDetailPresenter;
     private EventUtil.KeyBoard keyBoard;
 
@@ -121,7 +125,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
                         clearText();
                         break;
                     case R.id.btnSave:
-                        isSaved = true;
+                        isUpdated = true;
                         update();
                         break;
                 }
@@ -215,36 +219,53 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     @Override
     public void onBackPressed() {
         if (DataUtil.checkStringEmpty(txtContent.editText.getText().toString())) {
-            if (!isSaved) {
-                dialogEvent.showDialogAsk(getString(R.string.save_your_note), null, null,
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        update();
-                                        NotesDetailActivity.super.onBackPressed();
-                                    }
-                                });
-                            }
-                        }), new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        NotesDetailActivity.super.onBackPressed();
-                                    }
-                                });
-                            }
-                        }), View.VISIBLE);
+            if (!isUpdated) {
+                if (checkChanged()) {
+                    dialogEvent.showDialogAsk(getString(R.string.update_your_note), null, null,
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            update();
+                                            NotesDetailActivity.super.onBackPressed();
+                                        }
+                                    });
+                                }
+                            }), new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NotesDetailActivity.super.onBackPressed();
+                                        }
+                                    });
+                                }
+                            }), View.VISIBLE);
+                } else {
+                    NotesDetailActivity.super.onBackPressed();
+                }
             } else {
-                super.onBackPressed();
+                NotesDetailActivity.super.onBackPressed();
             }
         } else {
+            Realm realm = RealmController.with().getRealm();
+            realm.beginTransaction();
+            RealmController.with().deleteNotesById(currentNotes.getId());
+            realm.commitTransaction();
             super.onBackPressed();
         }
+    }
+
+    private boolean checkChanged() {
+        if (((txtTitle.editText.getText().toString().equals(currentNotes.getTitle()) ||
+                txtTitle.editText.getText().equals(StringUtil.IMAGE_STRING))) &&
+                txtContent.editText.getText().toString().equals(currentNotes.getContent())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

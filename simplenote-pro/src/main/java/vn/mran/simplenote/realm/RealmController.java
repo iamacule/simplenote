@@ -69,6 +69,11 @@ public class RealmController {
         return realm.where(Folder.class).equalTo("name", name).findFirst();
     }
 
+    public void deleteNotesById(long id) {
+        RealmResults<Notes> result = realm.where(Notes.class).equalTo("id", id).findAll();
+        result.deleteAllFromRealm();
+    }
+
     public RealmResults<Folder> getAllFolder() {
         return realm.where(Folder.class).findAll();
     }
@@ -77,12 +82,12 @@ public class RealmController {
         return realm.where(Notes.class).findAll();
     }
 
-    public RealmResults<Notes> getNotesInFolder(Long folderId){
+    public RealmResults<Notes> getNotesInFolder(Long folderId) {
         Folder folder = getFolderById(folderId);
-        if(folder.getName().equals("All")){
+        if (folder.getName().equals("All")) {
             return getAllNotes();
         }
-        return realm.where(Notes.class).equalTo("folderId",folderId).findAll();
+        return realm.where(Notes.class).equalTo("folderId", folderId).findAll();
     }
 
     public RealmResults<Folder> checkFolderNameExits(String folderName) {
