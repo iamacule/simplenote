@@ -12,6 +12,7 @@
     <string name="date">Date</string>
     <string name="content">Content</string>
     <string name="add_note">Add new notes</string>
+    <string name="notes_detail">Notes detail</string>
     <string name="clear">Clear</string>
     <string name="photos">Photos</string>
     <string name="voice">Voice</string>

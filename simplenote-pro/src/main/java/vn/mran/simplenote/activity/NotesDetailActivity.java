@@ -64,7 +64,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     public void initView() {
         View v = getWindow().getDecorView().getRootView();
         header = new Header(v);
-        header.title.setText(getString(R.string.add_note));
+        header.title.setText(getString(R.string.notes_detail));
         header.setDefaultBtnBack();
 
         toolAddNote = new ToolAddNote(v, this);
