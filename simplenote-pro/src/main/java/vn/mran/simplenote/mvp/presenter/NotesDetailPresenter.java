@@ -160,8 +160,9 @@ public class NotesDetailPresenter implements InitPresenter {
         SpannableStringBuilder builderParent = new SpannableStringBuilder();
         int selectionCursor;
         for (int i = 0; i < listDataNormal.size(); i++) {
+            Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER,"Data : "+listDataImage.get(i));
             StringBuilder totalData = new StringBuilder();
-            Bitmap bitmap = createBitmapFromURI(activity, listUri.get(i), width);
+            Bitmap bitmap = createBitmapFromURINew(activity, listUri.get(i), width);
             BitmapDrawable drawable = new BitmapDrawable(activity.getResources(), bitmap);
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
             if (listDataNormal.get(i).equals(StringUtil.BEGIN_STRING)) {

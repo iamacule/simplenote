@@ -142,12 +142,12 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     notesDetailPresenter.addImage
-                            (notesDetailPresenter.createBitmapFromURINew(this, intent.getData(),
+                            (notesDetailPresenter.createBitmapFromURI(this, intent.getData(),
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
                     notesDetailPresenter.addImage
-                            (notesDetailPresenter.createBitmapFromURINew(this, mCurrentPhotoUri,
+                            (notesDetailPresenter.createBitmapFromURI(this, mCurrentPhotoUri,
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case SPEECH_REQUEST_CODE:
