@@ -39,20 +39,18 @@ public class AddFolderPresenter {
             try {
                 RealmResults<Folder> listResult = RealmController.with().checkFolderNameExits(folderName);
                 if (listResult.isEmpty()) {
-                    long id = System.currentTimeMillis();
-                    Folder folder = new Folder();
-                    folder.setId(id);
-                    folder.setName(folderName);
-                    realm.beginTransaction();
-                    realm.copyToRealm(folder);
-                    realm.commitTransaction();
-                    Folder result = RealmController.with().getFolderById(id);
-                    if (null != result) {
-                        Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder id : " + folder.getId());
-                        Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder name : " + folder.getName());
-                        addFolderView.onSaveFinish(folder);
-                    } else {
-                        addFolderView.onSaveFail(SAVE_EXCEPTION);
+                    listResult = RealmController.with().getAllFolder();
+                    boolean canCreate = true;
+                    for (Folder folder : listResult){
+                        if(folderName.toLowerCase().equals(folder.getName().toLowerCase())){
+                            canCreate = false;
+                            break;
+                        }
+                    }
+                    if(canCreate){
+                        createFolder(folderName);
+                    }else {
+                        addFolderView.onSaveFail(FOLDER_EXITS);
                     }
                 } else {
                     addFolderView.onSaveFail(FOLDER_EXITS);
@@ -63,5 +61,23 @@ public class AddFolderPresenter {
             }
         }
 
+    }
+
+    private void createFolder(String folderName) {
+        long id = System.currentTimeMillis();
+        Folder folder = new Folder();
+        folder.setId(id);
+        folder.setName(folderName);
+        realm.beginTransaction();
+        realm.copyToRealm(folder);
+        realm.commitTransaction();
+        Folder result = RealmController.with().getFolderById(id);
+        if (null != result) {
+            Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder id : " + folder.getId());
+            Log.d(DataUtil.TAG_ADD_FOLDER_ACTIVITY, "Save success as folder name : " + folder.getName());
+            addFolderView.onSaveFinish(folder);
+        } else {
+            addFolderView.onSaveFail(SAVE_EXCEPTION);
+        }
     }
 }

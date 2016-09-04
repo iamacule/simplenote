@@ -25,6 +25,7 @@ import vn.mran.simplenote.mvp.view.DialogSelectFolderView;
 import vn.mran.simplenote.mvp.view.MoveFolderView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AnimationUtil;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.EventUtil;
 import vn.mran.simplenote.view.effect.TouchEffect;
@@ -110,6 +111,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
         TouchEffect.addAlpha(holder.btnConfirm);
         TouchEffect.addAlpha(holder.btnCancel);
         holder.txtItem.setText(folder.getName());
+        if(folder.getName().equals(Constant.FOLDER_ALL)){
+            holder.txtItem.setTextColor(activity.getResources().getColor(R.color.colorPrimaryDark));
+        }
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
@@ -130,16 +134,24 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyViewHold
                         dialogSelectFolderView.onSelectItem(folder);
                         break;
                     case R.id.btnRename:
-                        rename(myViewHolder);
+                        if(folder.getName().equals(Constant.FOLDER_ALL)){
+                            Boast.makeText(activity,activity.getString(R.string.not_rename_folder)).show();
+                        }else {
+                            rename(myViewHolder);
+                        }
                         break;
                     case R.id.btnConfirm:
                         confirmRename(myViewHolder, folder, position);
                         break;
                     case R.id.btnDelete:
-                        delFolder = folder;
-                        FolderAdapter.this.myViewHolders = myViewHolder;
-                        pos = position;
-                        delete(myViewHolder, position);
+                        if(folder.getName().equals(Constant.FOLDER_ALL)){
+                            Boast.makeText(activity,activity.getString(R.string.not_delete_folder)).show();
+                        }else {
+                            delFolder = folder;
+                            FolderAdapter.this.myViewHolders = myViewHolder;
+                            pos = position;
+                            delete(myViewHolder, position);
+                        }
                         break;
                     case R.id.btnCancel:
                         cancelEdit(myViewHolder);
