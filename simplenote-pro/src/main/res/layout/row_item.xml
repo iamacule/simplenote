@@ -68,15 +68,31 @@
                     android:layout_marginRight="@dimen/view_line_margin"
                     android:background="@drawable/ic_event_note_black_24dp" />
 
-                <TextView
-                    android:id="@+id/txtItem"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:maxLines="1"
-                    android:text="Test"
-                    android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:gravity="center|left"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="Test"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/app_text_size" />
+
+                    <TextView
+                        android:id="@+id/txtContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="Test"
+                        android:textColor="@color/grey_400"
+                        android:textSize="@dimen/app_text_size_small" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

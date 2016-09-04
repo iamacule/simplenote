@@ -31,7 +31,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     private String imageString;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView item;
+        public TextView txtTitle;
+        public TextView txtContent;
         public TextView txtTime;
         public TextView txtDate;
         public LinearLayout row;
@@ -40,9 +41,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
         public MyViewHolder(View view) {
             super(view);
-            item = (TextView) view.findViewById(R.id.txtItem);
-            txtTime = (TextView) view.findViewById(R.id.txtTime);
+            txtTitle = (TextView) view.findViewById(R.id.txtTitle);
+            txtContent = (TextView) view.findViewById(R.id.txtContent);
             txtDate = (TextView) view.findViewById(R.id.txtDate);
+            txtTime = (TextView) view.findViewById(R.id.txtTime);
             row = (LinearLayout) view.findViewById(R.id.row);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             buttonDelete = (Button) itemView.findViewById(R.id.btnDelete);
@@ -66,7 +68,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Notes notes = realmResult.get(position);
-        holder.item.setText(StringUtil.filterTitle(notes.getTitle()));
+        holder.txtTitle.setText(StringUtil.filterTitle(notes.getTitle()));
+        holder.txtContent.setText(StringUtil.filterTitle(notes.getContent()));
         holder.txtDate.setText(Utils.getDate(notes.getId(), "yyyy-MM-dd"));
         holder.txtTime.setText(Utils.getDate(notes.getId(), "HH:mm"));
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);

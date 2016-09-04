@@ -25,7 +25,7 @@ public class MoveNotesAdapter extends RecyclerView.Adapter<MoveNotesAdapter.MyVi
 
         public MyViewHolder(View view) {
             super(view);
-            txtItem = (TextView) view.findViewById(R.id.txtItem);
+            txtItem = (TextView) view.findViewById(R.id.txtTitle);
             row = (LinearLayout) view.findViewById(R.id.row);
         }
     }
