@@ -87,7 +87,10 @@
             android:hint="@string/search"
             android:textSize="@dimen/app_text_size"
             android:textColor="@color/white"
-            android:textColorHint="@color/grey_400" />
+            android:textColorHint="@color/grey_400"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:imeOptions="actionDone" />
 
         <ImageButton
             android:id="@+id/btnSearch"

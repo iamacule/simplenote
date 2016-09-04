@@ -2,8 +2,13 @@ package vn.mran.simplenote.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -24,6 +29,7 @@ import vn.mran.simplenote.util.AnimationUtil;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.DividerItemDecoration;
+import vn.mran.simplenote.util.EventUtil;
 import vn.mran.simplenote.view.ContentMain;
 import vn.mran.simplenote.view.Filter;
 import vn.mran.simplenote.view.FloatingAdd;
@@ -96,6 +102,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     @Override
     public void initAction() {
         setOnScrollListener();
+        setOnSearchBoxTextChange();
         final View.OnClickListener click = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,6 +135,31 @@ public class MainActivity extends BaseActivity implements AddFolderView,
         filter.btnSort.setOnClickListener(click);
         filter.btnFolder.setOnClickListener(click);
         filter.btnSearch.setOnClickListener(click);
+    }
+
+    private void setOnSearchBoxTextChange() {
+        filter.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(filter.etSearch.getText().toString().trim());
+            }
+        });
+    }
+
+    private void filter(String key) {
+        realmResults = RealmController.with().filter(key);
+        notesAdapter.filter(realmResults);
+        updateSort();
     }
 
     private void showDialogSelectFolder() {

@@ -111,4 +111,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         this.realmResult = realmResult;
         notifyDataSetChanged();
     }
+
+    public void filter(RealmResults<Notes> realmResult) {
+        this.realmResult = realmResult;
+        notifyDataSetChanged();
+    }
 }

@@ -95,4 +95,11 @@ public class RealmController {
                 .contains("name", folderName)
                 .findAll();
     }
+
+    public RealmResults<Notes> filter (final String key){
+        return realm.where(Notes.class)
+                .contains("title",key)
+                .contains("content",key)
+                .findAll();
+    }
 }
