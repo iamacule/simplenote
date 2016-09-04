@@ -2,6 +2,7 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
@@ -110,6 +111,30 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
         keyBoard = new EventUtil.KeyBoard(this);
         toolAddNote.txtFolder.setText(currentFolder.getName());
         notesDetailPresenter.loadData(currentNotes.getContent());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        txtContent = new CustomEditText(getWindow().getDecorView().getRootView(), R.id.lnContent);
+        txtTitle = new CustomEditText(getWindow().getDecorView().getRootView(), R.id.lnTitle);
+        CharSequence contentText = txtContent.editText.getText();
+        CharSequence titleText = txtTitle.editText.getText();
+        outState.putCharSequence("contentText", contentText);
+        outState.putCharSequence("titleText", titleText);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedState) {
+        txtContent = new CustomEditText(getWindow().getDecorView().getRootView(), R.id.lnContent);
+        txtTitle = new CustomEditText(getWindow().getDecorView().getRootView(), R.id.lnTitle);
+
+        CharSequence contentText = savedState.getCharSequence("contentText");
+        CharSequence titleText = savedState.getCharSequence("titleText");
+
+        txtContent.editText.setText(contentText);
+        txtTitle.editText.setText(titleText);
     }
 
     @Override
