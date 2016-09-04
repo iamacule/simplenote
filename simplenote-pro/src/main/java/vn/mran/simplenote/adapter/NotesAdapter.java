@@ -22,6 +22,7 @@ import vn.mran.simplenote.activity.NotesDetailActivity;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.StringUtil;
+import vn.mran.simplenote.util.Utils;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
@@ -31,6 +32,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView item;
+        public TextView txtTime;
+        public TextView txtDate;
         public LinearLayout row;
         SwipeLayout swipeLayout;
         Button buttonDelete;
@@ -38,6 +41,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         public MyViewHolder(View view) {
             super(view);
             item = (TextView) view.findViewById(R.id.txtItem);
+            txtTime = (TextView) view.findViewById(R.id.txtTime);
+            txtDate = (TextView) view.findViewById(R.id.txtDate);
             row = (LinearLayout) view.findViewById(R.id.row);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             buttonDelete = (Button) itemView.findViewById(R.id.btnDelete);
@@ -62,6 +67,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Notes notes = realmResult.get(position);
         holder.item.setText(StringUtil.filterTitle(notes.getTitle()));
+        holder.txtDate.setText(Utils.getDate(notes.getId(), "yyyy-MM-dd"));
+        holder.txtTime.setText(Utils.getDate(notes.getId(), "HH:mm"));
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
