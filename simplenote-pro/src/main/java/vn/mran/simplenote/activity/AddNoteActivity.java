@@ -45,10 +45,17 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     @Override
     protected void onResume() {
         super.onResume();
-        noteColorId = currentColorId;
-        lnEdit.setBackgroundResource(noteColorId);
-        txtContent.txtMain.setBackgroundResource(noteColorId);
-        txtTitle.txtMain.setBackgroundResource(noteColorId);
+        if(-1!=currentColorId){
+            lnEdit.setBackgroundResource(currentColorId);
+            txtContent.txtMain.setBackgroundResource(currentColorId);
+            txtTitle.txtMain.setBackgroundResource(currentColorId);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        currentColorId = -1;
     }
 
     @Override
@@ -155,7 +162,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
 
     private void save(boolean back) {
         addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
-                txtContent.editText.getText().toString().trim(), currentFolder.getId(), noteColorId, back);
+                txtContent.editText.getText().toString().trim(), currentFolder.getId(), currentColorId, back);
     }
 
     private void clearText() {

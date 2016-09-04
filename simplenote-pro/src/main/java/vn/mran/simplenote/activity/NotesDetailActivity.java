@@ -55,10 +55,21 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     @Override
     protected void onResume() {
         super.onResume();
-        noteColorId = currentColorId;
-        lnEdit.setBackgroundResource(noteColorId);
-        txtContent.txtMain.setBackgroundResource(noteColorId);
-        txtTitle.txtMain.setBackgroundResource(noteColorId);
+        if (-1 != currentColorId) {
+            lnEdit.setBackgroundResource(currentColorId);
+            txtContent.txtMain.setBackgroundResource(currentColorId);
+            txtTitle.txtMain.setBackgroundResource(currentColorId);
+            RealmController.with().getRealm().beginTransaction();
+            currentNotes.setColorId(currentColorId);
+            RealmController.with().getRealm().copyToRealm(currentNotes);
+            RealmController.with().getRealm().commitTransaction();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        currentColorId = -1;
     }
 
     @Override
@@ -286,8 +297,8 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
 
     private boolean checkChanged() {
         if (((txtTitle.editText.getText().toString().equals(currentNotes.getTitle()) ||
-                txtTitle.editText.getText().equals(StringUtil.IMAGE_STRING))) &&
-                txtContent.editText.getText().toString().equals(currentNotes.getContent())) {
+                        txtTitle.editText.getText().equals(StringUtil.IMAGE_STRING))) &&
+                        txtContent.editText.getText().toString().equals(currentNotes.getContent())) {
             return false;
         }
         return true;
@@ -328,7 +339,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
 
     private void update() {
         notesDetailPresenter.update(currentNotes, txtTitle.editText.getText().toString().trim(),
-                txtContent.editText.getText().toString().trim(), currentFolder.getId(), noteColorId);
+                txtContent.editText.getText().toString().trim(), currentFolder.getId(), currentColorId);
     }
 
     private void clearText() {
