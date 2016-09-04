@@ -28,7 +28,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     private RealmResults<Notes> realmResult;
     private MainActivity activity;
-    private String imageString;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView txtTitle;
@@ -54,7 +53,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     public NotesAdapter(Activity activity, RealmResults<Notes> realmResult) {
         this.activity = (MainActivity) activity;
         this.realmResult = realmResult;
-        imageString = activity.getString(R.string.image_string);
     }
 
     @Override
@@ -99,6 +97,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
