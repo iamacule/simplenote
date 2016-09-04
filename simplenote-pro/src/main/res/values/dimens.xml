@@ -16,4 +16,5 @@
     <dimen name="header_land_padding">6dp</dimen>
     <dimen name="row_item_padding">7dp</dimen>
     <dimen name="button_swipe_margin">5dp</dimen>
+    <dimen name="margin_search_right">10dp</dimen>
 </resources>

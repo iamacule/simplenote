@@ -116,6 +116,10 @@ public class MainActivity extends BaseActivity implements AddFolderView,
                     case R.id.btnFolder:
                         showDialogSelectFolder();
                         break;
+
+                    case R.id.btnSearch:
+                        filter.showHideSearch();
+                        break;
                 }
             }
         };
@@ -123,6 +127,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
         floatingAdd.btnAddFolder.setOnClickListener(click);
         filter.btnSort.setOnClickListener(click);
         filter.btnFolder.setOnClickListener(click);
+        filter.btnSearch.setOnClickListener(click);
     }
 
     private void showDialogSelectFolder() {

@@ -1,67 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:orientation="horizontal"
-    android:id="@+id/parent"
-    android:paddingTop="@dimen/view_line_margin"
-    android:paddingBottom="@dimen/view_line_margin">
+    android:paddingBottom="@dimen/view_line_margin"
+    android:paddingTop="@dimen/view_line_margin">
 
     <LinearLayout
-        android:id="@+id/btnSort"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_weight="0.6">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/btnSort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sort"
-            android:textColor="@color/white"
-            android:textSize="@dimen/app_text_size" />
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtSortStatus"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sort"
+                android:textColor="@color/white"
+                android:textSize="@dimen/app_text_size" />
+
+            <TextView
+                android:id="@+id/txtSortStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/newest"
+                android:textColor="@color/grey_100"
+                android:textSize="@dimen/app_text_size_small" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/view_line_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/view_line_margin"
+            android:background="@color/white" />
+
+
+        <LinearLayout
+            android:id="@+id/btnFolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/newest"
-            android:textColor="@color/grey_100"
-            android:textSize="@dimen/app_text_size_small" />
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/folders"
+                android:textColor="@color/white"
+                android:textSize="@dimen/app_text_size" />
+
+            <TextView
+                android:id="@+id/txtFolderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/all"
+                android:textColor="@color/grey_100"
+                android:textSize="@dimen/app_text_size_small" />
+        </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/view_line_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/view_line_margin"
-        android:background="@color/white" />
-
-
-    <LinearLayout
-        android:id="@+id/btnFolder"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_weight="0.4"
+        android:gravity="center|right"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:visibility="gone"
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/folders"
+            android:hint="@string/search"
+            android:textSize="@dimen/app_text_size"
             android:textColor="@color/white"
-            android:textSize="@dimen/app_text_size" />
+            android:textColorHint="@color/grey_400" />
 
-        <TextView
-            android:id="@+id/txtFolderName"
+        <ImageButton
+            android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/all"
-            android:textColor="@color/grey_100"
-            android:textSize="@dimen/app_text_size_small" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/margin_search_right"
+            android:background="@drawable/ic_search_white_24dp" />
+    </RelativeLayout>
 </LinearLayout>
