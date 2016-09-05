@@ -38,6 +38,10 @@ public class InputPinCodeActivity extends BaseActivity implements InputPinCodeVi
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             flag = extras.getString(Constant.SECURITY_FLAG);
+            if(flag.equals(Constant.SECURITY_MAIN)){
+                header.btnBack.setVisibility(View.GONE);
+                header.btnMenu.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -125,6 +129,9 @@ public class InputPinCodeActivity extends BaseActivity implements InputPinCodeVi
     @Override
     public void onSuccess() {
         switch (flag) {
+            case Constant.SECURITY_MAIN:
+                goToActivity(MainActivity.class);
+                break;
             case Constant.SECURITY_NONE:
                 inputPinCodePresenter.updateToNone();
                 InputPinCodeActivity.super.onBackPressed();
