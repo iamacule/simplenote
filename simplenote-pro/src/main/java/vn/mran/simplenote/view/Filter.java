@@ -52,4 +52,12 @@ public class Filter {
         }
         isShowSearch = !isShowSearch;
     }
+
+    public void hideSearch() {
+        etSearch.setVisibility(View.GONE);
+        etSearch.setText("");
+        keyBoard.hide(etSearch);
+        btnSearch.setBackgroundResource((R.drawable.ic_search_white_24dp));
+        isShowSearch = false;
+    }
 }

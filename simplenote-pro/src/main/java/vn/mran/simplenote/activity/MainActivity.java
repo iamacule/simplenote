@@ -76,6 +76,12 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        filter.hideSearch();
+    }
+
+    @Override
     public void initValue() {
         addFolderPresenter = new AddFolderPresenter(this);
         currentFolder = RealmController.with().getFolderByName(Constant.FOLDER_ALL);
