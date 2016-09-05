@@ -16,6 +16,12 @@
     <string name="clear">Clear</string>
     <string name="photos">Photos</string>
     <string name="security">Security</string>
+    <string name="none">None</string>
+    <string name="no_lock">No lock</string>
+    <string name="pin">PIN</string>
+    <string name="finger_print">Fingerprint</string>
+    <string name="finger_print_detail">Unlock by your fingerprint</string>
+    <string name="pin_detail">Enter a numeric PIN to unlock</string>
     <string name="voice">Voice</string>
     <string name="camera">Camera</string>
     <string name="style">Style</string>

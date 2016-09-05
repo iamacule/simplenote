@@ -72,7 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 public void call(View v, int id) {
                                     switch (id) {
                                         case R.id.btnSecurity:
-                                            Log.d(DataUtil.TAG_BASE,"Security clicked");
+                                            goToActivity(SecurityActivity.class);
                                             break;
                                     }
                                 }
@@ -139,7 +139,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
-        FileUtil fileUtil = new FileUtil(imageFileName);
+        FileUtil fileUtil = new FileUtil(imageFileName,DataUtil.IMAGE_FOLDER);
         return fileUtil.get();
     }
 

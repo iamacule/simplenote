@@ -79,7 +79,6 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     public void initValue() {
         addFolderPresenter = new AddFolderPresenter(this);
         currentFolder = RealmController.with().getFolderByName(Constant.FOLDER_ALL);
-        Log.d(DataUtil.TAG_MAIN_ACTIVITY, "Current folder : " + currentFolder.getId());
         sortStatus = new SortStatus();
         setAdapter();
     }
@@ -157,7 +156,6 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     }
 
     private void filter(String key) {
-        Log.d(DataUtil.TAG_MAIN_ACTIVITY,"Key : "+key);
         realmResults = RealmController.with().filter(key);
         notesAdapter.filter(realmResults);
         updateSort();

@@ -6,9 +6,13 @@ import android.util.Log;
  * Created by Mr An on 20/08/2016.
  */
 public class DataUtil {
+    /**
+     * App TAG
+     */
     private static final String APP_TAG = "SimpleNote:";
     public static final String TAG_DATA_UTIL = APP_TAG + "DataUtil";
     public static final String TAG_BASE = APP_TAG + "BaseActivity";
+    public static final String TAG_SECURITY = APP_TAG + "SecurityActivity";
     public static final String TAG_MAIN_ACTIVITY = APP_TAG + "MainActivity";
     public static final String TAG_ADD_NOTES_PRESENTER = APP_TAG + "AddNotesPresenter";
     public static final String TAG_ADD_NOTES_ACTIVITY = APP_TAG + "AddNoteActivity";
@@ -23,6 +27,17 @@ public class DataUtil {
     public static final String TAG_NOTES_DETAIL_PRESENTER = APP_TAG + "NotesDetailPresenter";
     public static final String TAG = "DataUtil";
     public static final String TAG_FILE_UTIL = APP_TAG + "FileUtil";
+
+    /**
+     * App folder name
+     */
+    public static final String IMAGE_FOLDER = "/Image";
+    public static final String DATA_FOLDER = "/Data";
+
+    /**
+     * App file name
+     */
+    public static final String LOCK_TYPE_FILE = "lock.txt";
 
     public static boolean checkStringEmpty(String data) {
         if (data.isEmpty())
@@ -51,7 +66,7 @@ public class DataUtil {
             }
             Log.d(TAG_DATA_UTIL, "Create title : " + stringBuilder.toString());
             return stringBuilder.toString();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d(TAG_DATA_UTIL, "Create title : " + content);
             return content;
         }
