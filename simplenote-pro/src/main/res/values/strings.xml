@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SimpleNote</string>
+    <string name="app_name">Simple Notes</string>
     <string name="sort">Sort</string>
     <string name="az">A->Z</string>
     <string name="za">Z->A</string>
