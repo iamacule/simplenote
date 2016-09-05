@@ -14,7 +14,14 @@ public final class Preferences {
     private Editor editor;
 
     public static final String SIMPLE_NOTE = "SIMPLE_NOTE";
+
+    //Security Activity
     public static final String SECURITY_TYPE = "SECURITY_TYPE";
+
+    //CreatePinCode
+    public static final String PIN_CODE = "PIN_CODE";
+
+    //Permission
     public static final String PERMISSION_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
     public static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
 
@@ -53,5 +60,9 @@ public final class Preferences {
 
     public String getStringValue(String key) {
         return pref.getString(key, "");
+    }
+
+    public int getIntValue(String key){
+        return pref.getInt(key,-1);
     }
 }

@@ -35,6 +35,9 @@
         <activity
             android:name=".activity.SecurityActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activity.CreatePinCodeActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

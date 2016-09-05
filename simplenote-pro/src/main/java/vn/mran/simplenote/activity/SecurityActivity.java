@@ -62,10 +62,11 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
                         btnFinger.checkBox.setChecked(false);
                         break;
                     case R.id.btnPin:
-                        securityPresenter.updateSecurity(Constant.SECURITY_PIN);
-                        btnNone.checkBox.setChecked(false);
-                        btnPin.checkBox.setChecked(true);
-                        btnFinger.checkBox.setChecked(false);
+//                        securityPresenter.updateSecurity(Constant.SECURITY_PIN);
+//                        btnNone.checkBox.setChecked(false);
+//                        btnPin.checkBox.setChecked(true);
+//                        btnFinger.checkBox.setChecked(false);
+                        goToActivity(CreatePinCodeActivity.class);
                         break;
                     case R.id.btnFinger:
                         securityPresenter.updateSecurity(Constant.SECURITY_FINGER);
