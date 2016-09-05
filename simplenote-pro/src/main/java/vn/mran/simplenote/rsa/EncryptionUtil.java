@@ -1,25 +1,21 @@
 package vn.mran.simplenote.rsa;
 
 import android.util.Base64;
+import android.util.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.math.BigInteger;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 
 import javax.crypto.Cipher;
 
-import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
-import vn.mran.simplenote.util.FileUtil;
 
 /**
  * @author JavaDigest
@@ -40,6 +36,12 @@ public class EncryptionUtil {
      * String to hold name of the public key file.
      */
     public static final String PUBLIC_KEY_FILE = "public.key";
+    private RSAPublicKey pubKey;
+    private RSAPrivateKey privKey;
+
+    public EncryptionUtil() {
+        generateKey();
+    }
 
     /**
      * Generate key which contains a pair of private and public key using 1024
@@ -50,30 +52,23 @@ public class EncryptionUtil {
      * @throws FileNotFoundException
      */
 
+
     public void generateKey() {
+        KeyFactory keyFactory = null;
         try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-            keyGen.initialize(1024);
-            final KeyPair key = keyGen.generateKeyPair();
+            keyFactory = KeyFactory.getInstance("RSA", "BC");
+            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(
+                    new BigInteger("d46f473a2d746537de2056ae3092c451", 16),
+                    new BigInteger("11", 16));
+            RSAPrivateKeySpec privKeySpec = new RSAPrivateKeySpec(
+                    new BigInteger("d46f473a2d746537de2056ae3092c451", 16),
+                    new BigInteger("57791d5430d593164082036ad8b29fb1", 16));
 
-            FileUtil privateKeyFile = new FileUtil(PRIVATE_KEY_FILE, Constant.DATA_FOLDER);
-            FileUtil publicKeyFile = new FileUtil(PUBLIC_KEY_FILE, Constant.DATA_FOLDER);
-
-            // Saving the Public key in a file
-            ObjectOutputStream publicKeyOS = new ObjectOutputStream(
-                    new FileOutputStream(publicKeyFile.get()));
-            publicKeyOS.writeObject(key.getPublic());
-            publicKeyOS.close();
-
-            // Saving the Private key in a file
-            ObjectOutputStream privateKeyOS = new ObjectOutputStream(
-                    new FileOutputStream(privateKeyFile.get()));
-            privateKeyOS.writeObject(key.getPrivate());
-            privateKeyOS.close();
+            pubKey = (RSAPublicKey) keyFactory.generatePublic(pubKeySpec);
+            privKey = (RSAPrivateKey) keyFactory.generatePrivate(privKeySpec);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -84,40 +79,17 @@ public class EncryptionUtil {
      * @throws java.lang.Exception
      */
     public String encrypt(String text) {
-        byte[] cipherText = null;
-        FileInputStream fileInputStream = null;
-        ObjectInputStream inputStream = null;
+        String encryptData = "";
         try {
-            // Encrypt the string using the public key
-
-            fileInputStream = new FileInputStream(new FileUtil(PUBLIC_KEY_FILE, Constant.DATA_FOLDER).get());
-            inputStream = new ObjectInputStream(fileInputStream);
-            final PublicKey publicKey = (PublicKey) inputStream.readObject();
-            inputStream.close();
-            // get an RSA cipher object and print the provider
+            byte[] data = text.getBytes("utf-8");
             final Cipher cipher = Cipher.getInstance(ALGORITHM);
-            // encrypt the plain text using the public key
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            cipherText = cipher.doFinal(text.getBytes());
+            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+            encryptData = Base64.encodeToString(cipher.doFinal(data), Base64.DEFAULT);
+            Log.d(DataUtil.TAG_BASE, "Encrypt success : " + encryptData);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return Base64.encodeToString(cipherText, Base64.DEFAULT);
+        return encryptData;
     }
 
     /**
@@ -128,39 +100,16 @@ public class EncryptionUtil {
      * @throws java.lang.Exception
      */
     public String decrypt(String text) {
-        byte[] dectyptedText = null;
-        FileInputStream fileInputStream = null;
-        ObjectInputStream inputStream = null;
+        String decryptData = "";
         try {
-            fileInputStream = new FileInputStream(new FileUtil(PRIVATE_KEY_FILE, Constant.DATA_FOLDER).get());
-            inputStream = new ObjectInputStream(fileInputStream);
-            final PrivateKey privateKey = (PrivateKey) inputStream.readObject();
-            inputStream.close();
-            // get an RSA cipher object and print the provider
+            byte[] data = Base64.decode(text, Base64.DEFAULT);
             final Cipher cipher = Cipher.getInstance(ALGORITHM);
-
-            // decrypt the text using the private key
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            dectyptedText = cipher.doFinal(Base64.decode(text, Base64.DEFAULT));
-            new String(dectyptedText);
+            cipher.init(Cipher.DECRYPT_MODE, privKey);
+            decryptData = new String(cipher.doFinal(data), "utf-8");
+            Log.d(DataUtil.TAG_BASE, "Decrypt success : " + decryptData);
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return null;
+        return decryptData;
     }
 }

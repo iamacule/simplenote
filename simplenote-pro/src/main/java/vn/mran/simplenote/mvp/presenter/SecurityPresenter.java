@@ -1,7 +1,6 @@
 package vn.mran.simplenote.mvp.presenter;
 
 import android.content.Context;
-import android.util.Log;
 
 import vn.mran.simplenote.mvp.view.SecurityView;
 import vn.mran.simplenote.rsa.EncryptionUtil;
@@ -22,27 +21,24 @@ public class SecurityPresenter {
         this.securityView = (SecurityView) context;
     }
 
-    public void checkSecurityType(){
+    public void checkSecurityType() {
         encryptionUtil = new EncryptionUtil();
         FileUtil fileUtil = new FileUtil(DataUtil.LOCK_TYPE_FILE, Constant.DATA_FOLDER);
-        if(!fileUtil.areFilePresent(Constant.DATA_FOLDER,EncryptionUtil.PUBLIC_KEY_FILE) &&
-                !fileUtil.areFilePresent(Constant.DATA_FOLDER,EncryptionUtil.PRIVATE_KEY_FILE)){
-            encryptionUtil.generateKey();
-        }
         String data = fileUtil.readString();
         String type = null;
-        if(DataUtil.checkStringEmpty(data.trim())){
-            type = encryptionUtil.decrypt(data);
-            if(type==null){
-                data = encryptionUtil.encrypt(Constant.SECURITY_NONE);
-                fileUtil.writeString(data);
-                type = Constant.SECURITY_NONE;
-            }
-        }else {
+        type = encryptionUtil.decrypt(data);
+        if (!DataUtil.checkStringEmpty(type)) {
             data = encryptionUtil.encrypt(Constant.SECURITY_NONE);
             fileUtil.writeString(data);
             type = Constant.SECURITY_NONE;
         }
         securityView.onReturnLockType(type);
+    }
+
+    public void updateSecurity(String type) {
+        FileUtil fileUtil = new FileUtil(DataUtil.LOCK_TYPE_FILE, Constant.DATA_FOLDER);
+        fileUtil.clear();
+        String data = encryptionUtil.encrypt(type);
+        fileUtil.writeString(data);
     }
 }

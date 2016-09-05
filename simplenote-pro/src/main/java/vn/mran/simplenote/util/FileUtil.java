@@ -42,8 +42,6 @@ public class FileUtil {
             } catch (Exception e) {
                 Log.d(DataUtil.TAG_FILE_UTIL, "Create new file fail");
             }
-        } else {
-            Log.d(DataUtil.TAG_FILE_UTIL, "Founded : " + fileName);
         }
     }
 
@@ -63,6 +61,16 @@ public class FileUtil {
         } catch (Exception e) {
             Log.d(DataUtil.TAG_FILE_UTIL, "Error message : " + e.getMessage());
             Log.d(DataUtil.TAG_FILE_UTIL, "File not found , please create file first");
+        }
+    }
+
+    public void clear(){
+        if(file.delete()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

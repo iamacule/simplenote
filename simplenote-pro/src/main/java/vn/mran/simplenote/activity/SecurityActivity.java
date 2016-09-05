@@ -56,19 +56,19 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.btnNone:
-
+                        securityPresenter.updateSecurity(Constant.SECURITY_NONE);
                         btnNone.checkBox.setChecked(true);
                         btnPin.checkBox.setChecked(false);
                         btnFinger.checkBox.setChecked(false);
                         break;
                     case R.id.btnPin:
-
+                        securityPresenter.updateSecurity(Constant.SECURITY_PIN);
                         btnNone.checkBox.setChecked(false);
                         btnPin.checkBox.setChecked(true);
                         btnFinger.checkBox.setChecked(false);
                         break;
                     case R.id.btnFinger:
-
+                        securityPresenter.updateSecurity(Constant.SECURITY_FINGER);
                         btnNone.checkBox.setChecked(false);
                         btnPin.checkBox.setChecked(false);
                         btnFinger.checkBox.setChecked(true);
