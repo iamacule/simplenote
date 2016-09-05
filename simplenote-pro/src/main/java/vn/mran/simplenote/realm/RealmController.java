@@ -99,6 +99,7 @@ public class RealmController {
     public RealmResults<Notes> filter (final String key){
         return realm.where(Notes.class)
                 .contains("title",key)
+                .or()
                 .contains("content",key)
                 .findAll();
     }

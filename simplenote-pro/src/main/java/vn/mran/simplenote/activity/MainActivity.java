@@ -157,6 +157,7 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     }
 
     private void filter(String key) {
+        Log.d(DataUtil.TAG_MAIN_ACTIVITY,"Key : "+key);
         realmResults = RealmController.with().filter(key);
         notesAdapter.filter(realmResults);
         updateSort();
