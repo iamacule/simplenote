@@ -25,9 +25,5 @@
         <include
             android:id="@+id/btnPin"
             layout="@layout/security_item" />
-
-        <include
-            android:id="@+id/btnFinger"
-            layout="@layout/security_item" />
     </LinearLayout>
 </LinearLayout>
