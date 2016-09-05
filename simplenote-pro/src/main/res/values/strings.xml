@@ -16,6 +16,8 @@
     <string name="clear">Clear</string>
     <string name="photos">Photos</string>
     <string name="security">Security</string>
+    <string name="imports">Import</string>
+    <string name="exports">Export</string>
     <string name="none">None</string>
     <string name="no_lock">No lock</string>
     <string name="pin">PIN</string>

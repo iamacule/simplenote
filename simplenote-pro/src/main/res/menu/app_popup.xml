@@ -7,5 +7,14 @@
             android:id="@+id/btnSecurity"
             android:icon="@drawable/ic_security_white_24dp"
             android:title="@string/security" />
+        <item
+            android:id="@+id/btnImport"
+            android:icon="@drawable/ic_import_white_24dp"
+            android:title="@string/imports" />
+        <item
+            android:id="@+id/btnExport"
+            android:icon="@drawable/ic_export_white_24dp"
+            android:title="@string/exports" />
+
     </group>
 </menu>

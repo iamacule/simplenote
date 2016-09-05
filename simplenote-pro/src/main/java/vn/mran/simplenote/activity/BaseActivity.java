@@ -30,6 +30,7 @@ import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.effect.TouchEffect;
+import vn.mran.simplenote.view.toast.Boast;
 
 /**
  * Created by MrAn on 18-Aug-16.
@@ -76,6 +77,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                                     switch (id) {
                                         case R.id.btnSecurity:
                                             goToActivity(SecurityActivity.class);
+                                            break;
+                                        case R.id.btnImport:
+                                            Boast.makeText(BaseActivity.this,"Import click").show();
+                                            break;
+                                        case R.id.btnExport:
+                                            Boast.makeText(BaseActivity.this,"Export click").show();
                                             break;
                                     }
                                 }
