@@ -18,6 +18,19 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
     private ButtonSecurity btnPin;
     private ButtonSecurity btnFinger;
     private SecurityPresenter securityPresenter;
+    public static boolean createPinCodeSuccess = false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (createPinCodeSuccess) {
+            securityPresenter.updateSecurity(Constant.SECURITY_PIN);
+            btnNone.checkBox.setChecked(false);
+            btnPin.checkBox.setChecked(true);
+            btnFinger.checkBox.setChecked(false);
+            createPinCodeSuccess = false;
+        }
+    }
 
     @Override
     public int getView() {
@@ -62,11 +75,7 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
                         btnFinger.checkBox.setChecked(false);
                         break;
                     case R.id.btnPin:
-//                        securityPresenter.updateSecurity(Constant.SECURITY_PIN);
-//                        btnNone.checkBox.setChecked(false);
-//                        btnPin.checkBox.setChecked(true);
-//                        btnFinger.checkBox.setChecked(false);
-                        goToActivity(CreatePinCodeActivity.class);
+                        securityPresenter.onClickPinCode();
                         break;
                     case R.id.btnFinger:
                         securityPresenter.updateSecurity(Constant.SECURITY_FINGER);
@@ -102,5 +111,15 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
                 btnFinger.checkBox.setChecked(true);
                 break;
         }
+    }
+
+    @Override
+    public void onCreateNewPinCode() {
+        goToActivity(CreatePinCodeActivity.class);
+    }
+
+    @Override
+    public void onInputPinCode() {
+        goToActivity(InputPinCodeActivity.class);
     }
 }

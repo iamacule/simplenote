@@ -34,4 +34,13 @@ public class SecurityPresenter {
     public void updateSecurity(String type) {
         preferences.storeValue(Preferences.SECURITY_TYPE,type);
     }
+
+    public void onClickPinCode(){
+        int pinCode = preferences.getIntValue(Preferences.PIN_CODE);
+        if(-1!=pinCode){
+            securityView.onInputPinCode();
+        }else {
+            securityView.onCreateNewPinCode();
+        }
+    }
 }

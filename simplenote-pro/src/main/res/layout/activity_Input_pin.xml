@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/header" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/lnEdit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_weight="0.9">
+
+        <RelativeLayout
+            android:id="@+id/reInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/inputPin"
+                layout="@layout/input_text" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/lnMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reInput"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txtMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/input_pin"
+                android:textColor="@color/black"
+                android:textSize="@dimen/app_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnShowPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lnMessage"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:gravity="center|left"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_checkbox"
+                android:text="@string/show_pin"
+                android:textColor="@color/grey_800"
+                android:textSize="@dimen/app_text_size_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dialog_button_margin_top"
+            android:layout_marginTop="@dimen/dialog_button_margin_top"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dialog_button_margin_top"
+                android:layout_weight="0.5"
+                android:background="@drawable/dialog_background"
+                android:gravity="center"
+                android:padding="@dimen/dialog_button_margin_top"
+                android:text="@string/cancel"
+                android:textColor="@color/colorAccent"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnConfirm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dialog_button_margin_top"
+                android:layout_weight="0.5"
+                android:background="@drawable/dialog_background"
+                android:gravity="center"
+                android:padding="@dimen/dialog_button_margin_top"
+                android:text="@string/confirm"
+                android:textColor="@color/colorAccent"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

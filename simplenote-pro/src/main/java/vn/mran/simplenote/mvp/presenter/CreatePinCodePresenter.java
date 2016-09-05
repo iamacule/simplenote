@@ -3,6 +3,7 @@ package vn.mran.simplenote.mvp.presenter;
 import android.content.Context;
 
 import vn.mran.simplenote.mvp.view.CreatePinCodeView;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.Preferences;
 
 /**
@@ -21,6 +22,7 @@ public class CreatePinCodePresenter {
 
     public void createPinCode(int pinCode){
         preferences.storeValue(Preferences.PIN_CODE,pinCode);
+        preferences.storeValue(Preferences.SECURITY_TYPE, Constant.SECURITY_PIN);
         createPinCodeView.onCreatePinCodeSuccess();
     }
 }
