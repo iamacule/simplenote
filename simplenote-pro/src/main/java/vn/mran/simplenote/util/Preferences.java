@@ -14,6 +14,7 @@ public final class Preferences {
     private Editor editor;
 
     public static final String SIMPLE_NOTE = "SIMPLE_NOTE";
+    public static final String SECURITY_TYPE = "SECURITY_TYPE";
     public static final String PERMISSION_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
     public static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
 
@@ -42,8 +43,15 @@ public final class Preferences {
     public boolean getBooleanValue(String key) {
         if (key.equals(PERMISSION_STORAGE)) {
             return pref.getBoolean(key, true);
+        }
+        if (key.equals(PERMISSION_CAMERA)) {
+            return pref.getBoolean(key, true);
         } else {
             return pref.getBoolean(key, false);
         }
+    }
+
+    public String getStringValue(String key) {
+        return pref.getString(key, "");
     }
 }

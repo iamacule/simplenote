@@ -62,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void initHeader() {
-        try{
+        try {
             header = new Header(getWindow().getDecorView().getRootView());
             header.btnMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,12 +75,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 public void call(View v, int id) {
                                     switch (id) {
                                         case R.id.btnSecurity:
-                                            PermissionUtil.checkAppPermission(BaseActivity.this);
-                                            if(PermissionUtil.permissionWriteExternalStorage){
-                                                goToActivity(SecurityActivity.class);
-                                            }else {
-                                                showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.READ_EXTERNAL_STORAGE,PermissionUtil.READ_EXTERNAL_STORAGE);
-                                            }
+                                            goToActivity(SecurityActivity.class);
                                             break;
                                     }
                                 }
@@ -91,8 +86,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                     droppyMenu.show();
                 }
             });
-        }catch (Exception e){
-            Log.d(DataUtil.TAG_BASE,"This view can not include Header");
+        } catch (Exception e) {
+            Log.d(DataUtil.TAG_BASE, "This view can not include Header");
         }
     }
 
