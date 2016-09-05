@@ -45,12 +45,14 @@ public class ToolAddNote {
         btnMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnMore.setBackgroundColor(activity.getResources().getColor(R.color.colorAccent));
                 DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(activity, btnMore);
                 DroppyMenuPopup droppyMenu = droppyBuilder.fromMenu(R.menu.tool_popup)
                         .triggerOnAnchorClick(false)
                         .setOnClick(new DroppyClickCallbackInterface() {
                             @Override
                             public void call(View v, int id) {
+                                btnMore.setBackgroundColor(activity.getResources().getColor(R.color.colorPrimary));
                                 switch (id) {
                                     case R.id.btnPhoto:
                                         toolAddNotesView.onPhoto();
@@ -67,8 +69,14 @@ public class ToolAddNote {
                                 }
                             }
                         })
+                        .setOnDismissCallback(new DroppyMenuPopup.OnDismissCallback() {
+                            @Override
+                            public void call() {
+                                btnMore.setBackgroundColor(activity.getResources().getColor(R.color.colorPrimary));
+                            }
+                        })
                         .setPopupAnimation(new DroppyFadeInAnimation())
-                        .setYOffset(5)
+                        .setYOffset(15)
                         .build();
                 droppyMenu.show();
             }

@@ -7,9 +7,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.RealmResults;
 import io.realm.Sort;
 import vn.mran.simplenote.R;
@@ -29,17 +26,14 @@ import vn.mran.simplenote.util.AnimationUtil;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.DividerItemDecoration;
-import vn.mran.simplenote.util.EventUtil;
 import vn.mran.simplenote.view.ContentMain;
 import vn.mran.simplenote.view.Filter;
 import vn.mran.simplenote.view.FloatingAdd;
-import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.toast.Boast;
 
 public class MainActivity extends BaseActivity implements AddFolderView,
         DialogSelectFolderView, DialogSortView {
     private FloatingAdd floatingAdd;
-    private Header header;
     private Filter filter;
     private ContentMain contentMain;
     private AddFolderPresenter addFolderPresenter;
@@ -63,11 +57,11 @@ public class MainActivity extends BaseActivity implements AddFolderView,
 
     @Override
     public void initView() {
-        header = new Header(getWindow().getDecorView().getRootView());
         filter = new Filter(getWindow().getDecorView().getRootView());
         contentMain = new ContentMain(getWindow().getDecorView().getRootView());
         floatingAdd = new FloatingAdd(getWindow().getDecorView().getRootView());
         header.btnBack.setVisibility(View.GONE);
+        header.title.setText(getString(R.string.app_name));
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

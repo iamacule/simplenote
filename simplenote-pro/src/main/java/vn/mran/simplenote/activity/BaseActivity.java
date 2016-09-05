@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+
+import com.shehabic.droppy.DroppyClickCallbackInterface;
+import com.shehabic.droppy.DroppyMenuPopup;
+import com.shehabic.droppy.animations.DroppyFadeInAnimation;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,13 +22,17 @@ import vn.mran.simplenote.R;
 import vn.mran.simplenote.dialog.DialogEvent;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
+import vn.mran.simplenote.view.Header;
+import vn.mran.simplenote.view.effect.TouchEffect;
 
 /**
  * Created by MrAn on 18-Aug-16.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    protected Header header;
     protected DialogEvent dialogEvent;
     private Intent intent;
     protected static Folder currentFolder;
@@ -46,6 +55,37 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void initBaseValue() {
         dialogEvent = new DialogEvent(this);
+        initHeader();
+    }
+
+    private void initHeader() {
+        try{
+            header = new Header(getWindow().getDecorView().getRootView());
+            header.btnMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(BaseActivity.this, header.btnMenu);
+                    DroppyMenuPopup droppyMenu = droppyBuilder.fromMenu(R.menu.app_popup)
+                            .triggerOnAnchorClick(false)
+                            .setOnClick(new DroppyClickCallbackInterface() {
+                                @Override
+                                public void call(View v, int id) {
+                                    switch (id) {
+                                        case R.id.btnSecurity:
+                                            Log.d(DataUtil.TAG_BASE,"Security clicked");
+                                            break;
+                                    }
+                                }
+                            })
+                            .setPopupAnimation(new DroppyFadeInAnimation())
+                            .setYOffset(5)
+                            .build();
+                    droppyMenu.show();
+                }
+            });
+        }catch (Exception e){
+            Log.d(DataUtil.TAG_BASE,"This view can not include Header");
+        }
     }
 
     public abstract int getView();

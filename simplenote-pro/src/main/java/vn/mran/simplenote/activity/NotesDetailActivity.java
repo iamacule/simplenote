@@ -36,7 +36,6 @@ import vn.mran.simplenote.view.toast.Boast;
  * Created by MrAn on 24-Aug-16.
  */
 public class NotesDetailActivity extends BaseActivity implements NotesDetailView, ToolAddNotesView {
-    private Header header;
     private ToolAddNote toolAddNote;
     private ProgressBar progressBar;
     private CustomEditText txtTitle;
@@ -75,8 +74,8 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     @Override
     public void initView() {
         View v = getWindow().getDecorView().getRootView();
-        header = new Header(v);
         header.title.setText(getString(R.string.notes_detail));
+        header.btnBack.setVisibility(View.VISIBLE);
         header.setDefaultBtnBack();
 
         toolAddNote = new ToolAddNote(v, this);

@@ -8,6 +8,7 @@ import android.util.Log;
 public class DataUtil {
     private static final String APP_TAG = "SimpleNote:";
     public static final String TAG_DATA_UTIL = APP_TAG + "DataUtil";
+    public static final String TAG_BASE = APP_TAG + "BaseActivity";
     public static final String TAG_MAIN_ACTIVITY = APP_TAG + "MainActivity";
     public static final String TAG_ADD_NOTES_PRESENTER = APP_TAG + "AddNotesPresenter";
     public static final String TAG_ADD_NOTES_ACTIVITY = APP_TAG + "AddNoteActivity";

@@ -15,16 +15,13 @@ public class Header {
     public TextView title;
     public LinearLayout btnBack;
     public LinearLayout btnMenu;
-    private View view;
 
     public Header(View view) {
-        this.view = view;
         title = (TextView) view.findViewById(R.id.txtTitle);
         btnBack = (LinearLayout) view.findViewById(R.id.btnBack);
-        TouchEffect.addAlpha(btnBack);
         btnMenu = (LinearLayout) view.findViewById(R.id.btnMenu);
         TouchEffect.addAlpha(btnMenu);
-        title.setText(view.getContext().getString(R.string.app_name));
+        TouchEffect.addAlpha(btnBack);
     }
 
     public void setDefaultBtnBack() {

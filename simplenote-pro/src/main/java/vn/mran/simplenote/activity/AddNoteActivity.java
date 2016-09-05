@@ -20,7 +20,6 @@ import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.Utils;
-import vn.mran.simplenote.view.Header;
 import vn.mran.simplenote.view.ToolAddNote;
 import vn.mran.simplenote.view.toast.Boast;
 import vn.mran.simplenote.view.CustomEditText;
@@ -30,7 +29,6 @@ import vn.mran.simplenote.view.CustomEditText;
  */
 public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolAddNotesView {
     private AddNotePresenter addNotePresenter;
-    private Header header;
     private ToolAddNote toolAddNote;
     private CustomEditText txtTitle;
     private CustomEditText txtContent;
@@ -61,8 +59,8 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     @Override
     public void initView() {
         View v = getWindow().getDecorView().getRootView();
-        header = new Header(v);
         header.title.setText(getString(R.string.add_note));
+        header.btnBack.setVisibility(View.VISIBLE);
         header.setDefaultBtnBack();
 
         toolAddNote = new ToolAddNote(v, this);
