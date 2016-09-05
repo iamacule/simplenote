@@ -4,17 +4,20 @@ import android.util.Log;
 import android.view.View;
 
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.mvp.presenter.SecurityPresenter;
+import vn.mran.simplenote.mvp.view.SecurityView;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
-import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.view.ButtonSecurity;
 
 /**
  * Created by Mr An on 05/09/2016.
  */
-public class SecurityActivity extends BaseActivity {
+public class SecurityActivity extends BaseActivity implements SecurityView {
     private ButtonSecurity btnNone;
     private ButtonSecurity btnPin;
     private ButtonSecurity btnFinger;
+    private SecurityPresenter securityPresenter;
 
     @Override
     public int getView() {
@@ -42,13 +45,61 @@ public class SecurityActivity extends BaseActivity {
 
     @Override
     public void initValue() {
-        FileUtil fileUtil = new FileUtil(DataUtil.LOCK_TYPE_FILE, DataUtil.DATA_FOLDER);
-        String type = fileUtil.readString();
-        Log.d(DataUtil.TAG_SECURITY, "Current lock type : " + type);
+        securityPresenter = new SecurityPresenter(this);
+        securityPresenter.checkSecurityType();
     }
 
     @Override
     public void initAction() {
+        View.OnClickListener clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.btnNone:
 
+                        btnNone.checkBox.setChecked(true);
+                        btnPin.checkBox.setChecked(false);
+                        btnFinger.checkBox.setChecked(false);
+                        break;
+                    case R.id.btnPin:
+
+                        btnNone.checkBox.setChecked(false);
+                        btnPin.checkBox.setChecked(true);
+                        btnFinger.checkBox.setChecked(false);
+                        break;
+                    case R.id.btnFinger:
+
+                        btnNone.checkBox.setChecked(false);
+                        btnPin.checkBox.setChecked(false);
+                        btnFinger.checkBox.setChecked(true);
+                        break;
+                }
+            }
+        };
+        btnNone.lnMain.setOnClickListener(clickListener);
+        btnPin.lnMain.setOnClickListener(clickListener);
+        btnFinger.lnMain.setOnClickListener(clickListener);
+    }
+
+    @Override
+    public void onReturnLockType(String type) {
+        Log.d(DataUtil.TAG_SECURITY, "Current lock type : " + type);
+        switch (type) {
+            case Constant.SECURITY_NONE:
+                btnNone.checkBox.setChecked(true);
+                btnPin.checkBox.setChecked(false);
+                btnFinger.checkBox.setChecked(false);
+                break;
+            case Constant.SECURITY_PIN:
+                btnNone.checkBox.setChecked(false);
+                btnPin.checkBox.setChecked(true);
+                btnFinger.checkBox.setChecked(false);
+                break;
+            case Constant.SECURITY_FINGER:
+                btnNone.checkBox.setChecked(false);
+                btnPin.checkBox.setChecked(false);
+                btnFinger.checkBox.setChecked(true);
+                break;
+        }
     }
 }

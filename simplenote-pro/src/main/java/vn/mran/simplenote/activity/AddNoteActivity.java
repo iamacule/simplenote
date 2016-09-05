@@ -145,19 +145,6 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PermissionUtil.CAMERA:
-            case PermissionUtil.WRITE_EXTERNAL_STORAGE:
-            case PermissionUtil.READ_EXTERNAL_STORAGE: {
-                PermissionUtil.checkAppPermission(this);
-                break;
-            }
-        }
-    }
-
     private void save(boolean back) {
         addNotePresenter.save(txtTitle.editText.getText().toString().trim(),
                 txtContent.editText.getText().toString().trim(), currentFolder.getId(), currentColorId, back);

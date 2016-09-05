@@ -196,19 +196,6 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PermissionUtil.CAMERA:
-            case PermissionUtil.WRITE_EXTERNAL_STORAGE:
-            case PermissionUtil.READ_EXTERNAL_STORAGE: {
-                PermissionUtil.checkAppPermission(this);
-                break;
-            }
-        }
-    }
-
-    @Override
     public void onWaiting() {
         progressBar.setVisibility(View.VISIBLE);
         txtContent.editText.setClickable(false);

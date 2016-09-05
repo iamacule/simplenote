@@ -33,15 +33,6 @@ public class RealmController {
             realm.beginTransaction();
             realm.copyToRealm(folder);
             realm.commitTransaction();
-            Folder result = getFolderById(id);
-            if (null != result) {
-                Log.d(DataUtil.TAG_REALM_CONTROLLER, "Save success as folder id : " + folder.getId());
-                Log.d(DataUtil.TAG_REALM_CONTROLLER, "Save success as folder name : " + folder.getName());
-            } else {
-                Log.d(DataUtil.TAG_REALM_CONTROLLER, "Can not create folder begin");
-            }
-        } else {
-            Log.d(DataUtil.TAG_REALM_CONTROLLER, "Folder all are created");
         }
     }
 

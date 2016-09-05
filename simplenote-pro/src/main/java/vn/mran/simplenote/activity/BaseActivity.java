@@ -1,10 +1,12 @@
 package vn.mran.simplenote.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,7 @@ import vn.mran.simplenote.R;
 import vn.mran.simplenote.dialog.DialogEvent;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
@@ -72,7 +75,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 public void call(View v, int id) {
                                     switch (id) {
                                         case R.id.btnSecurity:
-                                            goToActivity(SecurityActivity.class);
+                                            PermissionUtil.checkAppPermission(BaseActivity.this);
+                                            if(PermissionUtil.permissionWriteExternalStorage){
+                                                goToActivity(SecurityActivity.class);
+                                            }else {
+                                                showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.READ_EXTERNAL_STORAGE,PermissionUtil.READ_EXTERNAL_STORAGE);
+                                            }
                                             break;
                                     }
                                 }
@@ -139,7 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
-        FileUtil fileUtil = new FileUtil(imageFileName,DataUtil.IMAGE_FOLDER);
+        FileUtil fileUtil = new FileUtil(imageFileName, Constant.IMAGE_FOLDER);
         return fileUtil.get();
     }
 
@@ -164,5 +172,18 @@ public abstract class BaseActivity extends AppCompatActivity {
                     }
                 }), null,
                 View.VISIBLE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PermissionUtil.CAMERA:
+            case PermissionUtil.WRITE_EXTERNAL_STORAGE:
+            case PermissionUtil.READ_EXTERNAL_STORAGE: {
+                PermissionUtil.checkAppPermission(this);
+                break;
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ import java.security.PublicKey;
 
 import javax.crypto.Cipher;
 
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
 
@@ -55,8 +56,8 @@ public class EncryptionUtil {
             keyGen.initialize(1024);
             final KeyPair key = keyGen.generateKeyPair();
 
-            FileUtil privateKeyFile = new FileUtil(DataUtil.DATA_FOLDER, PRIVATE_KEY_FILE);
-            FileUtil publicKeyFile = new FileUtil(DataUtil.DATA_FOLDER, PUBLIC_KEY_FILE);
+            FileUtil privateKeyFile = new FileUtil(PRIVATE_KEY_FILE, Constant.DATA_FOLDER);
+            FileUtil publicKeyFile = new FileUtil(PUBLIC_KEY_FILE, Constant.DATA_FOLDER);
 
             // Saving the Public key in a file
             ObjectOutputStream publicKeyOS = new ObjectOutputStream(
@@ -84,10 +85,15 @@ public class EncryptionUtil {
      */
     public String encrypt(String text) {
         byte[] cipherText = null;
+        FileInputStream fileInputStream = null;
+        ObjectInputStream inputStream = null;
         try {
             // Encrypt the string using the public key
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new FileUtil(DataUtil.DATA_FOLDER, PUBLIC_KEY_FILE).get()));
+
+            fileInputStream = new FileInputStream(new FileUtil(PUBLIC_KEY_FILE, Constant.DATA_FOLDER).get());
+            inputStream = new ObjectInputStream(fileInputStream);
             final PublicKey publicKey = (PublicKey) inputStream.readObject();
+            inputStream.close();
             // get an RSA cipher object and print the provider
             final Cipher cipher = Cipher.getInstance(ALGORITHM);
             // encrypt the plain text using the public key
@@ -95,8 +101,23 @@ public class EncryptionUtil {
             cipherText = cipher.doFinal(text.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return Base64.encodeToString(cipherText,Base64.DEFAULT);
+        return Base64.encodeToString(cipherText, Base64.DEFAULT);
     }
 
     /**
@@ -108,20 +129,38 @@ public class EncryptionUtil {
      */
     public String decrypt(String text) {
         byte[] dectyptedText = null;
+        FileInputStream fileInputStream = null;
+        ObjectInputStream inputStream = null;
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new FileUtil(DataUtil.DATA_FOLDER,PRIVATE_KEY_FILE).get()));
+            fileInputStream = new FileInputStream(new FileUtil(PRIVATE_KEY_FILE, Constant.DATA_FOLDER).get());
+            inputStream = new ObjectInputStream(fileInputStream);
             final PrivateKey privateKey = (PrivateKey) inputStream.readObject();
+            inputStream.close();
             // get an RSA cipher object and print the provider
             final Cipher cipher = Cipher.getInstance(ALGORITHM);
 
             // decrypt the text using the private key
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            dectyptedText = cipher.doFinal(Base64.decode(text,Base64.DEFAULT));
-
+            dectyptedText = cipher.doFinal(Base64.decode(text, Base64.DEFAULT));
+            new String(dectyptedText);
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-        return new String(dectyptedText);
+        return null;
     }
 }

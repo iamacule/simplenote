@@ -23,5 +23,6 @@ public class ButtonSecurity {
         txtDetail = (TextView) lnMain.findViewById(R.id.txtDetail);
         checkBox = (CheckBox) lnMain.findViewById(R.id.check);
         TouchEffect.addAlpha(lnMain);
+        checkBox.setClickable(false);
     }
 }

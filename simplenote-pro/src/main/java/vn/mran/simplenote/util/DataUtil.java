@@ -29,12 +29,6 @@ public class DataUtil {
     public static final String TAG_FILE_UTIL = APP_TAG + "FileUtil";
 
     /**
-     * App folder name
-     */
-    public static final String IMAGE_FOLDER = "/Image";
-    public static final String DATA_FOLDER = "/Data";
-
-    /**
      * App file name
      */
     public static final String LOCK_TYPE_FILE = "lock.txt";
