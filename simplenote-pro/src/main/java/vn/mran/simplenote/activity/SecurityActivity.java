@@ -9,6 +9,7 @@ import vn.mran.simplenote.mvp.view.SecurityView;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.view.ButtonSecurity;
+import vn.mran.simplenote.view.toast.Boast;
 
 /**
  * Created by Mr An on 05/09/2016.
@@ -18,18 +19,12 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
     private ButtonSecurity btnPin;
     private ButtonSecurity btnFinger;
     private SecurityPresenter securityPresenter;
-    public static boolean createPinCodeSuccess = false;
+    public static String currentSecurityType = "";
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (createPinCodeSuccess) {
-            securityPresenter.updateSecurity(Constant.SECURITY_PIN);
-            btnNone.checkBox.setChecked(false);
-            btnPin.checkBox.setChecked(true);
-            btnFinger.checkBox.setChecked(false);
-            createPinCodeSuccess = false;
-        }
+        securityPresenter.checkSecurityType();
     }
 
     @Override
@@ -59,7 +54,6 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
     @Override
     public void initValue() {
         securityPresenter = new SecurityPresenter(this);
-        securityPresenter.checkSecurityType();
     }
 
     @Override
@@ -69,19 +63,13 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.btnNone:
-                        securityPresenter.updateSecurity(Constant.SECURITY_NONE);
-                        btnNone.checkBox.setChecked(true);
-                        btnPin.checkBox.setChecked(false);
-                        btnFinger.checkBox.setChecked(false);
+                        securityPresenter.onClickNone();
                         break;
                     case R.id.btnPin:
                         securityPresenter.onClickPinCode();
                         break;
                     case R.id.btnFinger:
-                        securityPresenter.updateSecurity(Constant.SECURITY_FINGER);
-                        btnNone.checkBox.setChecked(false);
-                        btnPin.checkBox.setChecked(false);
-                        btnFinger.checkBox.setChecked(true);
+                        Boast.makeText(SecurityActivity.this,"Update soon").show();
                         break;
                 }
             }
@@ -93,6 +81,7 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
 
     @Override
     public void onReturnLockType(String type) {
+        currentSecurityType = type;
         Log.d(DataUtil.TAG_SECURITY, "Current lock type : " + type);
         switch (type) {
             case Constant.SECURITY_NONE:
@@ -119,7 +108,14 @@ public class SecurityActivity extends BaseActivity implements SecurityView {
     }
 
     @Override
-    public void onInputPinCode() {
-        goToActivity(InputPinCodeActivity.class);
+    public void onInputPinCode(String flag) {
+        goToActivityWithIntData(InputPinCodeActivity.class, Constant.SECURITY_FLAG, flag);
+    }
+
+    @Override
+    public void onNone() {
+        btnNone.checkBox.setChecked(true);
+        btnPin.checkBox.setChecked(false);
+        btnFinger.checkBox.setChecked(false);
     }
 }

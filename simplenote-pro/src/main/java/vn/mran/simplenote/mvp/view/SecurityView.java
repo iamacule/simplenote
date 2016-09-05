@@ -6,5 +6,6 @@ package vn.mran.simplenote.mvp.view;
 public interface SecurityView {
     void onReturnLockType(String type);
     void onCreateNewPinCode();
-    void onInputPinCode();
+    void onInputPinCode(String flag);
+    void onNone();
 }

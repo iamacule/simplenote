@@ -179,7 +179,6 @@ public class CreatePinCodeActivity extends BaseActivity implements CreatePinCode
     @Override
     public void onCreatePinCodeSuccess() {
         Boast.makeText(this, getString(R.string.create_pin_success)).show();
-        SecurityActivity.createPinCodeSuccess = true;
         super.onBackPressed();
     }
 }

@@ -19,4 +19,5 @@ public class Constant {
     public static final String SECURITY_NONE = "SECURITY_NONE";
     public static final String SECURITY_PIN = "SECURITY_PIN";
     public static final String SECURITY_FINGER = "SECURITY_FINGER";
+    public static final String SECURITY_FLAG = "SECURITY_FLAG";
 }

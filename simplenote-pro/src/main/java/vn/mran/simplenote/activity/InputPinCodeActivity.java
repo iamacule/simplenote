@@ -1,5 +1,6 @@
 package vn.mran.simplenote.activity;
 
+import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.InputPinCodePresenter;
 import vn.mran.simplenote.mvp.view.InputPinCodeView;
-import vn.mran.simplenote.util.AnimationUtil;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.view.CustomEditText;
 import vn.mran.simplenote.view.effect.TouchEffect;
 import vn.mran.simplenote.view.toast.Boast;
@@ -29,6 +30,16 @@ public class InputPinCodeActivity extends BaseActivity implements InputPinCodeVi
     private CheckBox checkBox;
     private boolean isShowPin = false;
     private InputPinCodePresenter inputPinCodePresenter;
+    private String flag = null;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            flag = extras.getString(Constant.SECURITY_FLAG);
+        }
+    }
 
     @Override
     public int getView() {
@@ -113,19 +124,27 @@ public class InputPinCodeActivity extends BaseActivity implements InputPinCodeVi
 
     @Override
     public void onSuccess() {
-        goToActivity(CreatePinCodeActivity.class);
+        switch (flag) {
+            case Constant.SECURITY_NONE:
+                inputPinCodePresenter.updateToNone();
+                InputPinCodeActivity.super.onBackPressed();
+                break;
+            case Constant.SECURITY_PIN:
+                goToActivity(CreatePinCodeActivity.class);
+                break;
+        }
         InputPinCodeActivity.this.finish();
     }
 
     @Override
     public void onError(int messageId) {
-        switch (messageId){
+        switch (messageId) {
             case InputPinCodePresenter.LENGTH_ERROR:
-                Boast.makeText(InputPinCodeActivity.this,getString(R.string.error_length_pin)).show();
+                Boast.makeText(InputPinCodeActivity.this, getString(R.string.error_length_pin)).show();
                 break;
 
             case InputPinCodePresenter.WRONG_PIN:
-                Boast.makeText(InputPinCodeActivity.this,getString(R.string.wrong_pin)).show();
+                Boast.makeText(InputPinCodeActivity.this, getString(R.string.wrong_pin)).show();
                 break;
         }
     }

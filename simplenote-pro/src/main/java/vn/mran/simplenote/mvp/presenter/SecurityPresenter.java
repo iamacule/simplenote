@@ -38,9 +38,18 @@ public class SecurityPresenter {
     public void onClickPinCode(){
         int pinCode = preferences.getIntValue(Preferences.PIN_CODE);
         if(-1!=pinCode){
-            securityView.onInputPinCode();
+            securityView.onInputPinCode(Constant.SECURITY_PIN);
         }else {
             securityView.onCreateNewPinCode();
+        }
+    }
+
+    public void onClickNone(){
+        int pinCode = preferences.getIntValue(Preferences.PIN_CODE);
+        if(-1!=pinCode){
+            securityView.onInputPinCode(Constant.SECURITY_NONE);
+        }else {
+            securityView.onNone();
         }
     }
 }
