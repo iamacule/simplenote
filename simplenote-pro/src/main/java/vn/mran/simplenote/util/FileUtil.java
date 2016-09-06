@@ -68,37 +68,6 @@ public class FileUtil {
         }
     }
 
-    public void zipImage() {
-        try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String exportFolderName = "/Export_" + timeStamp;
-            FileUtil fileUtil = new FileUtil("Image.zip",exportFolderName,PUBLIC_STORAGE_PATH);
-            FileOutputStream fos = new FileOutputStream(fileUtil.get());
-            ZipOutputStream zos = new ZipOutputStream(fos);
-
-            createFolder(Constant.IMAGE_FOLDER, null);
-            File srcFile = new File(childFolder.getAbsolutePath());
-            Log.d(DataUtil.TAG_FILE_UTIL,"Sources path : "+srcFile.getAbsolutePath());
-            File[] files = srcFile.listFiles();
-            Log.d("", "Zip directory: " + srcFile.getName());
-            for (int i = 0; i < files.length; i++) {
-                Log.d("", "Adding file: " + files[i].getName());
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = new FileInputStream(files[i]);
-                zos.putNextEntry(new ZipEntry(files[i].getName()));
-                int length;
-                while ((length = fis.read(buffer)) > 0) {
-                    zos.write(buffer, 0, length);
-                }
-                zos.closeEntry();
-                fis.close();
-            }
-            zos.close();
-        } catch (IOException ioe) {
-            Log.e("", ioe.getMessage());
-        }
-    }
-
     public boolean areFilePresent(String fileName, String folderName) {
         File file = new File(Environment.getExternalStorageDirectory() + SIMPLE_NOTE_FOLDER_NAME + folderName + File.separator + fileName);
         return file.exists();

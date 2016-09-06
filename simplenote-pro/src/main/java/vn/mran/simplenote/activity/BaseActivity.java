@@ -220,6 +220,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private class ExportAsync extends AsyncTask<Void, String, Boolean> {
+        private FileUtil fileUtil;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -232,7 +234,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 FileUtil progress = new FileUtil();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String exportFolderName = "/Export_" + timeStamp;
-                FileUtil fileUtil = new FileUtil("Image.zip", exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
+                fileUtil = new FileUtil("Image.zip", exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
                 FileOutputStream fos = new FileOutputStream(fileUtil.get());
                 ZipOutputStream zos = new ZipOutputStream(fos);
 
@@ -272,9 +274,17 @@ public abstract class BaseActivity extends AppCompatActivity {
             dialogEvent.dismissProgressDialog();
             if (aBoolean) {
                 Boast.makeText(BaseActivity.this, getString(R.string.export_success)).show();
+                openFolder();
             } else {
                 Boast.makeText(BaseActivity.this, getString(R.string.export_fail)).show();
             }
+        }
+
+        private void openFolder() {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            Uri uri = Uri.parse(fileUtil.get().getParent());
+            intent.setDataAndType(uri, "text/csv");
+            startActivity(Intent.createChooser(intent, "Open folder"));
         }
     }
 
