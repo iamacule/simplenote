@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import vn.mran.simplenote.R;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
@@ -223,6 +224,8 @@ public class NotesDetailPresenter implements InitPresenter {
                 notes.setTitle(title);
                 notes.setContent(content);
                 notes.setFolderId(folderId);
+                if(-1==colorId)
+                    colorId = R.color.white;
                 notes.setColorId(colorId);
                 realm.copyToRealm(notes);
                 realm.commitTransaction();
