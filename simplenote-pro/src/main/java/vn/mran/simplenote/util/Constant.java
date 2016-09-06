@@ -14,6 +14,18 @@ public class Constant {
     public static final String FOLDER_ALL = "All";
 
     /**
+     * Export
+     */
+
+    public static final String FILE_NAME_IMAGE_EXPORT = "Image.zip";
+    public static final String FILE_NAME_EXCEL_EXPORT = "Data.xls";
+    public static final String EXPORT_FOLDER_NAME = "/Export_";
+    public static final String COLUMN_TITLE = "Title";
+    public static final String COLUMN_CONTENT = "Content";
+    public static final String COLUMN_COLOR_ID = "Color ID";
+    public static final String COLUMN_FOLDER_NAME = "Folder";
+
+    /**
      * Data security type
      */
     public static final String SECURITY_NONE = "SECURITY_NONE";
