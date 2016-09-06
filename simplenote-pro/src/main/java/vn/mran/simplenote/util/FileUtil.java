@@ -13,22 +13,25 @@ import java.io.IOException;
  * Created by MrAn on 12-Aug-16.
  */
 public class FileUtil {
-    public final String SIMPLE_NOTE_FOLDER_NAME = "/SimpleNotes/";
+    private static final String SIMPLE_NOTE_FOLDER_NAME = "/SimpleNotes/";
+    public static String INTERNAL_STORAGE_PATH;
     private File file = null;
 
-    public FileUtil(String fileName, String folderName) {
-        File utrFolder = new File(Environment.getExternalStorageDirectory() + SIMPLE_NOTE_FOLDER_NAME);
+    public FileUtil(String fileName, String folderName, String path) {
+        if (null == path)
+            path = INTERNAL_STORAGE_PATH + SIMPLE_NOTE_FOLDER_NAME;;
+        File utrFolder = new File(path);
         File childFolder = null;
         if (!utrFolder.exists()) {
             utrFolder.mkdir();
             Log.d(DataUtil.TAG_FILE_UTIL, "Create SimpleNotes folder success");
-            childFolder = new File(Environment.getExternalStorageDirectory() + SIMPLE_NOTE_FOLDER_NAME + folderName);
+            childFolder = new File(utrFolder, folderName);
             if (!childFolder.exists()) {
                 childFolder.mkdir();
                 Log.d(DataUtil.TAG_FILE_UTIL, "Create folder success : " + folderName);
             }
         } else {
-            childFolder = new File(Environment.getExternalStorageDirectory() + SIMPLE_NOTE_FOLDER_NAME + folderName);
+            childFolder = new File(path, folderName);
             if (!childFolder.exists()) {
                 childFolder.mkdir();
                 Log.d(DataUtil.TAG_FILE_UTIL, "Create folder success : " + folderName);
@@ -64,8 +67,8 @@ public class FileUtil {
         }
     }
 
-    public void clear(){
-        if(file.delete()){
+    public void clear() {
+        if (file.delete()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {

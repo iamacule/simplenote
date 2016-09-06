@@ -9,6 +9,7 @@ import vn.mran.simplenote.activity.InputPinCodeActivity;
 import vn.mran.simplenote.activity.MainActivity;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.Preferences;
 
 public class SplashScreen extends AppCompatActivity {
@@ -29,7 +30,7 @@ public class SplashScreen extends AppCompatActivity {
 
     private void initActivity() {
         String securityType = preferences.getStringValue(Preferences.SECURITY_TYPE);
-        Log.d(DataUtil.TAG,"Security type : "+securityType);
+        Log.d(DataUtil.TAG, "Security type : " + securityType);
         switch (securityType) {
             case "":
                 intent = new Intent(this, MainActivity.class);

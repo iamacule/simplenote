@@ -156,7 +156,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
-        FileUtil fileUtil = new FileUtil(imageFileName, Constant.IMAGE_FOLDER);
+        FileUtil fileUtil = new FileUtil(imageFileName, Constant.IMAGE_FOLDER,null);
         return fileUtil.get();
     }
 

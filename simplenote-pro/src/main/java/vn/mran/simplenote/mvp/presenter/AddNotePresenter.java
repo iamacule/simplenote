@@ -139,7 +139,7 @@ public class AddNotePresenter implements InitPresenter {
     public void saveFile(Uri sourceUri) {
         try {
             File source = new File(getPath(sourceUri));
-            destination = new FileUtil(source.getName(), Constant.IMAGE_FOLDER);
+            destination = new FileUtil(source.getName(), Constant.IMAGE_FOLDER,null);
             FileChannel src = new FileInputStream(source).getChannel();
             FileChannel dst = new FileOutputStream(destination.get()).getChannel();
             dst.transferFrom(src, 0, src.size());

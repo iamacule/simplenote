@@ -18,6 +18,7 @@ import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.Utils;
@@ -236,6 +237,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     public void onPhoto() {
         PermissionUtil.checkAppPermission(this);
         if (PermissionUtil.permissionReadExternalStorage) {
+            FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
             goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
         } else {
             showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
