@@ -18,4 +18,5 @@
     <color name="orange_50">#FFF3E0</color>
     <color name="brown_50">#EFEBE9</color>
     <color name="blue_grey_50">#ECEFF1</color>
+    <color name="transparent">#00000000</color>
 </resources>

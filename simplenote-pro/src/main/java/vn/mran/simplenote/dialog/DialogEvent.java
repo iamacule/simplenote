@@ -17,7 +17,7 @@ public class DialogEvent {
 
     public DialogEvent(Activity context) {
         dialogAsk = new DialogAsk.Build(context);
-        progressDialog = new ProgressDialog(context, R.style.TransparentDialog);
+        progressDialog = new ProgressDialog(context, R.style.MyDialogThemes);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
@@ -29,7 +29,7 @@ public class DialogEvent {
 
     public void showDialogAsk(String message, String positiveButtonMessage,
                               String negativeButtonMessage, final Thread functionPositive,
-                              final Thread functionNegative , final int isShowMessage) {
+                              final Thread functionNegative, final int isShowMessage) {
         dialogAsk.setMessage(message);
         dialogAsk.getTvMessage().setVisibility(isShowMessage);
         if (positiveButtonMessage != null) {
@@ -84,6 +84,12 @@ public class DialogEvent {
             }
         } catch (Exception e) {
             Log.w(DataUtil.TAG_DIALOG_ADD_FOLDER, "Progress dialog can not dismiss when activity don't have an instance");
+        }
+    }
+
+    public void updateDialogMessage(String message) {
+        if(null!=progressDialog && progressDialog.isShowing()){
+            progressDialog.setMessage(message);
         }
     }
 
