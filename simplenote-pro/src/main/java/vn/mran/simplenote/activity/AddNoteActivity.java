@@ -2,6 +2,7 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -43,7 +44,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     @Override
     protected void onResume() {
         super.onResume();
-        if(-1!=currentColorId){
+        if (-1 != currentColorId) {
             lnEdit.setBackgroundResource(currentColorId);
             txtContent.txtMain.setBackgroundResource(currentColorId);
             txtTitle.txtMain.setBackgroundResource(currentColorId);
@@ -126,8 +127,9 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
+                    addNotePresenter.saveFile(intent.getData());
                     addNotePresenter.addImage
-                            (addNotePresenter.createBitmapFromURI(this, intent.getData(),
+                            (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(addNotePresenter.getDestination().get()),
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:

@@ -1,17 +1,26 @@
 package vn.mran.simplenote.mvp.presenter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.widget.EditText;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +31,9 @@ import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.AddImageUtil;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
+import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.ResizeBitmap;
 
 /**
@@ -35,6 +46,7 @@ public class AddNotePresenter implements InitPresenter {
     private Context context;
     private AddNotesView addNotesView;
     private Realm realm;
+    private FileUtil destination;
 
     public AddNotePresenter(Context context) {
         this.context = context;
@@ -42,7 +54,7 @@ public class AddNotePresenter implements InitPresenter {
         init();
     }
 
-    public void save(String title, String content, long folderId,int colorId, boolean back) {
+    public void save(String title, String content, long folderId, int colorId, boolean back) {
         if (!DataUtil.checkStringEmpty(title)) {
             if (DataUtil.checkStringEmpty(content))
                 title = DataUtil.createTitle(content);
@@ -59,9 +71,9 @@ public class AddNotePresenter implements InitPresenter {
                 notes.setTitle(title);
                 notes.setContent(content);
                 notes.setFolderId(folderId);
-                if(-1==colorId)
+                if (-1 == colorId)
                     colorId = R.color.white;
-                    notes.setColorId(colorId);
+                notes.setColorId(colorId);
 
                 realm.beginTransaction();
                 realm.copyToRealm(notes);
@@ -122,6 +134,35 @@ public class AddNotePresenter implements InitPresenter {
         list.add(builder);
         list.add(selectionCursor);
         return list;
+    }
+
+    public void saveFile(Uri sourceUri) {
+        try {
+            File source = new File(getPath(sourceUri));
+            destination = new FileUtil(source.getName(), Constant.IMAGE_FOLDER);
+            FileChannel src = new FileInputStream(source).getChannel();
+            FileChannel dst = new FileOutputStream(destination.get()).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s = cursor.getString(column_index);
+        cursor.close();
+        return s;
+    }
+
+    public FileUtil getDestination() {
+        return destination;
     }
 
     @Override
