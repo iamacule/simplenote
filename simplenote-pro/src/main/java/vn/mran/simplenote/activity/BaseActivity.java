@@ -20,24 +20,23 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.realm.RealmResults;
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.dialog.DialogEvent;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
-import vn.mran.simplenote.mvp.presenter.BasePresenter;
-import vn.mran.simplenote.mvp.view.BaseView;
+import vn.mran.simplenote.realm.RealmController;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.view.Header;
-import vn.mran.simplenote.view.effect.TouchEffect;
 import vn.mran.simplenote.view.toast.Boast;
 
 /**
  * Created by MrAn on 18-Aug-16.
  */
-public abstract class BaseActivity extends AppCompatActivity implements BaseView{
+public abstract class BaseActivity extends AppCompatActivity{
     protected Header header;
     protected DialogEvent dialogEvent;
     private Intent intent;
@@ -48,7 +47,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     protected final int SPEECH_REQUEST_CODE = 1;
     protected final int TAKE_PICTURE_REQUEST_CODE = 2;
     protected Uri mCurrentPhotoUri;
-    private BasePresenter basePresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     private void initBaseValue() {
         dialogEvent = new DialogEvent(this);
-        basePresenter = new BasePresenter(this);
         initHeader();
     }
 
@@ -86,7 +83,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                                             Boast.makeText(BaseActivity.this,"Import click").show();
                                             break;
                                         case R.id.btnExport:
-                                            Boast.makeText(BaseActivity.this,"Export click").show();
+                                            PermissionUtil.checkAppPermission(BaseActivity.this);
+                                            if(!PermissionUtil.permissionWriteExternalStorage){
+                                                showDialogAskPermission(getString(R.string.permission_storage),
+                                                        Manifest.permission.READ_EXTERNAL_STORAGE,PermissionUtil.READ_EXTERNAL_STORAGE);
+                                            }else {
+                                                onExport();
+                                            }
                                             break;
                                     }
                                 }
@@ -99,6 +102,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             });
         } catch (Exception e) {
             Log.d(DataUtil.TAG_BASE, "This view can not include Header");
+        }
+    }
+
+    private void onExport() {
+        RealmResults<Notes> realmResults = RealmController.with().getAllNotes();
+        if(realmResults.size()>0){
+
+        }else {
+            Boast.makeText(this,getString(R.string.empty_notes)).show();
         }
     }
 
@@ -144,7 +156,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = basePresenter.createImageFile();
+                photoFile = createImageFile();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -154,6 +166,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                 startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE);
             }
         }
+    }
+
+    public File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        FileUtil fileUtil = new FileUtil(imageFileName, Constant.IMAGE_FOLDER, null);
+        return fileUtil.get();
     }
 
     @Override

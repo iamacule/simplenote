@@ -73,4 +73,5 @@
     <string name="permission_camera">SimpleNotes needs to access your camera to perform this action </string>
     <string name="not_rename_folder">This folder can not rename</string>
     <string name="not_delete_folder">This folder can not delete</string>
+    <string name="empty_notes">Your notes is empty</string>
 </resources>
