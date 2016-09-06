@@ -364,6 +364,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                         return false;
                     }
                 }
+                FileUtil guideFile = new FileUtil(Constant.FILE_NAME_GUIDE_EXPORT, exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
+                guideFile.writeString(getString(R.string.guide_export));
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();

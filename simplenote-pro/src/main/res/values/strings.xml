@@ -78,4 +78,10 @@
     <string name="export_success">Export success</string>
     <string name="export_fail">Export fail , please try again</string>
     <string name="adding_file">Adding file: </string>
+    <string name="guide_export">Simple Note\n
+All file in this folder use for import by Simple note . Only Simple note can read it exactly.\n
+Please do not edit any file in this folder any way !\n
+        \n
+Thanks and best regard\n
+Simple Note team !</string>
 </resources>

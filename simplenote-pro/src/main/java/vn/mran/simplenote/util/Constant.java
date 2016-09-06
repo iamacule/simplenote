@@ -16,9 +16,9 @@ public class Constant {
     /**
      * Export
      */
-
     public static final String FILE_NAME_IMAGE_EXPORT = "Image.zip";
     public static final String FILE_NAME_EXCEL_EXPORT = "Data.xls";
+    public static final String FILE_NAME_GUIDE_EXPORT = "GUIDE.txt";
     public static final String EXPORT_FOLDER_NAME = "/Export_";
     public static final String COLUMN_TITLE = "Title";
     public static final String COLUMN_CONTENT = "Content";
