@@ -24,6 +24,8 @@ import vn.mran.simplenote.R;
 import vn.mran.simplenote.dialog.DialogEvent;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
+import vn.mran.simplenote.mvp.presenter.BasePresenter;
+import vn.mran.simplenote.mvp.view.BaseView;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
@@ -35,7 +37,7 @@ import vn.mran.simplenote.view.toast.Boast;
 /**
  * Created by MrAn on 18-Aug-16.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements BaseView{
     protected Header header;
     protected DialogEvent dialogEvent;
     private Intent intent;
@@ -46,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected final int SPEECH_REQUEST_CODE = 1;
     protected final int TAKE_PICTURE_REQUEST_CODE = 2;
     protected Uri mCurrentPhotoUri;
+    private BasePresenter basePresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void initBaseValue() {
         dialogEvent = new DialogEvent(this);
+        basePresenter = new BasePresenter(this);
         initHeader();
     }
 
@@ -140,7 +144,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = basePresenter.createImageFile();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -150,14 +154,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE);
             }
         }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
-        FileUtil fileUtil = new FileUtil(imageFileName, Constant.IMAGE_FOLDER,null);
-        return fileUtil.get();
     }
 
     @Override
