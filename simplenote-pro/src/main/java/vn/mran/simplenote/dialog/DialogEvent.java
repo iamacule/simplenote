@@ -14,9 +14,11 @@ import vn.mran.simplenote.util.DataUtil;
 public class DialogEvent {
     private ProgressDialog progressDialog;
     private DialogAsk.Build dialogAsk;
+    private DialogInfo.Build dialogInfo;
 
     public DialogEvent(Activity context) {
         dialogAsk = new DialogAsk.Build(context);
+        dialogInfo = DialogInfo.Build.getInstance(context);
         progressDialog = new ProgressDialog(context, R.style.MyDialogThemes);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCanceledOnTouchOutside(false);
@@ -67,6 +69,16 @@ public class DialogEvent {
         dialogAsk.show();
     }
 
+    public void showDialogInfo(String message, Thread function) {
+        dialogInfo.setMessage(message);
+        if (null == function) {
+            dialogInfo.setDefaultButtonClick();
+        } else {
+            dialogInfo.setButtonClick(function);
+        }
+        dialogInfo.show();
+    }
+
     public void showProgressDialog(String message) {
         try {
             progressDialog.setMessage(message);
@@ -88,7 +100,7 @@ public class DialogEvent {
     }
 
     public void updateDialogMessage(String message) {
-        if(null!=progressDialog && progressDialog.isShowing()){
+        if (null != progressDialog && progressDialog.isShowing()) {
             progressDialog.setMessage(message);
         }
     }

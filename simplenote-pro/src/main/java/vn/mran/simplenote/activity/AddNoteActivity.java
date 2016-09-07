@@ -11,12 +11,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.io.File;
 import java.util.List;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.mvp.presenter.AddNotePresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
@@ -128,9 +130,9 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    addNotePresenter.saveFile(intent.getData());
+                    File file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
                     addNotePresenter.addImage
-                            (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(addNotePresenter.getDestination().get()),
+                            (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(file),
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:

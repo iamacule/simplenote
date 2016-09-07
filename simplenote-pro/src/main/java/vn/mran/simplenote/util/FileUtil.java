@@ -1,6 +1,10 @@
 package vn.mran.simplenote.util;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -9,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipEntry;
@@ -118,5 +123,45 @@ public class FileUtil {
 
     public File get() {
         return file;
+    }
+
+    public static File copyFile(Context context, Uri sourceUri, String folder, String path) {
+        try {
+            File source = new File(getPath(context, sourceUri));
+            FileUtil destination = new FileUtil(source.getName(), folder, path);
+            FileChannel src = new FileInputStream(source).getChannel();
+            FileChannel dst = new FileOutputStream(destination.get()).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+            return destination.get();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void copyFile(File file, String folder, String path) {
+        try {
+            FileUtil destination = new FileUtil(file.getName(), folder, path);
+            FileChannel src = new FileInputStream(file).getChannel();
+            FileChannel dst = new FileOutputStream(destination.get()).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static String getPath(Context context, Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s = cursor.getString(column_index);
+        cursor.close();
+        return s;
     }
 }

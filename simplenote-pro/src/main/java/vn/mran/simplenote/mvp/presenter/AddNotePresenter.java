@@ -136,31 +136,6 @@ public class AddNotePresenter implements InitPresenter {
         return list;
     }
 
-    public void saveFile(Uri sourceUri) {
-        try {
-            File source = new File(getPath(sourceUri));
-            destination = new FileUtil(source.getName(), Constant.IMAGE_FOLDER,null);
-            FileChannel src = new FileInputStream(source).getChannel();
-            FileChannel dst = new FileOutputStream(destination.get()).getChannel();
-            dst.transferFrom(src, 0, src.size());
-            src.close();
-            dst.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-        if (cursor == null) return null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String s = cursor.getString(column_index);
-        cursor.close();
-        return s;
-    }
-
     public FileUtil getDestination() {
         return destination;
     }

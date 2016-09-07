@@ -105,7 +105,17 @@ public abstract class BaseActivity extends AppCompatActivity {
                                                         Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
                                             } else {
                                                 FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
-                                                onExport();
+                                                dialogEvent.showDialogInfo(getString(R.string.guide_export),new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                onExport();
+                                                            }
+                                                        });
+                                                    }
+                                                }));
                                             }
                                             break;
                                     }
