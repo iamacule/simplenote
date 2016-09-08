@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 
@@ -105,7 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                                         Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
                                             } else {
                                                 FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
-                                                dialogEvent.showDialogInfo(getString(R.string.guide_export),new Thread(new Runnable() {
+                                                dialogEvent.showDialogInfo(Html.fromHtml(getString(R.string.guide_export)), new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
                                                         runOnUiThread(new Runnable() {
@@ -281,36 +282,44 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         private boolean export() {
             try {
+                publishProgress(getString(R.string.clear_export_folder));
+                Thread.sleep(500);
+                //Clear export folder
+                FileUtil exportFolderRoot = new FileUtil();
+                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER,FileUtil.PUBLIC_STORAGE_PATH);
+                FileUtil.delFile(exportFolderRoot.getChildFolder().getAbsoluteFile());
+
+                //Create Export root folder
+                exportFolderRoot = new FileUtil();
+                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER,FileUtil.PUBLIC_STORAGE_PATH);
+
+                //Create Export folder
                 FileUtil progress = new FileUtil();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String exportFolderName = Constant.EXPORT_FOLDER_NAME + timeStamp;
-                progress.createFolder(exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
+                progress.createFolder(exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
+                String externalExportFolder = progress.getChildFolder().getAbsolutePath();
+
+                //Get Image folder
                 progress.createFolder(Constant.IMAGE_FOLDER, null);
                 File srcFile = new File(progress.getChildFolder().getAbsolutePath());
 
-                //Zip image
+                //Copy Image
+                publishProgress(getString(R.string.checking_image));
+                Thread.sleep(500);
                 File[] files = srcFile.listFiles();
                 if (srcFile.length() > 0) {
-                    fileUtil = new FileUtil(Constant.FILE_NAME_IMAGE_EXPORT, exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
-                    FileOutputStream fos = new FileOutputStream(fileUtil.get());
-                    ZipOutputStream zos = new ZipOutputStream(fos);
                     for (int i = 0; i < files.length; i++) {
-                        publishProgress(getString(R.string.adding_file) + files[i].getName());
-                        byte[] buffer = new byte[1024];
-                        FileInputStream fis = new FileInputStream(files[i]);
-                        zos.putNextEntry(new ZipEntry(files[i].getName()));
-                        int length;
-                        while ((length = fis.read(buffer)) > 0) {
-                            zos.write(buffer, 0, length);
-                        }
-                        zos.closeEntry();
-                        fis.close();
+                        FileUtil.copyFile(files[i], Constant.IMAGE_FOLDER, externalExportFolder);
+                        Log.d(DataUtil.TAG_BASE, "Copy file success : " + files[0].getName());
                     }
-                    zos.close();
                 }
 
+                //Create Excel file
                 //Create excel file
                 //New Workbook
+                publishProgress(getString(R.string.export_excel));
+                Thread.sleep(500);
                 Workbook wb = new HSSFWorkbook();
 
                 Cell c = null;
@@ -356,7 +365,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     }
                 });
 
-                FileUtil excelFile = new FileUtil(Constant.FILE_NAME_EXCEL_EXPORT, exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
+                FileUtil excelFile = new FileUtil(Constant.FILE_NAME_EXCEL_EXPORT, exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
                 FileOutputStream os = null;
 
                 try {
@@ -374,12 +383,66 @@ public abstract class BaseActivity extends AppCompatActivity {
                         return false;
                     }
                 }
-                FileUtil guideFile = new FileUtil(Constant.FILE_NAME_GUIDE_EXPORT, exportFolderName, FileUtil.PUBLIC_STORAGE_PATH);
+
+                publishProgress(getString(R.string.create_guide));
+                Thread.sleep(500);
+                //Create Guide file
+                FileUtil guideFile = new FileUtil(Constant.FILE_NAME_GUIDE_EXPORT, exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
                 guideFile.writeString(getString(R.string.guide_export));
+
+                //Zip image
+                publishProgress(getString(R.string.zip_data));
+                Thread.sleep(500);
+                srcFile = new File(externalExportFolder);
+                files = srcFile.listFiles();
+                fileUtil = new FileUtil(exportFolderName + Constant.ZIP_EXTENSION, Constant.EXPORT_FOLDER, FileUtil.PUBLIC_STORAGE_PATH);
+                FileOutputStream fos = new FileOutputStream(fileUtil.get());
+                ZipOutputStream zos = new ZipOutputStream(fos);
+                for (int i = 0; i < files.length; i++) {
+                    addDirToZipArchive(zos, files[i], null);
+                }
+                zos.flush();
+                fos.flush();
+                zos.close();
+                fos.close();
+
+                //Delete folder , keep zip file
+                publishProgress(getString(R.string.finish_export));
+                Thread.sleep(500);
+                FileUtil.delFile(new File(externalExportFolder));
+
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
+            }
+        }
+
+        public void addDirToZipArchive(ZipOutputStream zos, File fileToZip, String parrentDirectoryName) throws Exception {
+            if (fileToZip == null || !fileToZip.exists()) {
+                return;
+            }
+
+            String zipEntryName = fileToZip.getName();
+            if (parrentDirectoryName != null && !parrentDirectoryName.isEmpty()) {
+                zipEntryName = parrentDirectoryName + "/" + fileToZip.getName();
+            }
+
+            if (fileToZip.isDirectory()) {
+                for (File file : fileToZip.listFiles()) {
+                    addDirToZipArchive(zos, file, zipEntryName);
+                }
+            } else {
+                System.out.println("   " + zipEntryName);
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = new FileInputStream(fileToZip);
+                zos.putNextEntry(new ZipEntry(zipEntryName));
+                int length;
+                while ((length = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, length);
+                }
+                zos.closeEntry();
+                fis.close();
             }
         }
     }

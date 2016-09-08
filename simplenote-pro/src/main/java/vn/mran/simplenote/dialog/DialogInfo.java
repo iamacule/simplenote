@@ -2,6 +2,7 @@ package vn.mran.simplenote.dialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -42,8 +43,12 @@ public class DialogInfo {
             btnConfirm = (TextView) view.findViewById(R.id.btnConfirm);
         }
 
-        public Build setMessage(String message) {
-            txtMessage.setText(message);
+        public Build setMessage(Object message) {
+
+            if(message instanceof String)
+                txtMessage.setText((String)message);
+            if(message instanceof Spanned)
+                txtMessage.setText((Spanned)message);
             return this;
         }
 

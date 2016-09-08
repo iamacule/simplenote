@@ -78,11 +78,32 @@
     <string name="export_success">Export success</string>
     <string name="export_fail">Export fail , please try again</string>
     <string name="adding_file">Adding file: </string>
-    <string name="guide_export">Simple Note\n
-All file in this folder use for import by Simple note . Only Simple note can read it exactly.\n
-Simple Note will not be responsible for the skewed data when using any other application to manipulate.\n
-Please do not edit any file in this folder any way !\n
-\n
-Thanks and best regard\n
-Simple Note team !</string>
+    <string name="checking_image">Checking and copy image ... </string>
+    <string name="clear_export_folder">Clearing old export ... </string>
+    <string name="export_excel">Export Excel file ... </string>
+    <string name="create_guide">Create Guide file ... </string>
+    <string name="zip_data">Zip export data ... </string>
+    <string name="finish_export">Finishing export ... </string>
+    <string name="guide_export">
+        <![CDATA[
+<p><strong>Simple Note</strong></p>
+<p><strong>Warning</strong></p>
+<p>&nbsp; &nbsp;The zip file after export success for use by Simple note.</p>
+<p>&nbsp; &nbsp;Only Simple note can read it exactly.</p>
+<p>&nbsp; &nbsp;Simple Note will not be responsible for the skewed data when using any other application to manipulate.</p>
+<p>&nbsp; &nbsp;Please do not edit any file in the zip any way.</p>
+<p>&nbsp;</p>
+<p><strong>File detail</strong></p>
+<p>&nbsp; &nbsp;The general file name is : Export_"yyyyMMdd_HHmmss".zip .</p>
+<p>&nbsp; &nbsp;For example : file name "Export_20160201_130530.zip" is mean : The Export file are create at 13 hours 05 minutes 30 seconds, and on 02 May 01 2016</p>
+<p>&nbsp;</p>
+<p><strong>In the Zip file contain</strong></p>
+<p>&nbsp; &nbsp;1/ Data.xls (Notes export)</p>
+<p>&nbsp; &nbsp;2/ Image folder (All image using in Notes)</p>
+<p>&nbsp;</p>
+<p>Thanks and best regard</p>
+<p>Simple Note team.</p>
+<p>&nbsp;</p>
+        ]]>
+    </string>
 </resources>

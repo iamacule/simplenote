@@ -46,16 +46,24 @@ public class FileUtil {
         if (!utrFolder.exists()) {
             utrFolder.mkdir();
             Log.d(DataUtil.TAG_FILE_UTIL, "Create SimpleNotes folder success");
-            childFolder = new File(utrFolder, folderName);
-            if (!childFolder.exists()) {
-                childFolder.mkdir();
-                Log.d(DataUtil.TAG_FILE_UTIL, "Create folder success : " + folderName);
+            if (null != folderName) {
+                childFolder = new File(utrFolder, folderName);
+                if (!childFolder.exists()) {
+                    childFolder.mkdir();
+                    Log.d(DataUtil.TAG_FILE_UTIL, "Create folder success : " + folderName);
+                }
+            } else {
+                childFolder = utrFolder;
             }
         } else {
-            childFolder = new File(path, folderName);
-            if (!childFolder.exists()) {
-                childFolder.mkdir();
-                Log.d(DataUtil.TAG_FILE_UTIL, "Create folder success : " + folderName);
+            if (null != folderName) {
+                childFolder = new File(path, folderName);
+                if (!childFolder.exists()) {
+                    childFolder.mkdir();
+                    Log.d(DataUtil.TAG_FILE_UTIL, "Create folder success : " + folderName);
+                }
+            } else {
+                childFolder = utrFolder;
             }
         }
     }
@@ -163,5 +171,27 @@ public class FileUtil {
         String s = cursor.getString(column_index);
         cursor.close();
         return s;
+    }
+
+    public static void delFile(File dir) {
+        Log.d(DataUtil.TAG_FILE_UTIL, "DELETEPREVIOUS TOP" + dir.getPath());
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                File temp = new File(dir, children[i]);
+                if (temp.isDirectory()) {
+                    Log.d(DataUtil.TAG_FILE_UTIL, "Recursive Call" + temp.getPath());
+                    delFile(temp);
+                } else {
+                    Log.d(DataUtil.TAG_FILE_UTIL, "Delete File" + temp.getPath());
+                    boolean b = temp.delete();
+                    if (b == false) {
+                        Log.d(DataUtil.TAG_FILE_UTIL, "DELETE FAIL");
+                    }
+                }
+            }
+
+        }
+        dir.delete();
     }
 }

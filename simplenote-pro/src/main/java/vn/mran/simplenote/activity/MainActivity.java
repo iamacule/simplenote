@@ -1,5 +1,6 @@
 package vn.mran.simplenote.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -48,6 +49,18 @@ public class MainActivity extends BaseActivity implements AddFolderView,
     protected void onResume() {
         super.onResume();
         updateList(currentFolder);
+    }
+
+    @Override
+    public void onBackPressed() {
+        letAppToBackground();
+    }
+
+    private void letAppToBackground() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
     }
 
     @Override

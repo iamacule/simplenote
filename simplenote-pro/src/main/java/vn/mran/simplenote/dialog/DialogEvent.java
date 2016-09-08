@@ -2,6 +2,7 @@ package vn.mran.simplenote.dialog;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 
@@ -69,7 +70,7 @@ public class DialogEvent {
         dialogAsk.show();
     }
 
-    public void showDialogInfo(String message, Thread function) {
+    public void showDialogInfo(Object message, Thread function) {
         dialogInfo.setMessage(message);
         if (null == function) {
             dialogInfo.setDefaultButtonClick();
