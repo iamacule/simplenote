@@ -3,7 +3,6 @@ package vn.mran.simplenote.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
@@ -17,24 +16,10 @@ import com.shehabic.droppy.DroppyClickCallbackInterface;
 import com.shehabic.droppy.DroppyMenuPopup;
 import com.shehabic.droppy.animations.DroppyFadeInAnimation;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import io.realm.RealmResults;
 import vn.mran.simplenote.R;
@@ -42,6 +27,7 @@ import vn.mran.simplenote.dialog.DialogEvent;
 import vn.mran.simplenote.model.Folder;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.realm.RealmController;
+import vn.mran.simplenote.task.ExportTask;
 import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
@@ -54,7 +40,7 @@ import vn.mran.simplenote.view.toast.Boast;
  */
 public abstract class BaseActivity extends AppCompatActivity {
     protected Header header;
-    protected DialogEvent dialogEvent;
+    public DialogEvent dialogEvent;
     private Intent intent;
     protected static Folder currentFolder;
     public static Notes currentNotes;
@@ -63,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected final int SPEECH_REQUEST_CODE = 1;
     protected final int TAKE_PICTURE_REQUEST_CODE = 2;
     protected Uri mCurrentPhotoUri;
-    private ExportAsync exportAsync;
+    private ExportTask exportTask;
     private RealmResults<Notes> realmResults;
 
     @Override
@@ -241,249 +227,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private class ExportAsync extends AsyncTask<Void, String, Boolean> {
-        private FileUtil fileUtil;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialogEvent.showProgressDialog(getString(R.string.exporting));
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return export();
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            String message = values[0];
-            dialogEvent.updateDialogMessage(message);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            dialogEvent.dismissProgressDialog();
-            if (aBoolean) {
-                Boast.makeText(BaseActivity.this, getString(R.string.export_success)).show();
-                openFolder();
-            } else {
-                Boast.makeText(BaseActivity.this, getString(R.string.export_fail)).show();
-            }
-        }
-
-        private void openFolder() {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            Uri uri = Uri.parse(fileUtil.get().getParent());
-            intent.setDataAndType(uri, "text/csv");
-            startActivity(Intent.createChooser(intent, "Open folder"));
-        }
-
-        private boolean export() {
-            try {
-                publishProgress(getString(R.string.clear_export_folder));
-                Thread.sleep(500);
-                //Clear export folder
-                FileUtil exportFolderRoot = new FileUtil();
-                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER, FileUtil.PUBLIC_STORAGE_PATH);
-                FileUtil.delFile(exportFolderRoot.getChildFolder().getAbsoluteFile());
-
-                //Create Export root folder
-                exportFolderRoot = new FileUtil();
-                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER, FileUtil.PUBLIC_STORAGE_PATH);
-
-                //Create Export folder
-                FileUtil progress = new FileUtil();
-                String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                String exportFolderName = Constant.EXPORT_FOLDER_NAME + timeStamp;
-                progress.createFolder(exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
-                String externalExportFolder = progress.getChildFolder().getAbsolutePath();
-
-                //Get Image folder
-                progress.createFolder(Constant.IMAGE_FOLDER, null);
-                File srcFile = new File(progress.getChildFolder().getAbsolutePath());
-
-                //Copy Image
-                publishProgress(getString(R.string.checking_image));
-                Thread.sleep(500);
-                File[] files = srcFile.listFiles();
-                if (srcFile.length() > 0) {
-                    for (int i = 0; i < files.length; i++) {
-                        FileUtil.copyFile(files[i], Constant.IMAGE_FOLDER, externalExportFolder);
-                        Log.d(DataUtil.TAG_BASE, "Copy file success : " + files[0].getName());
-                    }
-                }
-
-                //Create Excel file
-                //New Workbook
-                publishProgress(getString(R.string.export_excel));
-                Thread.sleep(500);
-                Workbook wb = new HSSFWorkbook();
-                final CreationHelper createHelper = wb.getCreationHelper();
-
-                Cell c = null;
-
-                //Cell style for header row
-                CellStyle cs = wb.createCellStyle();
-                cs.setFillForegroundColor(HSSFColor.LIME.index);
-                cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-
-                final CellStyle csNormal = wb.createCellStyle();
-                csNormal.setWrapText(true);
-
-                //New Sheet
-                final Sheet sheet1 = wb.createSheet(exportFolderName.substring(1, exportFolderName.length()));
-
-                String[] columnTitle = new String[]{
-                        Constant.COLUMN_ID,
-                        Constant.COLUMN_TITLE,
-                        Constant.COLUMN_CONTENT,
-                        Constant.COLUMN_COLOR_ID,
-                        Constant.COLUMN_FOLDER_NAME
-                };
-
-                int[] columnLength = new int[]{
-                        3500,
-                        6000,
-                        8000,
-                        3500,
-                        3500
-                };
-
-                Row row = sheet1.createRow(0);
-                for (int i = 0; i < columnTitle.length; i++) {
-                    c = row.createCell(i);
-                    c.setCellValue(columnTitle[i]);
-                    c.setCellStyle(cs);
-                    sheet1.setColumnWidth(i, columnLength[i]);
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < realmResults.size(); i++) {
-                            Row row = sheet1.createRow(i + 1);
-                            //Cell id
-                            Cell id = row.createCell(0);
-                            id.setCellStyle(csNormal);
-                            String idString = realmResults.get(i).getId() + "";
-                            id.setCellValue(idString);
-
-                            //Cell title
-                            Cell title = row.createCell(1);
-                            title.setCellStyle(csNormal);
-                            title.setCellValue(realmResults.get(i).getTitle());
-
-                            //Cell Content
-                            Cell content = row.createCell(2);
-                            content.setCellStyle(csNormal);
-                            content.setCellValue(realmResults.get(i).getContent());
-                            content.setCellValue(createHelper.createRichTextString(realmResults.get(i).getContent()));
-
-                            //Cell color id
-                            Cell colorId = row.createCell(3);
-                            colorId.setCellStyle(csNormal);
-                            colorId.setCellValue(realmResults.get(i).getColorId());
-
-                            //Cell folder name
-                            Cell folderName = row.createCell(4);
-                            folderName.setCellStyle(csNormal);
-                            Folder folder = RealmController.with().getFolderById(realmResults.get(i).getFolderId());
-                            folderName.setCellValue(folder.getName());
-
-                        }
-                    }
-                });
-
-                FileUtil excelFile = new FileUtil(Constant.FILE_NAME_EXCEL_EXPORT, exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
-                FileOutputStream os = null;
-
-                try {
-                    os = new FileOutputStream(excelFile.get());
-                    wb.write(os);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                } finally {
-                    try {
-                        if (null != os)
-                            os.close();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        return false;
-                    }
-                }
-
-                publishProgress(getString(R.string.create_guide));
-                Thread.sleep(500);
-                //Create Guide file
-                FileUtil guideFile = new FileUtil(Constant.FILE_NAME_GUIDE_EXPORT, exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
-                guideFile.writeString(getString(R.string.guide_export));
-
-                //Zip image
-                publishProgress(getString(R.string.zip_data));
-                Thread.sleep(500);
-                srcFile = new File(externalExportFolder);
-                files = srcFile.listFiles();
-                fileUtil = new FileUtil(exportFolderName + Constant.ZIP_EXTENSION, Constant.EXPORT_FOLDER, FileUtil.PUBLIC_STORAGE_PATH);
-                FileOutputStream fos = new FileOutputStream(fileUtil.get());
-                ZipOutputStream zos = new ZipOutputStream(fos);
-                for (int i = 0; i < files.length; i++) {
-                    addDirToZipArchive(zos, files[i], null);
-                }
-                zos.flush();
-                fos.flush();
-                zos.close();
-                fos.close();
-
-                //Delete folder , keep zip file
-                publishProgress(getString(R.string.finish_export));
-                Thread.sleep(500);
-                FileUtil.delFile(new File(externalExportFolder));
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        public void addDirToZipArchive(ZipOutputStream zos, File fileToZip, String parrentDirectoryName) throws Exception {
-            if (fileToZip == null || !fileToZip.exists()) {
-                return;
-            }
-
-            String zipEntryName = fileToZip.getName();
-            if (parrentDirectoryName != null && !parrentDirectoryName.isEmpty()) {
-                zipEntryName = parrentDirectoryName + "/" + fileToZip.getName();
-            }
-
-            if (fileToZip.isDirectory()) {
-                for (File file : fileToZip.listFiles()) {
-                    addDirToZipArchive(zos, file, zipEntryName);
-                }
-            } else {
-                System.out.println("   " + zipEntryName);
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = new FileInputStream(fileToZip);
-                zos.putNextEntry(new ZipEntry(zipEntryName));
-                int length;
-                while ((length = fis.read(buffer)) > 0) {
-                    zos.write(buffer, 0, length);
-                }
-                zos.closeEntry();
-                fis.close();
-            }
-        }
-    }
-
     private void startExport() {
-        if (null != exportAsync && !exportAsync.isCancelled()) {
-            exportAsync.cancel(true);
-            exportAsync = null;
+        if (null != exportTask && !exportTask.isCancelled()) {
+            exportTask.cancel(true);
+            exportTask = null;
         }
-        exportAsync = new ExportAsync();
-        exportAsync.execute(new Void[]{});
+        exportTask = new ExportTask(this);
+        exportTask.execute(new Void[]{});
     }
 }
