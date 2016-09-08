@@ -106,7 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                                         Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
                                             } else {
                                                 FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
-                                                dialogEvent.showDialogInfo(Html.fromHtml(getString(R.string.guide_export)), new Thread(new Runnable() {
+                                                dialogEvent.showDialogAsk(Html.fromHtml(getString(R.string.guide_export)), null, null, new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
                                                         runOnUiThread(new Runnable() {
@@ -116,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                                             }
                                                         });
                                                     }
-                                                }));
+                                                }), null, View.VISIBLE);
                                             }
                                             break;
                                     }
@@ -286,12 +286,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                 Thread.sleep(500);
                 //Clear export folder
                 FileUtil exportFolderRoot = new FileUtil();
-                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER,FileUtil.PUBLIC_STORAGE_PATH);
+                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER, FileUtil.PUBLIC_STORAGE_PATH);
                 FileUtil.delFile(exportFolderRoot.getChildFolder().getAbsoluteFile());
 
                 //Create Export root folder
                 exportFolderRoot = new FileUtil();
-                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER,FileUtil.PUBLIC_STORAGE_PATH);
+                exportFolderRoot.createFolder(Constant.EXPORT_FOLDER, FileUtil.PUBLIC_STORAGE_PATH);
 
                 //Create Export folder
                 FileUtil progress = new FileUtil();

@@ -30,7 +30,7 @@ public class DialogEvent {
         return dialogAsk;
     }
 
-    public void showDialogAsk(String message, String positiveButtonMessage,
+    public void showDialogAsk(Object message, String positiveButtonMessage,
                               String negativeButtonMessage, final Thread functionPositive,
                               final Thread functionNegative, final int isShowMessage) {
         dialogAsk.setMessage(message);
