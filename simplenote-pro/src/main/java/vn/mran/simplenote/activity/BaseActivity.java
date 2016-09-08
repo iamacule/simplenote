@@ -296,7 +296,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                 //Create Export folder
                 FileUtil progress = new FileUtil();
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
                 String exportFolderName = Constant.EXPORT_FOLDER_NAME + timeStamp;
                 progress.createFolder(exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
                 String externalExportFolder = progress.getChildFolder().getAbsolutePath();
