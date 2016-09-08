@@ -22,6 +22,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -316,11 +317,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
 
                 //Create Excel file
-                //Create excel file
                 //New Workbook
                 publishProgress(getString(R.string.export_excel));
                 Thread.sleep(500);
                 Workbook wb = new HSSFWorkbook();
+                final CreationHelper createHelper = wb.getCreationHelper();
 
                 Cell c = null;
 
@@ -329,14 +330,26 @@ public abstract class BaseActivity extends AppCompatActivity {
                 cs.setFillForegroundColor(HSSFColor.LIME.index);
                 cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
+                final CellStyle csNormal = wb.createCellStyle();
+                csNormal.setWrapText(true);
+
                 //New Sheet
                 final Sheet sheet1 = wb.createSheet(exportFolderName.substring(1, exportFolderName.length()));
 
                 String[] columnTitle = new String[]{
+                        Constant.COLUMN_ID,
                         Constant.COLUMN_TITLE,
                         Constant.COLUMN_CONTENT,
                         Constant.COLUMN_COLOR_ID,
                         Constant.COLUMN_FOLDER_NAME
+                };
+
+                int[] columnLength = new int[]{
+                        3500,
+                        6000,
+                        8000,
+                        3500,
+                        3500
                 };
 
                 Row row = sheet1.createRow(0);
@@ -344,20 +357,38 @@ public abstract class BaseActivity extends AppCompatActivity {
                     c = row.createCell(i);
                     c.setCellValue(columnTitle[i]);
                     c.setCellStyle(cs);
-                    sheet1.setColumnWidth(i, (15 * 500));
+                    sheet1.setColumnWidth(i, columnLength[i]);
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         for (int i = 0; i < realmResults.size(); i++) {
                             Row row = sheet1.createRow(i + 1);
-                            Cell title = row.createCell(0);
+                            //Cell id
+                            Cell id = row.createCell(0);
+                            id.setCellStyle(csNormal);
+                            String idString = realmResults.get(i).getId() + "";
+                            id.setCellValue(idString);
+
+                            //Cell title
+                            Cell title = row.createCell(1);
+                            title.setCellStyle(csNormal);
                             title.setCellValue(realmResults.get(i).getTitle());
-                            Cell content = row.createCell(1);
+
+                            //Cell Content
+                            Cell content = row.createCell(2);
+                            content.setCellStyle(csNormal);
                             content.setCellValue(realmResults.get(i).getContent());
-                            Cell colorId = row.createCell(2);
+                            content.setCellValue(createHelper.createRichTextString(realmResults.get(i).getContent()));
+
+                            //Cell color id
+                            Cell colorId = row.createCell(3);
+                            colorId.setCellStyle(csNormal);
                             colorId.setCellValue(realmResults.get(i).getColorId());
-                            Cell folderName = row.createCell(3);
+
+                            //Cell folder name
+                            Cell folderName = row.createCell(4);
+                            folderName.setCellStyle(csNormal);
                             Folder folder = RealmController.with().getFolderById(realmResults.get(i).getFolderId());
                             folderName.setCellValue(folder.getName());
 

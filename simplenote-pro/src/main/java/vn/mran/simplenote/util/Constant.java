@@ -22,6 +22,7 @@ public class Constant {
     public static final String FILE_NAME_GUIDE_EXPORT = "GUIDE.txt";
     public static final String EXPORT_FOLDER_NAME = "/Export_";
     public static final String EXPORT_FOLDER = "/Export";
+    public static final String COLUMN_ID = "ID";
     public static final String COLUMN_TITLE = "Title";
     public static final String COLUMN_CONTENT = "Content";
     public static final String COLUMN_COLOR_ID = "Color ID";
