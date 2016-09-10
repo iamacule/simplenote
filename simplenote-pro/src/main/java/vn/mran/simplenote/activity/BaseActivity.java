@@ -151,10 +151,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void goToIntentAction(int requestCode, String actionType) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType(actionType);
-        Intent chooser = Intent.createChooser(intent, "Choose a Picture");
-        startActivityForResult(chooser, requestCode);
+        startActivityForResult(intent, requestCode);
     }
 
     protected void requestVoice() {

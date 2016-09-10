@@ -201,21 +201,30 @@ public class ExportTask extends AsyncTask<Void, String, Boolean> {
             });
 
             FileUtil excelFile = new FileUtil(Constant.FILE_NAME_EXCEL_EXPORT, exportFolderName, exportFolderRoot.getChildFolder().getAbsolutePath());
-            FileOutputStream os = null;
-
-            try {
-                os = new FileOutputStream(excelFile.get());
-                wb.write(os);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            } finally {
+            boolean isWriteSuccess = false;
+            while (!isWriteSuccess){
+                FileOutputStream os = null;
                 try {
-                    if (null != os)
-                        os.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    return false;
+                    os = new FileOutputStream(excelFile.get());
+                    wb.write(os);
+                    isWriteSuccess = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    isWriteSuccess = false;
+                    try{
+                        Thread.sleep(500);
+                    }catch (Exception e1){
+                        e1.printStackTrace();
+                    }
+                }
+                finally {
+                    try {
+                        if (null != os)
+                            os.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return false;
+                    }
                 }
             }
 

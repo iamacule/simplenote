@@ -130,12 +130,15 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
+                    Log.d(DataUtil.TAG_ADD_NOTES_ACTIVITY,intent.getData().toString());
+                    FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
                     File file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
                     addNotePresenter.addImage
                             (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(file),
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
+                    FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
                     addNotePresenter.addImage
                             (addNotePresenter.createBitmapFromURI(this, mCurrentPhotoUri,
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
@@ -238,11 +241,14 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     @Override
     public void onPhoto() {
         PermissionUtil.checkAppPermission(this);
-        if (PermissionUtil.permissionReadExternalStorage) {
+        if (!PermissionUtil.permissionReadExternalStorage) {
+            showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
+        }else if (!PermissionUtil.permissionWriteExternalStorage){
+            showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.WRITE_EXTERNAL_STORAGE, PermissionUtil.WRITE_EXTERNAL_STORAGE);
+        }
+        else {
             FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
             goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
-        } else {
-            showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
         }
     }
 
