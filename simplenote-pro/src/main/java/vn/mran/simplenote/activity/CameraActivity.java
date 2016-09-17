@@ -1,24 +1,16 @@
 package vn.mran.simplenote.activity;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.ShutterCallback;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.util.ScreenUtil;
 
 public class CameraActivity extends BaseActivity implements SurfaceHolder.Callback {
     public static final String DATA_CAMERA = "DATA_CAMERA";
@@ -122,8 +114,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        // Now that the size is known, set up the camera parameters and begin
-        // the preview.
         refreshCamera();
     }
 
@@ -140,7 +130,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
         param = camera.getParameters();
 
         // modify parameter
-        param.setPreviewSize(352, 288);
+        param.setPreviewSize((int)ScreenUtil.getScreenWidth(getWindowManager()),(int)ScreenUtil.getScreenHeight(getWindowManager()));
         camera.setParameters(param);
         try {
             // The Surface has been created, now tell the camera where to draw
