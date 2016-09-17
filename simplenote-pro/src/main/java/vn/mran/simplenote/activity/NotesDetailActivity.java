@@ -2,6 +2,7 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -11,6 +12,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import io.realm.Realm;
@@ -21,8 +26,10 @@ import vn.mran.simplenote.mvp.presenter.NotesDetailPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
 import vn.mran.simplenote.mvp.view.ToolAddNotesView;
 import vn.mran.simplenote.realm.RealmController;
+import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.EventUtil;
+import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.PermissionUtil;
 import vn.mran.simplenote.util.ScreenUtil;
 import vn.mran.simplenote.util.StringUtil;
@@ -174,16 +181,28 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
+            File file;
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
+                    file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
                     notesDetailPresenter.addImage
-                            (notesDetailPresenter.createBitmapFromURI(this, intent.getData(),
+                            (notesDetailPresenter.createBitmapFromURI(this, Uri.fromFile(file),
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
-                    notesDetailPresenter.addImage
-                            (notesDetailPresenter.createBitmapFromURI(this, mCurrentPhotoUri,
-                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                    try {
+                        file = createImageFile();
+                        FileOutputStream outStream = new FileOutputStream(file);
+                        outStream.write(intent.getByteArrayExtra(CameraActivity.DATA_CAMERA));
+                        outStream.close();
+                        notesDetailPresenter.addImage
+                                (notesDetailPresenter.createBitmapFromURI(this, Uri.fromFile(file),
+                                        ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case SPEECH_REQUEST_CODE:
                     List<String> results = intent.getStringArrayListExtra(
@@ -283,8 +302,8 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
 
     private boolean checkChanged() {
         if (((txtTitle.editText.getText().toString().equals(currentNotes.getTitle()) ||
-                        txtTitle.editText.getText().equals(StringUtil.IMAGE_STRING))) &&
-                        txtContent.editText.getText().toString().equals(currentNotes.getContent())) {
+                txtTitle.editText.getText().equals(StringUtil.IMAGE_STRING))) &&
+                txtContent.editText.getText().toString().equals(currentNotes.getContent())) {
             return false;
         }
         return true;
@@ -313,7 +332,7 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
         } else if (!PermissionUtil.permissionWriteExternalStorage) {
             showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.WRITE_EXTERNAL_STORAGE, PermissionUtil.WRITE_EXTERNAL_STORAGE);
         } else {
-            requestTakePhoTo();
+            goToActivityWithResult(CameraActivity.class, TAKE_PICTURE_REQUEST_CODE);
         }
 
     }

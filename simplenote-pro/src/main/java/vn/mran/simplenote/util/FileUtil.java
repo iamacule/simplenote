@@ -153,6 +153,21 @@ public class FileUtil {
         }
     }
 
+    public static File copyFile(Context context, Uri sourceUri, File destination) {
+        try {
+            File source = new File(getPath(context, sourceUri));
+            FileChannel src = new FileInputStream(source).getChannel();
+            FileChannel dst = new FileOutputStream(destination).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+            return destination;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static void copyFile(File file, String folder, String path) {
         try {
             FileUtil destination = new FileUtil(file.getName(), folder, path);

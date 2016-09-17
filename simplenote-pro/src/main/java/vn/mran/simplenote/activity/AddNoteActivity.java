@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import vn.mran.simplenote.R;
@@ -128,26 +131,37 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
+            File file = null;
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    Log.d(DataUtil.TAG_ADD_NOTES_ACTIVITY,intent.getData().toString());
-                    FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
-                    File file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
+                    file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
                     addNotePresenter.addImage
                             (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(file),
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
-                    FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
-                    addNotePresenter.addImage
-                            (addNotePresenter.createBitmapFromURI(this, mCurrentPhotoUri,
-                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                    try {
+                        file = createImageFile();
+                        FileOutputStream outStream = new FileOutputStream(file);
+                        outStream.write(intent.getByteArrayExtra(CameraActivity.DATA_CAMERA));
+                        outStream.close();
+                        addNotePresenter.addImage
+                                (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(file),
+                                        ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case SPEECH_REQUEST_CODE:
                     List<String> results = intent.getStringArrayListExtra(
                             RecognizerIntent.EXTRA_RESULTS);
                     String spokenText = results.get(0);
                     txtContent.editText.append(spokenText);
+                    break;
+                default:
+                    super.onActivityResult(requestCode,resultCode,intent);
                     break;
             }
         }
@@ -247,7 +261,6 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
             showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.WRITE_EXTERNAL_STORAGE, PermissionUtil.WRITE_EXTERNAL_STORAGE);
         }
         else {
-            FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
             goToIntentAction(ACTION_REQUEST_GALLERY, "image/*");
         }
     }
@@ -265,7 +278,7 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
         } else if (!PermissionUtil.permissionWriteExternalStorage) {
             showDialogAskPermission(getString(R.string.permission_storage), Manifest.permission.WRITE_EXTERNAL_STORAGE, PermissionUtil.WRITE_EXTERNAL_STORAGE);
         } else {
-            requestTakePhoTo();
+            goToActivityWithResult(CameraActivity.class,TAKE_PICTURE_REQUEST_CODE);
         }
 
     }

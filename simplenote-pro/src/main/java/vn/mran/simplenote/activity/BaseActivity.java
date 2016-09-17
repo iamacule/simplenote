@@ -2,9 +2,7 @@ package vn.mran.simplenote.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -48,7 +46,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected final int ACTION_REQUEST_GALLERY = 0;
     protected final int SPEECH_REQUEST_CODE = 1;
     protected final int TAKE_PICTURE_REQUEST_CODE = 2;
-    protected Uri mCurrentPhotoUri;
     private ExportTask exportTask;
     private RealmResults<Notes> realmResults;
 
@@ -63,6 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void initBaseValue() {
+        FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
         dialogEvent = new DialogEvent(this);
         initHeader();
     }
@@ -92,7 +90,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                                                 showDialogAskPermission(getString(R.string.permission_storage),
                                                         Manifest.permission.READ_EXTERNAL_STORAGE, PermissionUtil.READ_EXTERNAL_STORAGE);
                                             } else {
-                                                FileUtil.INTERNAL_STORAGE_PATH = getFilesDir().getPath();
                                                 dialogEvent.showDialogAsk(Html.fromHtml(getString(R.string.guide_export)), null, null, new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -143,6 +140,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
+    public void goToActivityWithResult(Class activity, int requesCode) {
+        intent = new Intent(this, activity);
+        startActivityForResult(intent, requesCode);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
     public void goToActivityWithIntData(Class activity, String key, String value) {
         intent = new Intent(this, activity);
         intent.putExtra(key, value);
@@ -162,25 +165,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         startActivityForResult(intent, SPEECH_REQUEST_CODE);
-    }
-
-    public void requestTakePhoTo() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            if (photoFile != null) {
-                mCurrentPhotoUri = Uri.fromFile(photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentPhotoUri);
-                startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE);
-            }
-        }
     }
 
     public File createImageFile() throws IOException {
