@@ -80,8 +80,7 @@ public class ExportTask extends AsyncTask<Void, String, Boolean> {
 
     private void openFolder() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        Uri uri = Uri.parse(fileUtil.get().getParent());
-        intent.setDataAndType(uri, "text/csv");
+        intent.setDataAndType(Uri.fromFile(fileUtil.get()), "*/*");
         baseActivity.startActivity(Intent.createChooser(intent, "Open folder"));
     }
 
