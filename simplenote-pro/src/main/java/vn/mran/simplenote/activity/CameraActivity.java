@@ -160,7 +160,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
             parameters.setPreviewSize(previewSize.width, previewSize.height);
             camera.setDisplayOrientation(180);
         }
-
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         camera.setParameters(parameters);
     }
 
