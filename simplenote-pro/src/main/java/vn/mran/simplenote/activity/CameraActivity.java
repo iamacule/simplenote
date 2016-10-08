@@ -3,11 +3,19 @@ package vn.mran.simplenote.activity;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
 
 import vn.mran.simplenote.R;
 import vn.mran.simplenote.util.ScreenUtil;
@@ -23,7 +31,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
     private LinearLayout lnNavigation;
     private TextView btnCancel;
     private TextView btnConfirm;
-    private byte[] data;
+    private String data;
 
     @Override
     public int getView() {
@@ -50,7 +58,15 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
     public void initAction() {
         jpegCallback = new PictureCallback() {
             public void onPictureTaken(byte[] data, Camera camera) {
-                CameraActivity.this.data = data;
+                try {
+                    File file = createImageFile();
+                    FileOutputStream outStream = new FileOutputStream(file);
+                    outStream.write(data);
+                    outStream.close();
+                    CameraActivity.this.data = file.getPath();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 lnCaptune.setVisibility(View.GONE);
                 lnNavigation.setVisibility(View.VISIBLE);
             }
@@ -64,7 +80,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
                         Intent intent = new Intent();
                         intent.putExtra(DATA_CAMERA, data);
                         setResult(CameraActivity.RESULT_OK, intent);
-                        finish();
+                        CameraActivity.this.finish();
                         break;
 
                     case R.id.btnCancel:
@@ -105,12 +121,47 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
         // set preview size and make any resize, rotate or
         // reformatting changes here
         // start preview with new settings
+
+        setParamerter();
+
         try {
             camera.setPreviewDisplay(surfaceHolder);
             camera.startPreview();
         } catch (Exception e) {
 
         }
+    }
+
+    private void setParamerter() {
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        Camera.Parameters parameters = camera.getParameters();
+        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+        for (Camera.Size size : previewSizes) {
+            Log.d("Preview size : ", size.width + " , " + size.height);
+        }
+
+        Camera.Size previewSize = previewSizes.get(0);
+
+
+        if (display.getRotation() == Surface.ROTATION_0) {
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
+            camera.setDisplayOrientation(90);
+        }
+
+        if (display.getRotation() == Surface.ROTATION_90) {
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
+        }
+
+        if (display.getRotation() == Surface.ROTATION_180) {
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
+        }
+
+        if (display.getRotation() == Surface.ROTATION_270) {
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
+            camera.setDisplayOrientation(180);
+        }
+
+        camera.setParameters(parameters);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -126,12 +177,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
             System.err.println(e);
             return;
         }
-        Camera.Parameters param;
-        param = camera.getParameters();
 
-        // modify parameter
-        param.setPreviewSize((int)ScreenUtil.getScreenWidth(getWindowManager()),(int)ScreenUtil.getScreenHeight(getWindowManager()));
-        camera.setParameters(param);
         try {
             // The Surface has been created, now tell the camera where to draw
             // the preview.

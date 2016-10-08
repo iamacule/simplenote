@@ -140,19 +140,9 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
                                     ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
-                    try {
-                        file = createImageFile();
-                        FileOutputStream outStream = new FileOutputStream(file);
-                        outStream.write(intent.getByteArrayExtra(CameraActivity.DATA_CAMERA));
-                        outStream.close();
-                        addNotePresenter.addImage
-                                (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(file),
-                                        ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    addNotePresenter.addImage
+                            (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(new File(intent.getStringExtra(CameraActivity.DATA_CAMERA))),
+                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
                     break;
                 case SPEECH_REQUEST_CODE:
                     List<String> results = intent.getStringArrayListExtra(
