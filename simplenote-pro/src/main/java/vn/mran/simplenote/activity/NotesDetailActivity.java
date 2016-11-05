@@ -181,34 +181,25 @@ public class NotesDetailActivity extends BaseActivity implements NotesDetailView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
-            File file;
+            File file = null;
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
                     notesDetailPresenter.addImage
-                            (notesDetailPresenter.createBitmapFromURI(this, Uri.fromFile(file),
-                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                            (notesDetailPresenter.createBitmapFromFile(file), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
-                    try {
-                        file = createImageFile();
-                        FileOutputStream outStream = new FileOutputStream(file);
-                        outStream.write(intent.getByteArrayExtra(CameraActivity.DATA_CAMERA));
-                        outStream.close();
-                        notesDetailPresenter.addImage
-                                (notesDetailPresenter.createBitmapFromURI(this, Uri.fromFile(file),
-                                        ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    notesDetailPresenter.addImage
+                            (notesDetailPresenter.createBitmapFromFile(new File(intent.getStringExtra(CameraActivity.DATA_CAMERA))), txtContent.editText);
                     break;
                 case SPEECH_REQUEST_CODE:
                     List<String> results = intent.getStringArrayListExtra(
                             RecognizerIntent.EXTRA_RESULTS);
                     String spokenText = results.get(0);
                     txtContent.editText.append(spokenText);
+                    break;
+                default:
+                    super.onActivityResult(requestCode,resultCode,intent);
                     break;
             }
         }

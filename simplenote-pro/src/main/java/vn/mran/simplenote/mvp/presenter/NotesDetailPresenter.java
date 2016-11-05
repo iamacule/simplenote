@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.Spannable;
@@ -14,12 +16,14 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.widget.EditText;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.activity.AddNoteActivity;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.NotesDetailView;
@@ -38,16 +42,15 @@ public class NotesDetailPresenter implements InitPresenter {
     private NotesDetailView notesDetailView;
     private Activity activity;
     private LoadContentAsync loadContentAsync;
-    private float imageWidth;
     public static final byte UPDATE_EXCEPTION = 0;
     public static final byte EMPTY_CONTENT = 1;
     private StringBuilder imageData;
     private Realm realm;
+    private int MAX_WIDTH;
 
     public NotesDetailPresenter(Activity activity) {
         this.activity = activity;
         this.notesDetailView = (NotesDetailView) activity;
-        imageWidth = ScreenUtil.getScreenWidth(activity.getWindowManager()) / 3;
         init();
     }
 
@@ -131,8 +134,7 @@ public class NotesDetailPresenter implements InitPresenter {
                 listUri.add(StringUtil.getUriFormData(s));
             }
 
-            SpannableStringBuilder builder = loadData(listDataNormal, listDataImage, listUri,
-                    imageWidth, content);
+            SpannableStringBuilder builder = loadData(listDataNormal, listDataImage, listUri, content);
             return builder;
         }
 
@@ -157,13 +159,13 @@ public class NotesDetailPresenter implements InitPresenter {
     }
 
     private SpannableStringBuilder loadData(List<String> listDataNormal
-            , List<String> listDataImage, List<Uri> listUri, float width, String fullString) {
+            , List<String> listDataImage, List<Uri> listUri, String fullString) {
         SpannableStringBuilder builderParent = new SpannableStringBuilder();
         int selectionCursor;
         for (int i = 0; i < listDataNormal.size(); i++) {
-            Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER,"Data : "+listDataImage.get(i));
+            Log.d(DataUtil.TAG_ADD_NOTES_PRESENTER, "Data : " + listDataImage.get(i));
             StringBuilder totalData = new StringBuilder();
-            Bitmap bitmap = createBitmapFromURINew(activity, listUri.get(i), width);
+            Bitmap bitmap = createBitmapFromURINew(listUri.get(i));
             BitmapDrawable drawable = new BitmapDrawable(activity.getResources(), bitmap);
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
             if (listDataNormal.get(i).equals(StringUtil.BEGIN_STRING)) {
@@ -185,7 +187,7 @@ public class NotesDetailPresenter implements InitPresenter {
         return builderParent;
     }
 
-    public Bitmap createBitmapFromURINew(Context context, Uri imageUri, float width) {
+    public Bitmap createBitmapFromURINew(Uri imageUri) {
         Bitmap bitmap;
         bitmap = CacheBitmap.getInstance().getBitmapFromMemCache(imageUri.toString());
         if (bitmap != null) {
@@ -193,11 +195,22 @@ public class NotesDetailPresenter implements InitPresenter {
             return bitmap;
         } else {
             try {
-                InputStream stream = context.getContentResolver().openInputStream(imageUri);
-                bitmap = BitmapFactory.decodeStream(stream);
-                if (bitmap.getWidth() > width)
-                    bitmap = ResizeBitmap.resize(bitmap, width);
-                stream.close();
+                File file = new File(imageUri.getPath());
+                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+                Matrix matrix = new Matrix();
+                if (orientation == 6) {
+                    matrix.postRotate(90);
+                } else if (orientation == 3) {
+                    matrix.postRotate(180);
+                } else if (orientation == 8) {
+                    matrix.postRotate(270);
+                }
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
+
+                if (bitmap.getWidth() > MAX_WIDTH)
+                    bitmap = ResizeBitmap.resize(bitmap, MAX_WIDTH);
                 CacheBitmap.getInstance().addBitmapToMemoryCache(imageUri.toString(), bitmap);
                 Log.d(DataUtil.TAG_NOTES_DETAIL_PRESENTER, "Add to cache success");
                 return bitmap;
@@ -208,7 +221,7 @@ public class NotesDetailPresenter implements InitPresenter {
         }
     }
 
-    public void update(Notes notes,String title, String content, long folderId,int colorId) {
+    public void update(Notes notes, String title, String content, long folderId, int colorId) {
         if (!DataUtil.checkStringEmpty(title)) {
             if (DataUtil.checkStringEmpty(content))
                 title = DataUtil.createTitle(content);
@@ -224,7 +237,7 @@ public class NotesDetailPresenter implements InitPresenter {
                 notes.setTitle(title);
                 notes.setContent(content);
                 notes.setFolderId(folderId);
-                if(-1==colorId)
+                if (-1 == colorId)
                     colorId = R.color.white;
                 notes.setColorId(colorId);
                 realm.copyToRealm(notes);
@@ -254,17 +267,27 @@ public class NotesDetailPresenter implements InitPresenter {
         notesDetailView.addSetTxtContentSelection((int) list.get(1));
     }
 
-    public Bitmap createBitmapFromURI(Context context, Uri imageUri, float width) {
+    public Bitmap createBitmapFromFile(File file) {
         try {
             imageData = new StringBuilder();
             imageData.append(AddImageUtil.NODE_IMAGE_START);
-            imageData.append(imageUri.toString());
+            imageData.append(Uri.fromFile(file).toString());
             imageData.append(AddImageUtil.NODE_IMAGE_END);
-            InputStream stream = context.getContentResolver().openInputStream(imageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(stream);
-            if (bitmap.getWidth() > width)
-                bitmap = ResizeBitmap.resize(bitmap, width);
-            stream.close();
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+            }
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
+
+            if (bitmap.getWidth() > MAX_WIDTH)
+                bitmap = ResizeBitmap.resize(bitmap, MAX_WIDTH);
             return bitmap;
         } catch (Exception e) {
             Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
@@ -290,5 +313,6 @@ public class NotesDetailPresenter implements InitPresenter {
     @Override
     public void init() {
         realm = RealmController.with().getRealm();
+        MAX_WIDTH = (int) ScreenUtil.getScreenWidth(activity.getWindowManager()) / 3;
     }
 }
