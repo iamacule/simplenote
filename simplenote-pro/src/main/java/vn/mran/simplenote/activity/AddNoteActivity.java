@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import vn.mran.simplenote.R;
@@ -136,13 +132,11 @@ public class AddNoteActivity extends BaseActivity implements AddNotesView, ToolA
                 case ACTION_REQUEST_GALLERY:
                     file = FileUtil.copyFile(this, intent.getData(), Constant.IMAGE_FOLDER, null);
                     addNotePresenter.addImage
-                            (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(file),
-                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                            (addNotePresenter.createBitmapFromFile(file), txtContent.editText);
                     break;
                 case TAKE_PICTURE_REQUEST_CODE:
                     addNotePresenter.addImage
-                            (addNotePresenter.createBitmapFromURI(this, Uri.fromFile(new File(intent.getStringExtra(CameraActivity.DATA_CAMERA))),
-                                    ScreenUtil.getScreenWidth(getWindowManager()) / 3), txtContent.editText);
+                            (addNotePresenter.createBitmapFromFile(new File(intent.getStringExtra(CameraActivity.DATA_CAMERA))), txtContent.editText);
                     break;
                 case SPEECH_REQUEST_CODE:
                     List<String> results = intent.getStringArrayListExtra(

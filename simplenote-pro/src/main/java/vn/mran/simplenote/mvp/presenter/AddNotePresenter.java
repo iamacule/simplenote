@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.Spannable;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import vn.mran.simplenote.R;
+import vn.mran.simplenote.activity.AddNoteActivity;
 import vn.mran.simplenote.model.Notes;
 import vn.mran.simplenote.mvp.InitPresenter;
 import vn.mran.simplenote.mvp.view.AddNotesView;
@@ -35,6 +38,7 @@ import vn.mran.simplenote.util.Constant;
 import vn.mran.simplenote.util.DataUtil;
 import vn.mran.simplenote.util.FileUtil;
 import vn.mran.simplenote.util.ResizeBitmap;
+import vn.mran.simplenote.util.ScreenUtil;
 
 /**
  * Created by Mr An on 20/08/2016.
@@ -42,6 +46,7 @@ import vn.mran.simplenote.util.ResizeBitmap;
 public class AddNotePresenter implements InitPresenter {
     public static final byte SAVE_EXCEPTION = 0;
     public static final byte EMPTY_CONTENT = 1;
+    private int MAX_WIDTH;
     private StringBuilder imageData;
     private Context context;
     private AddNotesView addNotesView;
@@ -103,17 +108,28 @@ public class AddNotePresenter implements InitPresenter {
         addNotesView.addSetTxtContentSelection((int) list.get(1));
     }
 
-    public Bitmap createBitmapFromURI(Context context, Uri imageUri, float width) {
+    public Bitmap createBitmapFromFile(File file) {
         try {
             imageData = new StringBuilder();
             imageData.append(AddImageUtil.NODE_IMAGE_START);
-            imageData.append(imageUri.toString());
+            imageData.append(Uri.fromFile(file).toString());
             imageData.append(AddImageUtil.NODE_IMAGE_END);
-            InputStream stream = context.getContentResolver().openInputStream(imageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(stream);
-            if (bitmap.getWidth() > width)
-                bitmap = ResizeBitmap.resize(bitmap, width);
-            stream.close();
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+            ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+            }
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
+
+            if (bitmap.getWidth() > MAX_WIDTH)
+                bitmap = ResizeBitmap.resize(bitmap, MAX_WIDTH);
             return bitmap;
         } catch (Exception e) {
             Log.d(DataUtil.TAG_ADD_IMAGE_UTIL, e.getMessage());
@@ -143,5 +159,6 @@ public class AddNotePresenter implements InitPresenter {
     @Override
     public void init() {
         realm = RealmController.with().getRealm();
+        MAX_WIDTH = (int) ScreenUtil.getScreenWidth(((AddNoteActivity) context).getWindowManager()) / 3;
     }
 }
